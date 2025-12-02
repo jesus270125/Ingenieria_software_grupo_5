@@ -1,0 +1,64 @@
+<ion-content class="ion-padding login-content">
+  <div class="login-page">
+    <div class="login-container">
+      
+      <!-- CABECERA -->
+      <div class="ion-text-center">
+        <div class="header-icon">
+          <ion-icon name="person-circle-outline" style="font-size: 50px; color: white;"></ion-icon>
+        </div>
+        <h2 class="header-title">¡Hola de nuevo!</h2>
+        <p class="subtext">Inicia sesión para continuar</p>
+      </div>
+
+      <!-- FORMULARIO -->
+      <div style="margin-top: 40px;">
+        
+        <!-- CORREO -->
+        <ion-item lines="none" class="custom-input">
+          <ion-icon name="mail-outline" slot="start" class="input-icon"></ion-icon>
+          <ion-label position="stacked">Correo Electrónico</ion-label>
+          <ion-input
+            #correoInput
+            type="email"
+            placeholder="ejemplo@correo.com"
+            [(ngModel)]="correo">
+          </ion-input>
+        </ion-item>
+
+        <!-- CONTRASEÑA -->
+        <ion-item lines="none" class="custom-input">
+          <ion-icon name="lock-closed-outline" slot="start" class="input-icon"></ion-icon>
+          <ion-label position="stacked">Contraseña</ion-label>
+          <ion-input
+            type="password"
+            placeholder="********"
+            [(ngModel)]="password">
+          </ion-input>
+        </ion-item>
+
+        <!-- BOTONES -->
+        <ion-button expand="block" class="btn-purple" (click)="login()">
+          INGRESAR
+        </ion-button>
+
+        <ion-button 
+          expand="block" 
+          fill="outline" 
+          class="btn-outline-purple" 
+          (click)="irARegistro()">
+          CREAR CUENTA
+        </ion-button>
+
+      </div>
+      
+      <!-- Pie de página -->
+      <div class="ion-text-center ion-margin-top">
+        <ion-text color="medium">
+          <p style="font-size: 0.8rem; opacity: 0.7;">v1.0.0</p>
+        </ion-text>
+      </div>
+
+    </div>
+  </div>
+</ion-content>
