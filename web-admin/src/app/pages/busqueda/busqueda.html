@@ -1,0 +1,27 @@
+<div class="container">
+  <h1>Búsqueda de productos</h1>
+
+  <div class="filtros">
+    <input type="text" placeholder="Buscar por nombre" [(ngModel)]="nombre">
+    <input type="text" placeholder="Categoría" [(ngModel)]="categoria">
+    <button (click)="buscar()">Buscar</button>
+  </div>
+
+  <table *ngIf="resultados.length > 0">
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Categoría</th>
+        <th>Precio</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let r of resultados">
+        <td>{{ r.nombre }}</td>
+        <td>{{ r.categoria }}</td>
+        <td>S/. {{ r.precio }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>
