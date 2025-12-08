@@ -16,6 +16,9 @@ CREATE TABLE usuarios (
   fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 SELECT * FROM usuarios;
+TRUNCATE TABLE usuarios;
+
+
 
 CREATE TABLE backup_logs (
   id INT PRIMARY KEY AUTO_INCREMENT,
@@ -23,3 +26,36 @@ CREATE TABLE backup_logs (
   tipo VARCHAR(20),
   descripcion TEXT
 );
+
+CREATE TABLE locales (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    nombre VARCHAR(100) NOT NULL,
+    direccion VARCHAR(150) NOT NULL,
+    categoria VARCHAR(100) NOT NULL,
+    imagen VARCHAR(255),
+    hora_apertura TIME NOT NULL,
+    hora_cierre TIME NOT NULL,
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
+
+CREATE TABLE productos (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    local_id INT NOT NULL,
+    nombre VARCHAR(100) NOT NULL,
+    descripcion VARCHAR(255),
+    precio DECIMAL(10,2) NOT NULL,
+    imagen VARCHAR(255),
+    creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (local_id) REFERENCES locales(id) ON DELETE CASCADE
+);
+
+CREATE TABLE catalogo_versiones (
+    id INT AUTO_INCREMENT PRIMARY KEY,
+    tipo VARCHAR(20),               -- local o producto
+    referencia_id INT,              -- id del local o producto modificado
+    descripcion VARCHAR(255),
+    usuario VARCHAR(100),
+    fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
+);
+
