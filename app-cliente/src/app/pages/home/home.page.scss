@@ -1,0 +1,158 @@
+// 1. Configuración base para que ocupe todo el espacio
+:host {
+  display: block;
+}
+
+// Fondo general gris suave
+.home-content {
+  --background: #f4f5f8;
+}
+
+/* --- SECCIÓN SUPERIOR (HERO) --- */
+.header-section {
+  background: linear-gradient(135deg, #6200ea 0%, #7c4dff 100%); /* Degradado Morado */
+  padding: 50px 20px 40px; /* Padding superior extra para la barra de estado */
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  box-shadow: 0 4px 15px rgba(98, 0, 234, 0.2);
+  color: white;
+  margin-bottom: -20px; /* Truco para que el contenido se solape un poco */
+  position: relative;
+  z-index: 1;
+}
+
+.user-greeting {
+  margin: 0;
+  font-weight: 800;
+  font-size: 1.8rem;
+}
+
+.user-status {
+  margin: 5px 0 0;
+  opacity: 0.9;
+  font-size: 0.95rem;
+}
+
+.avatar-icon {
+  font-size: 50px;
+  opacity: 0.9;
+}
+
+/* --- CONTENEDOR DASHBOARD --- */
+.dashboard-container {
+  padding: 20px;
+  position: relative;
+  z-index: 2; /* Asegura que esté por encima de la cabecera en el solape */
+}
+
+.section-title {
+  color: #444;
+  font-weight: 700;
+  font-size: 1.1rem;
+  margin-bottom: 15px;
+  margin-left: 5px;
+  margin-top: 15px;
+}
+
+/* --- TARJETAS DEL MENÚ (Cards) --- */
+.menu-card {
+  background: white;
+  border-radius: 20px;
+  padding: 15px;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  text-align: center;
+  box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+  transition: transform 0.1s ease;
+  height: 110px;
+  margin-bottom: 10px;
+  cursor: pointer;
+  position: relative;
+  overflow: hidden;
+}
+
+/* Efecto al presionar la tarjeta */
+.menu-card:active {
+  transform: scale(0.96);
+  background-color: #f9f9f9;
+}
+
+.menu-card span {
+  font-weight: 600;
+  color: #333;
+  font-size: 0.85rem;
+  margin-top: 10px;
+}
+
+/* Estilo específico para tarjeta ancha (Perfil) */
+.menu-card.wide-card {
+  flex-direction: row;
+  justify-content: flex-start;
+  text-align: left;
+  padding: 15px 20px;
+  height: auto; /* Altura automática */
+  margin-top: 5px;
+}
+
+.card-text {
+  flex: 1;
+  margin-left: 15px;
+  display: flex;
+  flex-direction: column;
+}
+
+.card-title {
+  font-weight: 700;
+  color: #333;
+  margin-top: 0;
+  font-size: 1rem !important;
+}
+
+.card-subtitle {
+  font-size: 0.75rem !important;
+  color: #888 !important;
+  font-weight: 400 !important;
+  margin-top: 3px !important;
+}
+
+.arrow-icon {
+  color: #ccc;
+  font-size: 20px;
+}
+
+/* Círculos de fondo para los iconos */
+.icon-circle {
+  background: rgba(98, 0, 234, 0.08); /* Morado muy claro transparente */
+  width: 45px;
+  height: 45px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+}
+
+.icon-circle ion-icon {
+  font-size: 22px;
+  color: #6200ea; /* Icono morado fuerte */
+}
+
+/* --- BOTÓN LOGOUT --- */
+.logout-section {
+  margin-top: 30px;
+  padding: 0 10px;
+  margin-bottom: 30px;
+}
+
+.btn-logout {
+  --border-radius: 12px;
+  font-weight: 600;
+  height: 50px;
+  --border-color: #eb445a;
+  --color: #eb445a;
+  --background-hover: rgba(235, 68, 90, 0.05);
+}

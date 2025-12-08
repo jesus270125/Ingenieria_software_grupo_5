@@ -1,9 +1,69 @@
-<ion-header>
-  <ion-toolbar>
-    <ion-title>Inicio</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="home-content">
+  
+  <!-- Sección Superior (Hero) -->
+  <div class="header-section">
+    <div class="welcome-box">
+      <h1 class="user-greeting">Hola, Cliente</h1>
+      <p class="user-status">Bienvenido de nuevo</p>
+    </div>
+    <div class="avatar-box">
+      <ion-icon name="person-circle" class="avatar-icon"></ion-icon>
+    </div>
+  </div>
 
-<ion-content class="ion-padding">
-  <h2>Bienvenido Cliente</h2>
+  <!-- Contenedor Principal -->
+  <div class="dashboard-container">
+    
+    <h3 class="section-title">¿Qué deseas hacer hoy?</h3>
+
+    <!-- GRILLA DE OPCIONES -->
+    <ion-grid class="ion-no-padding">
+      <ion-row>
+        
+        <!-- Opción 1: Locales -->
+        <ion-col size="6" style="padding-right: 5px;">
+          <div class="menu-card" routerLink="/locales">
+            <div class="icon-circle">
+              <ion-icon name="storefront-outline"></ion-icon>
+            </div>
+            <span>Ver Locales</span>
+          </div>
+        </ion-col>
+
+        <!-- Opción 2: Productos -->
+        <ion-col size="6" style="padding-left: 5px;">
+          <div class="menu-card" routerLink="/productos">
+            <div class="icon-circle">
+              <ion-icon name="fast-food-outline"></ion-icon>
+            </div>
+            <span>Ver Productos</span>
+          </div>
+        </ion-col>
+
+        <!-- Opción 3: Perfil (Ancho completo) -->
+        <ion-col size="12" style="margin-top: 5px;">
+          <div class="menu-card wide-card" routerLink="/perfil">
+            <div class="icon-circle">
+              <ion-icon name="person-outline"></ion-icon>
+            </div>
+            <div class="card-text">
+              <span class="card-title">Mi Perfil</span>
+              <span class="card-subtitle">Mis datos y configuración</span>
+            </div>
+            <ion-icon name="chevron-forward-outline" class="arrow-icon"></ion-icon>
+          </div>
+        </ion-col>
+
+      </ion-row>
+    </ion-grid>
+
+    <!-- Botón Cerrar Sesión -->
+    <div class="logout-section">
+      <ion-button expand="block" fill="outline" class="btn-logout" (click)="logout()">
+        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+        Cerrar Sesión
+      </ion-button>
+    </div>
+
+  </div>
 </ion-content>

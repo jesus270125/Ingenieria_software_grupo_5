@@ -1,0 +1,47 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>{{ local?.nombre }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="local">
+
+  <!-- Banner -->
+  <img [src]="local.imagen" class="banner">
+
+  <!-- Info principal -->
+  <div style="padding: 15px;">
+    <h2>{{ local.nombre }}</h2>
+    <p>{{ local.categoria }}</p>
+
+    <p [style.color]="local.abierto ? 'green' : 'red'">
+      {{ local.abierto ? 'Abierto ahora' : 'Cerrado' }}
+    </p>
+  </div>
+
+  <!-- Buscador de productos -->
+  <ion-searchbar
+    placeholder="Buscar producto"
+    (ionInput)="buscarProducto($event)">
+  </ion-searchbar>
+
+  <!-- Products -->
+  <ion-list *ngIf="!cargando">
+    <ion-card *ngFor="let p of productos">
+      <img [src]="p.imagen" />
+
+      <ion-card-header>
+        <ion-card-title>{{ p.nombre }}</ion-card-title>
+        <ion-card-subtitle>S/ {{ p.precio }}</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        {{ p.descripcion }}
+      </ion-card-content>
+
+    </ion-card>
+  </ion-list>
+
+  <ion-spinner *ngIf="cargando" style="display:block; margin:auto; margin-top:40px;"></ion-spinner>
+
+</ion-content>

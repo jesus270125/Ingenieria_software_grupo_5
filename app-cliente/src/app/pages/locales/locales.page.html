@@ -1,0 +1,49 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Restaurantes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <!-- Búsqueda -->
+  <ion-searchbar
+    placeholder="Buscar restaurantes"
+    (ionInput)="buscar($event)">
+  </ion-searchbar>
+
+  <!-- Categorías -->
+  <div style="padding: 10px;">
+    <ion-chip (click)="filtrarCategoria('TODOS')">
+      <ion-label>Todos</ion-label>
+    </ion-chip>
+
+    <ion-chip *ngFor="let c of categorias" (click)="filtrarCategoria(c)">
+      <ion-label>{{ c }}</ion-label>
+    </ion-chip>
+  </div>
+
+  <!-- Lista de locales -->
+  <ion-list *ngIf="!cargando">
+    <ion-item *ngFor="let local of filtrados" (click)="verLocal(local.id)">
+      
+      <ion-thumbnail slot="start">
+        <img [src]="local.imagen">
+      </ion-thumbnail>
+
+      <ion-label>
+        <h2>{{ local.nombre }}</h2>
+        <p>{{ local.categoria }}</p>
+
+        <p [style.color]="local.abierto ? 'green' : 'red'">
+          {{ local.abierto ? 'Abierto' : 'Cerrado' }}
+        </p>
+      </ion-label>
+
+    </ion-item>
+  </ion-list>
+
+  <!-- Loader -->
+  <ion-spinner *ngIf="cargando" style="display: block; margin: auto; margin-top: 50px;"></ion-spinner>
+
+</ion-content>
