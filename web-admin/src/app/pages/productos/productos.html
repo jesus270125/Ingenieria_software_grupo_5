@@ -1,0 +1,24 @@
+<div class="container">
+  <h1>Productos de {{ localNombre }}</h1>
+
+  <button (click)="crear()">Crear producto</button>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Nombre</th>
+        <th>Precio</th>
+        <th>Descripción</th>
+        <th></th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr *ngFor="let p of productos">
+        <td>{{ p.nombre }}</td>
+        <td>S/. {{ p.precio }}</td>
+        <td>{{ p.descripcion }}</td>
+        <td><button (click)="editar(p)">Editar</button></td>
+      </tr>
+    </tbody>
+  </table>
+</div>
