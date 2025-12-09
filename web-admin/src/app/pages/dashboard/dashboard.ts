@@ -1,9 +1,9 @@
 import { Component } from '@angular/core';
-import { Router } from '@angular/router';
+import { Router} from '@angular/router';
 
 @Component({
   standalone: true,
-  templateUrl: './dashboard.html'
+  templateUrl: './dashboard.html',
 
 })
 export class DashboardComponent {

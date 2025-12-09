@@ -1,0 +1,25 @@
+<div class="container">
+  <h1>Historial de Catálogo</h1>
+
+  <table>
+    <thead>
+      <tr>
+        <th>Tipo</th>
+        <th>ID Referencia</th>
+        <th>Descripción</th>
+        <th>Usuario</th>
+        <th>Fecha</th>
+      </tr>
+    </thead>
+
+    <tbody>
+      <tr *ngFor="let v of versiones">
+        <td>{{ v.tipo }}</td>
+        <td>{{ v.referencia_id }}</td>
+        <td>{{ v.descripcion }}</td>
+        <td>{{ v.usuario }}</td>
+        <td>{{ v.fecha }}</td>
+      </tr>
+    </tbody>
+  </table>
+</div>

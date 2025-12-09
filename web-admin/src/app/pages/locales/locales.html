@@ -1,0 +1,26 @@
+<div class="container">
+   <h1>Locales</h1>
+
+   <button (click)= "crear ()"> Crear local</button>
+
+   <table>
+        <thead>
+            <tr>
+              <th>Nombre</th>
+              <th> categoria</th>
+              <th> Horario </th>
+              <th> Estado</th>
+              <th></th>
+            </tr>
+        </thead>
+        <tbody>
+            <tr *ngFor="let l of locales">
+               <td>{{ l.nombre}}</td>
+               <td>{{ l.categoria}}</td>
+               <td>{{ l.hora_apertura}}</td>
+               <td>{{ l.estado}}</td>
+               <td> <button (click)="editar(1)">Editar</button></td>
+            </tr>
+        </tbody>
+   </table>
+</div>

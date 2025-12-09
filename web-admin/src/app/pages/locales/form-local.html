@@ -1,0 +1,25 @@
+<div class="container">
+  <h2>{{ modoEdicion ? 'Editar Local' : 'Crear Local' }}</h2>
+
+  <form (ngSubmit)="guardar()">
+    <label>Nombre</label>
+    <input type="text" [(ngModel)]="local.nombre" name="nombre" required>
+
+    <label>Dirección</label>
+    <input type="text" [(ngModel)]="local.direccion" name="direccion" required>
+
+    <label>Categoría</label>
+    <input type="text" [(ngModel)]="local.categoria" name="categoria" required>
+
+    <label>Imagen (URL)</label>
+    <input type="text" [(ngModel)]="local.imagen" name="imagen">
+
+    <label>Hora apertura</label>
+    <input type="time" [(ngModel)]="local.hora_apertura" name="apertura" required>
+
+    <label>Hora cierre</label>
+    <input type="time" [(ngModel)]="local.hora_cierre" name="cierre" required>
+
+    <button type="submit">Guardar</button>
+  </form>
+</div>
