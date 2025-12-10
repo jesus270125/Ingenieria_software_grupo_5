@@ -10,8 +10,10 @@ export class AuthService {
   constructor(private http: HttpClient) {}
 
   login(correo: string, password: string) {
-    return this.http.post(`${this.api}/auth/login`, { correo, password });
+  return this.http.post(`${this.api}/auth/login`, { correo, password });
   }
+
+
 
   getToken() {
     return localStorage.getItem('token');

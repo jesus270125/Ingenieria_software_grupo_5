@@ -1,8 +1,32 @@
 <div class="login-container">
-  <h2>Panel Administrativo</h2>
+  
+  <!-- Cabecera con Logo -->
+  <div class="login-header">
+    <div class="logo-box">
+      <img src="assets/icon/shapes.svg" alt="Logo" onerror="this.style.display='none'">
+      <!-- Icono de respaldo por si no carga la imagen -->
+      <span class="logo-fallback">⚡</span>
+    </div>
+    <h2>Panel Administrativo</h2>
+    <p>Bienvenido de nuevo</p>
+  </div>
 
-  <input type="text" placeholder="Correo" [(ngModel)]="correo">
-  <input type="password" placeholder="Contraseña" [(ngModel)]="password">
+  <!-- Inputs -->
+  <div class="input-group">
+    <label>Correo Electrónico</label>
+    <input type="text" placeholder="admin@rayo.com" [(ngModel)]="correo">
+  </div>
 
-  <button (click)="login()">Ingresar</button>
+  <div class="input-group">
+    <label>Contraseña</label>
+    <input type="password" placeholder="••••••••" [(ngModel)]="password">
+  </div>
+
+  <!-- Botón -->
+  <button (click)="login()">INGRESAR</button>
+
+  <div class="footer">
+    <p>© Rayo Delivery Admin</p>
+  </div>
+
 </div>
