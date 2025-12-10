@@ -1,0 +1,349 @@
+/* --- 1. VARIABLES Y TEMA (MORADO) --- */
+:root {
+    --primary: #7c3aed;       /* Violeta 600 */
+    --primary-dark: #6d28d9;  /* Violeta 700 */
+    --primary-light: #ddd6fe; /* Violeta 200 */
+    
+    --sidebar-bg: #2e1065;    /* Violeta 950 (Fondo Oscuro) */
+    --sidebar-text: #e9d5ff;  /* Lila claro */
+    
+    --bg-body: #f3f4f6;       /* Gris fondo general */
+    --bg-card: #ffffff;       /* Blanco tarjetas */
+    --border: #e5e7eb;        /* Borde gris suave */
+    
+    --text-main: #1f2937;     /* Texto principal oscuro */
+    --text-muted: #6b7280;    /* Texto secundario gris */
+    
+    --sidebar-width: 260px;
+    --header-height: 64px;
+}
+
+/* --- 2. RESET Y BASE --- */
+* { box-sizing: border-box; margin: 0; padding: 0; outline: none; }
+
+body {
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-body);
+    color: var(--text-main);
+    height: 100vh;
+    overflow: hidden;
+}
+
+/* --- 3. LAYOUT PRINCIPAL --- */
+.admin-wrapper {
+    display: flex;
+    height: 100vh;
+    width: 100%;
+    position: relative;
+}
+
+/* --- 4. BARRA LATERAL (SIDEBAR) --- */
+.sidebar {
+    width: var(--sidebar-width);
+    background-color: var(--sidebar-bg);
+    color: white;
+    display: flex;
+    flex-direction: column;
+    flex-shrink: 0;
+    transition: transform 0.3s ease;
+    z-index: 50;
+    border-right: 1px solid rgba(0,0,0,0.1);
+}
+
+.sidebar-header {
+    height: var(--header-height);
+    display: flex;
+    align-items: center;
+    padding: 0 1.5rem;
+    border-bottom: 1px solid rgba(255,255,255,0.1);
+    background-color: rgba(0,0,0,0.2);
+}
+
+.logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 1.1rem;
+    color: white;
+    letter-spacing: 0.5px;
+}
+
+.sidebar-nav {
+    flex: 1;
+    padding: 1.5rem 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+    overflow-y: auto;
+}
+
+.nav-item {
+    display: flex;
+    align-items: center;
+    padding: 12px 16px;
+    text-decoration: none;
+    color: var(--sidebar-text);
+    border-radius: 8px;
+    transition: all 0.2s;
+    font-weight: 500;
+    font-size: 0.95rem;
+    cursor: pointer;
+}
+
+.nav-item:hover {
+    background-color: rgba(255,255,255,0.1);
+    color: white;
+}
+
+.nav-item.active {
+    background-color: var(--primary);
+    color: white;
+    box-shadow: 0 4px 12px rgba(124, 58, 237, 0.3);
+}
+
+.nav-item .icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 12px;
+}
+
+.sidebar-footer {
+    padding: 1.5rem;
+    border-top: 1px solid rgba(255,255,255,0.1);
+}
+
+.btn-logout {
+    width: 100%;
+    background-color: rgba(220, 38, 38, 0.1);
+    color: #fca5a5;
+    border: 1px solid rgba(220, 38, 38, 0.3);
+    padding: 12px;
+    border-radius: 8px;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    font-weight: 600;
+    transition: all 0.2s;
+}
+
+.btn-logout:hover {
+    background-color: #dc2626;
+    color: white;
+    border-color: #dc2626;
+}
+
+/* --- 5. CONTENIDO PRINCIPAL --- */
+.main-content {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    height: 100vh;
+    overflow: hidden;
+    position: relative;
+}
+
+/* Top Header */
+.top-header {
+    height: var(--header-height);
+    background-color: var(--bg-card);
+    border-bottom: 1px solid var(--border);
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 2rem;
+    flex-shrink: 0;
+}
+
+.header-left { display: flex; align-items: center; gap: 1rem; }
+.menu-toggle { display: none; background: none; border: none; cursor: pointer; color: var(--text-main); }
+.welcome-text { font-size: 1.1rem; font-weight: 600; color: var(--text-main); margin: 0; }
+
+.header-right { display: flex; align-items: center; gap: 1.5rem; }
+.btn-icon { background: none; border: none; cursor: pointer; color: var(--text-muted); position: relative; display: flex; }
+.badge-dot { position: absolute; top: 0; right: 0; width: 8px; height: 8px; background: #ef4444; border-radius: 50%; border: 1px solid white; }
+
+.user-profile .avatar {
+    width: 38px;
+    height: 38px;
+    background-color: var(--primary);
+    color: white;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: bold;
+    border: 2px solid white;
+    box-shadow: 0 0 0 2px var(--primary-light);
+}
+
+/* Cuerpo de la Página */
+.page-body {
+    flex: 1;
+    overflow-y: auto;
+    padding: 2rem;
+}
+
+.breadcrumb {
+    color: var(--text-muted);
+    font-size: 0.9rem;
+    margin-bottom: 0.5rem;
+}
+.breadcrumb strong { color: var(--primary); }
+
+.page-header { margin-bottom: 2rem; }
+.page-title { font-size: 1.75rem; font-weight: 700; color: var(--text-main); margin: 0; }
+
+/* --- 6. ESTILOS ESPECÍFICOS DE VERSIONES (TABLA) --- */
+.card {
+    background-color: var(--bg-card);
+    border: 1px solid var(--border);
+    border-radius: 12px;
+    box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+    overflow: hidden;
+}
+
+.table-responsive {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.custom-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: left;
+}
+
+.custom-table th {
+    background-color: #f9fafb;
+    padding: 1rem 1.5rem;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    color: var(--text-muted);
+    border-bottom: 1px solid var(--border);
+    letter-spacing: 0.05em;
+    white-space: nowrap;
+}
+
+.custom-table td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #f3f4f6;
+    color: var(--text-main);
+    vertical-align: middle;
+    font-size: 0.95rem;
+}
+
+.custom-table tr:hover td {
+    background-color: #f8fafc;
+}
+
+.custom-table tr:last-child td {
+    border-bottom: none;
+}
+
+/* Badges de Acción (Crear, Editar, Eliminar) */
+.badge-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    padding: 4px 10px;
+    border-radius: 6px;
+    font-size: 0.75rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    min-width: 80px;
+}
+
+.badge-action.create {
+    background-color: #dcfce7; /* Verde suave */
+    color: #15803d;           /* Verde fuerte */
+}
+
+.badge-action.update {
+    background-color: #dbeafe; /* Azul suave */
+    color: #1d4ed8;           /* Azul fuerte */
+}
+
+.badge-action.delete {
+    background-color: #fee2e2; /* Rojo suave */
+    color: #b91c1c;           /* Rojo fuerte */
+}
+
+/* Celdas específicas */
+.ref-id {
+    font-family: 'Consolas', 'Monaco', monospace;
+    background-color: #f3f4f6;
+    padding: 2px 6px;
+    border-radius: 4px;
+    color: #4b5563;
+    font-size: 0.9rem;
+}
+
+.desc-cell {
+    color: #4b5563;
+    max-width: 350px;
+    line-height: 1.4;
+}
+
+.user-cell {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 500;
+    color: var(--text-main);
+}
+
+.user-icon-small {
+    width: 28px;
+    height: 28px;
+    background-color: #f3f4f6;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    color: var(--text-muted);
+}
+
+.date-cell {
+    white-space: nowrap;
+    color: var(--text-muted);
+    font-size: 0.9rem;
+}
+
+.empty-state {
+    text-align: center;
+    padding: 3rem;
+    color: var(--text-muted);
+    font-style: italic;
+}
+
+/* --- 7. RESPONSIVE --- */
+.overlay {
+    position: fixed; inset: 0; background: rgba(15, 23, 42, 0.6);
+    z-index: 40; display: none; backdrop-filter: blur(2px);
+}
+.overlay.open { display: block; }
+
+@media (max-width: 768px) {
+    .sidebar { position: fixed; height: 100%; left: -100%; box-shadow: 4px 0 15px rgba(0,0,0,0.1); }
+    /* Corrección para abrir sidebar */
+    .sidebar.open { left: 0; }
+    
+    .menu-toggle { display: block; }
+    .page-body { padding: 1rem; }
+    .top-header { padding: 0 1rem; }
+    
+    /* Ajuste para tablas en móvil */
+    .table-responsive {
+        border-radius: 12px;
+        border: 1px solid var(--border);
+    }
+    .custom-table th, .custom-table td {
+        padding: 0.75rem 1rem;
+    }
+}
