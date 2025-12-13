@@ -5,6 +5,6 @@ const auth = require("../middlewares/auth");
 const verifyRole = require("../middlewares/verifyRole");
 
 // Solo admin puede ver historial
-router.get("/", auth, verifyRole("admin"), controller.list);
+router.get("/", auth, verifyRole("administrador"), controller.list);
 
 module.exports = router;

@@ -5,8 +5,8 @@ const auth = require("../middlewares/auth");
 const verifyRole = require("../middlewares/verifyRole");
 
 // Crear y editar solo admin
-router.post("/", auth, verifyRole("admin"), controller.create);
-router.patch("/:id", auth, verifyRole("admin"), controller.update);
+router.post("/", auth, verifyRole("administrador"), controller.create);
+router.patch("/:id", auth, verifyRole("administrador"), controller.update);
 
 // Listar productos públicos (cliente)
 router.get("/local/:localId", controller.listByLocal);
