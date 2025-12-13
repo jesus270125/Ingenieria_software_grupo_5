@@ -1,19 +1,22 @@
-import { Component } from '@angular/core';
+import { Component, ViewEncapsulation } from '@angular/core';
+import { CommonModule } from '@angular/common'; // Agregado: Necesario para la UI
 import { FormsModule } from '@angular/forms';
 import { LocalesService } from '../../services/locales.service';
-import { Router } from '@angular/router';
+import { Router, RouterModule } from '@angular/router';
 
 @Component({
   selector: 'app-form-local',
   standalone: true,
-  imports: [FormsModule],
+  imports: [CommonModule, FormsModule, RouterModule], // Agregado CommonModule aquí
   templateUrl: './form-local.html',
-  styleUrls: ['./form-local.css']
+  styleUrls: ['./form-local.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class FormLocalPage {
 
   modoEdicion = false;
   id: number | null = null;
+  sidebarOpen = false;
 
   local = {
     nombre: '',
@@ -43,5 +46,21 @@ export class FormLocalPage {
         this.router.navigate(['/locales']);
       });
     }
+  }
+
+  // --- Funciones para la UI ---
+
+  toggleMenu() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  // Faltaba esta función para el overlay
+  closeMenu() {
+    this.sidebarOpen = false;
+  }
+
+  logout() {
+    localStorage.clear();
+    this.router.navigate(['/login']);
   }
 }

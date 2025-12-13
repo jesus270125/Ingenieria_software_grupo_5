@@ -17,38 +17,56 @@ export const routes: Routes = [
     component: DashboardComponent,
     canActivate: [AdminGuard]
   },
+
+  // ✅ Locales (recarga siempre)
   {
-  path: 'locales',
-  loadComponent: () => import('./pages/locales/locales').then(c => c.LocalesPage)
-},
-{
-  path: 'crear-local',
-  loadComponent: () => import('./pages/locales/form-local').then(c => c.FormLocalPage)
-},
-{
-  path: 'editar-local/:id',
-  loadComponent: () => import('./pages/locales/form-local').then(c => c.FormLocalPage)
-},
-{
-  path: 'productos',
-  loadComponent: () => import('./pages/productos/productos').then(c => c.ProductosPage)
-},
-{
-  path: 'crear-producto',
-  loadComponent: () => import('./pages/productos/form-producto').then(c => c.FormProductoPage)
-},
-{
-  path: 'editar-producto/:id',
-  loadComponent: () => import('./pages/productos/form-producto').then(c => c.FormProductoPage)
-},
-{
-  path: 'busqueda',
-  loadComponent: () =>
-    import('./pages/busqueda/busqueda').then(c => c.BusquedaPage)
-},
-{
-  path: 'versiones',
-  loadComponent: () =>
-    import('./pages/versiones/versiones').then(c => c.VersionesPage)
-},
+    path: 'locales',
+    loadComponent: () =>
+      import('./pages/locales/locales').then(c => c.LocalesPage),
+    runGuardsAndResolvers: 'always'
+  },
+  {
+    path: 'crear-local',
+    loadComponent: () =>
+      import('./pages/locales/form-local').then(c => c.FormLocalPage)
+  },
+  {
+    path: 'editar-local/:id',
+    loadComponent: () =>
+      import('./pages/locales/form-local').then(c => c.FormLocalPage)
+  },
+
+  // ✅ Productos (recarga siempre)
+  {
+    path: 'productos',
+    loadComponent: () =>
+      import('./pages/productos/productos').then(c => c.ProductosPage),
+    runGuardsAndResolvers: 'always'
+  },
+  {
+    path: 'crear-producto',
+    loadComponent: () =>
+      import('./pages/productos/form-producto').then(c => c.FormProductoPage)
+  },
+  {
+    path: 'editar-producto/:id',
+    loadComponent: () =>
+      import('./pages/productos/form-producto').then(c => c.FormProductoPage)
+  },
+
+  // ✅ Búsqueda (siempre recarga)
+  {
+    path: 'busqueda',
+    loadComponent: () =>
+      import('./pages/busqueda/busqueda').then(c => c.BusquedaPage),
+    runGuardsAndResolvers: 'always'
+  },
+
+  // ✅ Versiones (siempre recarga)
+  {
+    path: 'versiones',
+    loadComponent: () =>
+      import('./pages/versiones/versiones').then(c => c.VersionesPage),
+    runGuardsAndResolvers: 'always'
+  }
 ];

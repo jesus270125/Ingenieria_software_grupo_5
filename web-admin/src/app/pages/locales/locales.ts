@@ -1,24 +1,43 @@
-import { Component, OnInit } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { LocalesService } from '../../services/locales.service';
 
 @Component({
   selector: 'app-locales',
   standalone: true,
-  imports: [NgFor, NgIf, RouterModule],
+  imports: [CommonModule, RouterModule],
   templateUrl: './locales.html',
-  styleUrls: ['./locales.css']
+  styleUrls: ['./locales.css'],
+  encapsulation: ViewEncapsulation.None
 })
 export class LocalesPage implements OnInit {
 
   locales: any[] = [];
+  cargando: boolean = true;
+  sidebarOpen: boolean = false;
 
-  constructor(private api: LocalesService, private router: Router) {}
+  constructor(
+    private api: LocalesService,
+    private router: Router
+  ) {}
 
   ngOnInit() {
-    this.api.listar().subscribe(res => {
-      this.locales = res;
+    this.cargarLocales();
+  }
+
+  cargarLocales() {
+    this.cargando = true;
+
+    this.api.listar().subscribe({
+      next: (res) => {
+        this.locales = res;
+        this.cargando = false;
+      },
+      error: (err) => {
+        console.error('Error al cargar locales:', err);
+        this.cargando = false;
+      }
     });
   }
 
@@ -28,5 +47,18 @@ export class LocalesPage implements OnInit {
 
   editar(local: any) {
     this.router.navigate(['/editar-local', local.id], { state: local });
+  }
+
+  toggleMenu() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  closeMenu() {
+    this.sidebarOpen = false;
+  }
+
+  logout() {
+    localStorage.clear();
+    this.router.navigate(['/login']);
   }
 }

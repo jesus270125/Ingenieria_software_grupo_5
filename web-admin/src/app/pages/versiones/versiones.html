@@ -1,25 +1,141 @@
-<div class="container">
-  <h1>Historial de Catálogo</h1>
+<div class="admin-wrapper">
 
-  <table>
-    <thead>
-      <tr>
-        <th>Tipo</th>
-        <th>ID Referencia</th>
-        <th>Descripción</th>
-        <th>Usuario</th>
-        <th>Fecha</th>
-      </tr>
-    </thead>
+    <!-- Overlay para móvil -->
+    <div 
+        class="overlay" 
+        [class.open]="sidebarOpen" 
+        (click)="closeMenu()">
+    </div>
+    
+    <!-- 1. BARRA LATERAL -->
+    <aside class="sidebar" [class.open]="sidebarOpen">
+        <div class="sidebar-header">
+            <div class="logo">
+                <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"></path></svg>
+                <span>ADMIN PANEL</span>
+            </div>
+        </div>
 
-    <tbody>
-      <tr *ngFor="let v of versiones">
-        <td>{{ v.tipo }}</td>
-        <td>{{ v.referencia_id }}</td>
-        <td>{{ v.descripcion }}</td>
-        <td>{{ v.usuario }}</td>
-        <td>{{ v.fecha }}</td>
-      </tr>
-    </tbody>
-  </table>
+        <nav class="sidebar-nav">
+            <a routerLink="/admin" class="nav-item">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="3" width="7" height="7"></rect><rect x="14" y="3" width="7" height="7"></rect><rect x="14" y="14" width="7" height="7"></rect><rect x="3" y="14" width="7" height="7"></rect></svg></span>
+                Dashboard
+            </a>
+            
+            <a routerLink="/locales" class="nav-item">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M3 21h18"/><path d="M5 21V7l8-4 8 4v14"/><path d="M9 10a2 2 0 0 1 2-2h2a2 2 0 0 1 2 2"/></svg></span>
+                Locales
+            </a>
+
+            <a routerLink="/productos" class="nav-item">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M6 2L3 6v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V6l-3-4z"></path><line x1="3" y1="6" x2="21" y2="6"></line><path d="M16 10a4 4 0 0 1-8 0"></path></svg></span>
+                Productos
+            </a>
+            
+            <a routerLink="/busqueda" class="nav-item">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="11" cy="11" r="8"></circle><line x1="21" y1="21" x2="16.65" y2="16.65"></line></svg></span>
+                Buscar
+            </a>
+
+            <!-- ACTIVO: Versiones -->
+            <a routerLink="/versiones" class="nav-item active">
+                <span class="icon"><svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="16 18 22 12 16 6"></polyline><polyline points="8 6 2 12 8 18"></polyline></svg></span>
+                Versiones
+            </a>
+        </nav>
+
+        <div class="sidebar-footer">
+            <button class="btn-logout" (click)="logout()">
+                <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"></path><polyline points="16 17 21 12 16 7"></polyline><line x1="21" y1="12" x2="9" y2="12"></line></svg>
+                Cerrar Sesión
+            </button>
+        </div>
+    </aside>
+
+    <!-- 2. CONTENIDO PRINCIPAL -->
+    <main class="main-content">
+        
+        <!-- Header Superior -->
+        <header class="top-header">
+            <div class="header-left">
+                <button class="menu-toggle" (click)="toggleMenu()">
+                    <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="3" y1="12" x2="21" y2="12"></line><line x1="3" y1="6" x2="21" y2="6"></line><line x1="3" y1="18" x2="21" y2="18"></line></svg>
+                </button>
+                <h2 class="welcome-text">Auditoría y Versiones</h2>
+            </div>
+            <div class="header-right">
+                <button class="btn-icon notification">
+                    <span class="badge-dot"></span>
+                    <svg xmlns="http://www.w3.org/2000/svg" width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M18 8A6 6 0 0 0 6 8c0 7-3 9-3 9h18s-3-2-3-9"></path><path d="M13.73 21a2 2 0 0 1-3.46 0"></path></svg>
+                </button>
+                <div class="user-profile">
+                    <div class="avatar">AD</div>
+                </div>
+            </div>
+        </header>
+
+        <!-- Cuerpo de la Página -->
+        <div class="page-body">
+            
+            <div class="breadcrumb">
+                Panel / <strong>Historial de Catálogo</strong>
+            </div>
+
+            <div class="page-header">
+                <h1 class="page-title">Historial de Cambios</h1>
+                <p style="color: var(--text-muted); margin-top: 5px;">Registro completo de movimientos y modificaciones en el sistema.</p>
+            </div>
+
+            <!-- Tarjeta de Tabla -->
+            <div class="card">
+                <div class="table-responsive">
+                    <table class="custom-table">
+                        <thead>
+                            <tr>
+                                <th>Tipo de Acción</th>
+                                <th>ID Referencia</th>
+                                <th>Descripción del Cambio</th>
+                                <th>Usuario Responsable</th>
+                                <th>Fecha y Hora</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr *ngFor="let v of versiones">
+                                <td>
+                                    <!-- Badge dinámico según el tipo de acción -->
+                                    <span class="badge-action"
+                                        [class.create]="v.tipo === 'CREACION' || v.tipo === 'ALTA'"
+                                        [class.update]="v.tipo === 'EDICION' || v.tipo === 'MODIFICACION'"
+                                        [class.delete]="v.tipo === 'ELIMINACION' || v.tipo === 'BAJA'">
+                                        {{ v.tipo }}
+                                    </span>
+                                </td>
+                                <td>
+                                    <span class="ref-id">#{{ v.referencia_id }}</span>
+                                </td>
+                                <td class="desc-cell">{{ v.descripcion }}</td>
+                                <td>
+                                    <div class="user-cell">
+                                        <div class="user-icon-small">
+                                            <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path><circle cx="12" cy="7" r="4"></circle></svg>
+                                        </div>
+                                        {{ v.usuario }}
+                                    </div>
+                                </td>
+                                <td class="date-cell">{{ v.fecha }}</td>
+                            </tr>
+
+                            <!-- Mensaje si no hay historial -->
+                            <tr *ngIf="versiones.length === 0">
+                                <td colspan="5" class="empty-state">
+                                    No hay registros en el historial.
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+
+        </div>
+    </main>
 </div>

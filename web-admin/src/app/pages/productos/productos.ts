@@ -1,20 +1,24 @@
-import { Component, OnInit } from '@angular/core';
-import { NgFor, NgIf } from '@angular/common';
+import { Component, OnInit, ViewEncapsulation } from '@angular/core'; // Agregado ViewEncapsulation
+import { CommonModule } from '@angular/common'; // Cambiado a CommonModule para soportar toda la UI
 import { Router, RouterModule } from '@angular/router';
 import { ProductosService } from '../../services/productos.service';
 
 @Component({
   selector: 'app-productos',
   standalone: true,
-  imports: [NgFor, NgIf, RouterModule],
+  imports: [CommonModule, RouterModule], // Usamos CommonModule que incluye NgFor y NgIf + utilidades
   templateUrl: './productos.html',
-  styleUrls: ['./productos.css']
+  styleUrls: ['./productos.css'],
+  encapsulation: ViewEncapsulation.None // 👇 Necesario para que el layout herede estilos globales
 })
 export class ProductosPage implements OnInit {
 
   productos: any[] = [];
   localId!: number;
   localNombre!: string;
+  
+  // --- Agregado: Variable para controlar el menú lateral ---
+  sidebarOpen = false;
 
   constructor(
     private api: ProductosService,
@@ -28,9 +32,14 @@ export class ProductosPage implements OnInit {
   }
 
   ngOnInit() {
-    this.api.listarPorLocal(this.localId).subscribe(res => {
-      this.productos = res;
-    });
+    // Validación opcional: si recargan la página y pierden el state, podrías redirigir
+    if (!this.localId) {
+       // this.router.navigate(['/locales']); // Descomentar si deseas esta seguridad
+    } else {
+       this.api.listarPorLocal(this.localId).subscribe(res => {
+         this.productos = res;
+       });
+    }
   }
 
   crear() {
@@ -43,5 +52,20 @@ export class ProductosPage implements OnInit {
     this.router.navigate(['/editar-producto', producto.id], { 
       state: { ...producto, localId: this.localId }
     });
+  }
+
+  // --- Agregado: Funciones para la UI (Sidebar y Logout) ---
+
+  toggleMenu() {
+    this.sidebarOpen = !this.sidebarOpen;
+  }
+
+  closeMenu() {
+    this.sidebarOpen = false;
+  }
+
+  logout() {
+    localStorage.clear();
+    this.router.navigate(['/login']);
   }
 }
