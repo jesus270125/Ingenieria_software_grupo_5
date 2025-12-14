@@ -1,4 +1,4 @@
-import { Component, ViewEncapsulation } from '@angular/core'; // 1. Importamos esto
+import { Component, ViewEncapsulation } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule } from '@angular/router';
 
@@ -8,8 +8,7 @@ import { Router, RouterModule } from '@angular/router';
   imports: [CommonModule, RouterModule],
   templateUrl: './dashboard.html',
   styleUrls: ['./dashboard.css'],
-  // 2. 👇 ESTA LÍNEA ES OBLIGATORIA para que el CSS global funcione
-  encapsulation: ViewEncapsulation.None 
+  encapsulation: ViewEncapsulation.None
 })
 export class DashboardComponent {
 

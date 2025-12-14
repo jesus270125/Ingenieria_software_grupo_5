@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { LocalesService } from '../../services/locales.service';
@@ -15,11 +15,11 @@ export class LocalesPage implements OnInit {
 
   locales: any[] = [];
   cargando: boolean = true;
-  sidebarOpen: boolean = false;
 
   constructor(
     private api: LocalesService,
-    private router: Router
+    private router: Router,
+    private cdr: ChangeDetectorRef
   ) {}
 
   ngOnInit() {
@@ -33,6 +33,7 @@ export class LocalesPage implements OnInit {
       next: (res) => {
         this.locales = res;
         this.cargando = false;
+        this.cdr.detectChanges();   // ✅ ESTO SOLUCIONA EL PROBLEMA
       },
       error: (err) => {
         console.error('Error al cargar locales:', err);
@@ -42,23 +43,10 @@ export class LocalesPage implements OnInit {
   }
 
   crear() {
-    this.router.navigate(['/crear-local']);
+    this.router.navigate(['/admin/crear-local']);
   }
 
   editar(local: any) {
-    this.router.navigate(['/editar-local', local.id], { state: local });
-  }
-
-  toggleMenu() {
-    this.sidebarOpen = !this.sidebarOpen;
-  }
-
-  closeMenu() {
-    this.sidebarOpen = false;
-  }
-
-  logout() {
-    localStorage.clear();
-    this.router.navigate(['/login']);
+    this.router.navigate(['/admin/editar-local', local.id], { state: local });
   }
 }
