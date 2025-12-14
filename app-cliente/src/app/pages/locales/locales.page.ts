@@ -1,9 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { LocalesService } from '../../services/locales';
 import { CommonModule } from '@angular/common';
+import { Router } from '@angular/router';
+import { LocalesService } from '../../services/locales';
+import { addIcons } from 'ionicons'; // Agregado: Para registrar iconos
+import { searchOutline, ellipse, ellipseOutline, chevronForward } from 'ionicons/icons'; // Agregado: Iconos específicos
 import {
   IonLabel, IonToolbar, IonHeader, IonTitle, IonContent,
-  IonSearchbar, IonChip, IonList, IonItem, IonThumbnail, IonSpinner
+  IonSearchbar, IonChip, IonList, IonItem, IonThumbnail, IonSpinner,
+  IonIcon // Agregado: Componente de icono
 } from "@ionic/angular/standalone";
 
 @Component({
@@ -23,7 +27,8 @@ import {
     IonList,
     IonItem,
     IonThumbnail,
-    IonSpinner
+    IonSpinner,
+    IonIcon // Agregado
   ]
 })
 export class LocalesPage implements OnInit {
@@ -32,8 +37,15 @@ export class LocalesPage implements OnInit {
   filtrados: any[] = [];
   categorias: any[] = [];
   cargando = true;
+  categoriaSeleccionada: string = 'TODOS'; // Agregado: Para controlar el chip activo (morado)
 
-  constructor(private localesService: LocalesService) {}
+  constructor(
+    private localesService: LocalesService,
+    private router: Router
+  ) {
+    // Agregado: Registrar los iconos usados en el HTML
+    addIcons({ searchOutline, ellipse, ellipseOutline, chevronForward });
+  }
 
   ngOnInit() {
     this.cargarLocales();
@@ -52,10 +64,12 @@ export class LocalesPage implements OnInit {
   }
 
   buscar(event: any) {
-    const texto = event.target.value.toLowerCase();
+    const texto = event.target.value?.toLowerCase() || '';
 
     if (texto.trim() === '') {
       this.filtrados = [...this.locales];
+      // Opcional: Si quieres mantener el filtro de categoría al limpiar búsqueda,
+      // podrías llamar a this.filtrarCategoria(this.categoriaSeleccionada) aquí.
       return;
     }
 
@@ -65,6 +79,8 @@ export class LocalesPage implements OnInit {
   }
 
   filtrarCategoria(cat: string) {
+    this.categoriaSeleccionada = cat; // Agregado: Actualizamos la selección visual
+
     if (cat === 'TODOS') {
       this.filtrados = [...this.locales];
       return;
@@ -74,6 +90,6 @@ export class LocalesPage implements OnInit {
   }
 
   verLocal(id: number) {
-    window.location.href = `/local/${id}`;
+    this.router.navigate(['/local', id]);
   }
 }

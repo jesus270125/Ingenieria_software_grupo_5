@@ -1,26 +1,25 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router'; // <-- 1. Agregado RouterModule
+import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { addIcons } from 'ionicons'; // Importante para registrar iconos
 import { 
-  IonContent, 
-  IonButton, 
-  IonGrid,  // <-- Nuevo
-  IonRow,   // <-- Nuevo
-  IonCol,   // <-- Nuevo
-  IonIcon   // <-- Nuevo
-} from '@ionic/angular/standalone';
-
-// 2. IMPORTAR HERRAMIENTAS DE ICONOS
-import { addIcons } from 'ionicons';
-import { 
-  storefrontOutline, 
+  notificationsOutline, 
   fastFoodOutline, 
+  chevronForwardCircle, 
+  receiptOutline, 
   personOutline, 
-  personCircle, 
-  logOutOutline, 
-  chevronForwardOutline 
-} from 'ionicons/icons';
+  logOutOutline 
+} from 'ionicons/icons'; // Los iconos específicos que usamos en el HTML
+
+import { 
+  IonHeader, 
+  IonToolbar, 
+  IonButtons, // Agregado
+  IonButton,  // Agregado
+  IonTitle, 
+  IonContent, 
+  IonIcon,    // Agregado
+  IonRippleEffect // Agregado para el efecto al tocar las tarjetas
+} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-home',
@@ -28,39 +27,27 @@ import {
   styleUrls: ['./home.page.scss'],
   standalone: true,
   imports: [
-    CommonModule, 
-    FormsModule,
-    RouterModule, // <-- Importante para que routerLink funcione
-    IonContent, 
+    RouterModule,
+    IonHeader,
+    IonToolbar,
+    IonButtons,
     IonButton,
-    IonGrid,      // <-- Agregados a los imports
-    IonRow, 
-    IonCol, 
-    IonIcon
+    IonTitle,
+    IonContent,
+    IonIcon,
+    IonRippleEffect
   ]
 })
-export class HomePage implements OnInit {
-
-  constructor(private router: Router) { 
-    // 3. REGISTRAR LOS ICONOS DEL DISEÑO
+export class HomePage {
+  constructor() {
+    // Registramos los iconos para poder usarlos en el HTML por su nombre (string)
     addIcons({ 
-      storefrontOutline, 
+      notificationsOutline, 
       fastFoodOutline, 
+      chevronForwardCircle, 
+      receiptOutline, 
       personOutline, 
-      personCircle, 
-      logOutOutline, 
-      chevronForwardOutline 
+      logOutOutline 
     });
-  }
-
-  ngOnInit() {}
-
-  logout() {
-    // Elimina token y datos de sesión
-    localStorage.removeItem('token');
-    localStorage.removeItem('rol');
-    
-    // Redirige al login
-    this.router.navigateByUrl('/login');
   }
 }
