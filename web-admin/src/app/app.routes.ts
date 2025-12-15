@@ -3,7 +3,6 @@ import { LoginComponent } from './pages/login/login';
 import { DashboardComponent } from './pages/dashboard/dashboard';
 import { AdminGuard } from './guards/admin-guard';
 
-// ✅ Carga diferida de componentes standalone
 export const routes: Routes = [
 
   // ✅ Login
@@ -23,11 +22,18 @@ export const routes: Routes = [
     canActivate: [AdminGuard],
     children: [
 
-      // ✅ Página inicial dentro del dashboard
+      // ✅ Redirección desde /admin → /admin/inicio
       {
         path: '',
+        redirectTo: 'inicio',
+        pathMatch: 'full'
+      },
+
+      // ✅ Dashboard principal
+      {
+        path: 'inicio',
         loadComponent: () =>
-          import('./pages/locales/locales').then(c => c.LocalesPage)
+          import('./pages/dashboard/dashboard-home').then(c => c.DashboardHomePage)
       },
 
       // ✅ Locales
