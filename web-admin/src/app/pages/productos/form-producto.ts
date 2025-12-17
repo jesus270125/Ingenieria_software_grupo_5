@@ -1,22 +1,21 @@
-import { Component, ViewEncapsulation } from '@angular/core'; // Agregado ViewEncapsulation
-import { CommonModule } from '@angular/common'; // Agregado CommonModule para la UI
+import { Component, ViewEncapsulation } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router'; // Agregado RouterModule
+import { Router, RouterModule } from '@angular/router';
 import { ProductosService } from '../../services/productos.service';
 
 @Component({
   selector: 'app-form-producto',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule], // Agregados módulos necesarios
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './form-producto.html',
   styleUrls: ['./form-producto.css'],
-  encapsulation: ViewEncapsulation.None // Agregado para heredar estilos globales
+  encapsulation: ViewEncapsulation.None
 })
 export class FormProductoPage {
 
   modoEdicion = false;
   id: number | null = null;
-  sidebarOpen = false; // Agregado: Control del menú lateral
 
   producto = {
     local_id: 0,
@@ -46,27 +45,16 @@ export class FormProductoPage {
   guardar() {
     if (this.modoEdicion) {
       this.api.editar(this.id!, this.producto).subscribe(() => {
-        this.router.navigate(['/locales']);
+        this.router.navigate(['/admin/productos'], {
+          state: { localId: this.producto.local_id }
+        });
       });
     } else {
       this.api.crear(this.producto).subscribe(() => {
-        this.router.navigate(['/locales']);
+        this.router.navigate(['/admin/productos'], {
+          state: { localId: this.producto.local_id }
+        });
       });
     }
-  }
-
-  // --- Agregado: Funciones para la UI (Sidebar y Logout) ---
-
-  toggleMenu() {
-    this.sidebarOpen = !this.sidebarOpen;
-  }
-
-  closeMenu() {
-    this.sidebarOpen = false;
-  }
-
-  logout() {
-    localStorage.clear();
-    this.router.navigate(['/login']);
   }
 }

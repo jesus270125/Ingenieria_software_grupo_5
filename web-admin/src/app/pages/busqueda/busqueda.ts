@@ -1,46 +1,28 @@
-import { Component, ViewEncapsulation } from '@angular/core'; // Agregado ViewEncapsulation
-import { CommonModule } from '@angular/common'; // Agregado CommonModule (incluye NgFor y NgIf)
+import { Component, ViewEncapsulation } from '@angular/core';
+import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
-import { Router, RouterModule } from '@angular/router'; // Agregado Router y RouterModule
+import { RouterModule } from '@angular/router';
 import { SearchService } from '../../services/search.service';
 
 @Component({
   selector: 'app-busqueda',
   standalone: true,
-  imports: [CommonModule, FormsModule, RouterModule], // Agregados módulos de UI y Router
+  imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './busqueda.html',
   styleUrls: ['./busqueda.css'],
-  encapsulation: ViewEncapsulation.None // Agregado para heredar estilos globales
+  encapsulation: ViewEncapsulation.None
 })
 export class BusquedaPage {
 
   nombre = '';
   categoria = '';
   resultados: any[] = [];
-  
-  // --- Agregado: Control del menú lateral ---
-  sidebarOpen = false;
 
-  constructor(private api: SearchService, private router: Router) {}
+  constructor(private api: SearchService) {}
 
   buscar() {
     this.api.buscar(this.nombre, this.categoria).subscribe(res => {
       this.resultados = res;
     });
-  }
-
-  // --- Agregado: Funciones para la UI (Igual al Dashboard) ---
-
-  toggleMenu() {
-    this.sidebarOpen = !this.sidebarOpen;
-  }
-
-  closeMenu() {
-    this.sidebarOpen = false;
-  }
-
-  logout() {
-    localStorage.clear();
-    this.router.navigate(['/login']);
   }
 }

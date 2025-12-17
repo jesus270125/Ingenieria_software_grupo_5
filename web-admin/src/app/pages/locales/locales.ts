@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewEncapsulation } from '@angular/core';
+import { Component, OnInit, ViewEncapsulation, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { LocalesService } from '../../services/locales.service';
@@ -15,11 +15,12 @@ export class LocalesPage implements OnInit {
 
   locales: any[] = [];
   cargando: boolean = true;
-  
-  // --- Agregado: Estado para el menú móvil ---
-  sidebarOpen: boolean = false;
 
-  constructor(private api: LocalesService, private router: Router) {}
+  constructor(
+    private api: LocalesService,
+    private router: Router,
+    private cdr: ChangeDetectorRef
+  ) {}
 
   ngOnInit() {
     this.cargarLocales();
@@ -27,10 +28,12 @@ export class LocalesPage implements OnInit {
 
   cargarLocales() {
     this.cargando = true;
+
     this.api.listar().subscribe({
       next: (res) => {
         this.locales = res;
         this.cargando = false;
+        this.cdr.detectChanges();   // ✅ ESTO SOLUCIONA EL PROBLEMA
       },
       error: (err) => {
         console.error('Error al cargar locales:', err);
@@ -40,26 +43,10 @@ export class LocalesPage implements OnInit {
   }
 
   crear() {
-    this.router.navigate(['/crear-local']);
+    this.router.navigate(['/admin/crear-local']);
   }
 
   editar(local: any) {
-    this.router.navigate(['/editar-local', local.id], { state: local });
-  }
-
-  // --- Agregado: Funciones para la UI (Sidebar y Logout) ---
-
-  toggleMenu() {
-    this.sidebarOpen = !this.sidebarOpen;
-  }
-
-  closeMenu() {
-    this.sidebarOpen = false;
-  }
-
-  logout() {
-    // Limpiar sesión y redirigir
-    localStorage.clear(); 
-    this.router.navigate(['/login']);
+    this.router.navigate(['/admin/editar-local', local.id], { state: local });
   }
 }

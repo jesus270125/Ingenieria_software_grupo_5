@@ -6,7 +6,7 @@ import { HttpClient } from '@angular/common/http';
 })
 export class LocalesService {
 
-  private API = 'http://localhost:4000/locales';
+  private API = 'http://localhost:4000/api/locales';
 
   constructor(private http: HttpClient) {}
 
