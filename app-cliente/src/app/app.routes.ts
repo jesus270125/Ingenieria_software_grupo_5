@@ -11,4 +11,21 @@ export const routes: Routes = [
   { path: 'register', component: RegisterPage },
 
   { path: 'home', component: HomePage, canActivate: [ClienteGuard] },
+  {
+    path: 'locales',
+    loadComponent: () => import('./pages/locales/locales.page').then( m => m.LocalesPage)
+  },
+  {
+    path: 'local',
+    loadComponent: () => import('./pages/local/local.page').then( m => m.LocalPage)
+  },
+  {
+  path: 'locales',
+  loadComponent: () => import('./pages/locales/locales.page').then(m => m.LocalesPage)
+},
+{
+  path: 'local/:id',
+  loadComponent: () => import('./pages/local/local.page').then(m => m.LocalPage)
+},
+
 ];

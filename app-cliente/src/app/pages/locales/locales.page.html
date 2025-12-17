@@ -1,0 +1,86 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar>
+    <ion-title>Restaurantes</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+
+  <!-- Decoración de fondo superior -->
+  <div class="header-background"></div>
+
+  <!-- Búsqueda -->
+  <div class="search-container">
+    <ion-searchbar
+      placeholder="¿Qué se te antoja hoy?"
+      (ionInput)="buscar($event)"
+      animated="true"
+      showCancelButton="focus">
+    </ion-searchbar>
+  </div>
+
+  <!-- Categorías -->
+  <div class="categorias-container">
+    <ion-chip 
+      [class.chip-activo]="categoriaSeleccionada === 'TODOS'"
+      (click)="filtrarCategoria('TODOS')">
+      <ion-label>Todos</ion-label>
+    </ion-chip>
+
+    <ion-chip 
+      *ngFor="let c of categorias" 
+      [class.chip-activo]="categoriaSeleccionada === c"
+      (click)="filtrarCategoria(c)">
+      <ion-label>{{ c }}</ion-label>
+    </ion-chip>
+  </div>
+
+  <!-- Lista de locales -->
+  <ion-list *ngIf="!cargando">
+    
+    <ion-item 
+      *ngFor="let local of filtrados" 
+      (click)="verLocal(local.id)" 
+      button 
+      detail="false" 
+      lines="none" 
+      class="restaurante-item">
+      
+      <ion-thumbnail slot="start">
+        <img [src]="local.imagen" [alt]="local.nombre" onerror="this.src='assets/icon/favicon.png'">
+      </ion-thumbnail>
+
+      <ion-label>
+        <h2 class="restaurante-nombre">{{ local.nombre }}</h2>
+        <p class="restaurante-categoria">{{ local.categoria }}</p>
+
+        <div class="estado-container">
+          <ion-icon 
+            [name]="local.abierto ? 'ellipse' : 'ellipse-outline'" 
+            [color]="local.abierto ? 'success' : 'danger'"
+            style="font-size: 8px; margin-right: 6px;">
+          </ion-icon>
+          <span [class]="local.abierto ? 'texto-abierto' : 'texto-cerrado'">
+            {{ local.abierto ? 'Abierto' : 'Cerrado' }}
+          </span>
+        </div>
+      </ion-label>
+
+      <!-- Flecha personalizada -->
+      <ion-icon slot="end" name="chevron-forward" color="primary"></ion-icon>
+
+    </ion-item>
+  </ion-list>
+
+  <!-- Mensaje de "Sin Resultados" -->
+  <div *ngIf="!cargando && filtrados.length === 0" class="sin-resultados">
+    <ion-icon name="search-outline"></ion-icon>
+    <p>No encontramos restaurantes con ese nombre</p>
+  </div>
+
+  <!-- Loader -->
+  <div *ngIf="cargando" class="loader-container">
+    <ion-spinner name="crescent" color="primary"></ion-spinner>
+  </div>
+
+</ion-content>

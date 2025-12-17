@@ -1,20 +1,53 @@
-import { Component, OnInit } from '@angular/core';
-import { CommonModule } from '@angular/common';
-import { FormsModule } from '@angular/forms';
-import { IonContent, IonHeader, IonTitle, IonToolbar } from '@ionic/angular/standalone';
+import { Component } from '@angular/core';
+import { RouterModule } from '@angular/router';
+import { addIcons } from 'ionicons'; // Importante para registrar iconos
+import { 
+  notificationsOutline, 
+  fastFoodOutline, 
+  chevronForwardCircle, 
+  receiptOutline, 
+  personOutline, 
+  logOutOutline 
+} from 'ionicons/icons'; // Los iconos específicos que usamos en el HTML
+
+import { 
+  IonHeader, 
+  IonToolbar, 
+  IonButtons, // Agregado
+  IonButton,  // Agregado
+  IonTitle, 
+  IonContent, 
+  IonIcon,    // Agregado
+  IonRippleEffect // Agregado para el efecto al tocar las tarjetas
+} from '@ionic/angular/standalone';
 
 @Component({
   selector: 'app-home',
   templateUrl: './home.page.html',
   styleUrls: ['./home.page.scss'],
   standalone: true,
-  imports: [IonContent, IonHeader, IonTitle, IonToolbar, CommonModule, FormsModule]
+  imports: [
+    RouterModule,
+    IonHeader,
+    IonToolbar,
+    IonButtons,
+    IonButton,
+    IonTitle,
+    IonContent,
+    IonIcon,
+    IonRippleEffect
+  ]
 })
-export class HomePage implements OnInit {
-
-  constructor() { }
-
-  ngOnInit() {
+export class HomePage {
+  constructor() {
+    // Registramos los iconos para poder usarlos en el HTML por su nombre (string)
+    addIcons({ 
+      notificationsOutline, 
+      fastFoodOutline, 
+      chevronForwardCircle, 
+      receiptOutline, 
+      personOutline, 
+      logOutOutline 
+    });
   }
-
 }
