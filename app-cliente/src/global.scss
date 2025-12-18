@@ -32,6 +32,19 @@
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
+/* Disable automatic dark palette to force app light theme */
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import '@ionic/angular/css/palettes/dark.system.css';
+/* @import '@ionic/angular/css/palettes/dark.system.css'; */
+
+/* Force light background and text globally to avoid dark-mode overrides */
+html, body, ion-app, ion-content {
+	background: #ffffff !important;
+	color: #000000 !important;
+}
+
+/* Ensure Ionic CSS variables use white background */
+:root {
+	--ion-background-color: #ffffff !important;
+	--ion-color-light: #ffffff !important;
+}

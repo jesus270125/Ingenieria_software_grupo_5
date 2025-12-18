@@ -1,0 +1,23 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Historial de pedidos</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item *ngFor="let p of pedidos">
+      <ion-label>
+        <h3>Pedido #{{ p.id || p._id }}</h3>
+        <p>{{ (p.createdAt || p.fecha) | date:'short' }}</p>
+        <p>Total: S/ {{ (p.total || p.subtotal) | number:'1.2-2' }}</p>
+      </ion-label>
+      <ion-button slot="end" fill="outline" [routerLink]="['/pedido', p.id || p._id]">Ver</ion-button>
+    </ion-item>
+  </ion-list>
+
+  <div *ngIf="!pedidos.length" class="center">No hay pedidos</div>
+</ion-content>

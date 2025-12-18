@@ -1,0 +1,35 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Carrito</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ng-container *ngIf="(items$ | async) as items">
+    <ion-list *ngIf="items.length; else empty">
+      <ion-item *ngFor="let it of items">
+        <ion-label>
+          <h3>{{ it.product.nombre || it.product.name }}</h3>
+          <p>{{ (it.product.precio || it.product.price) | number:'1.2-2' }} x {{ it.quantity }}</p>
+        </ion-label>
+        <ion-button fill="clear" (click)="decrementar(it)">-</ion-button>
+        <ion-button fill="clear" (click)="incrementar(it)">+</ion-button>
+        <ion-button color="danger" fill="clear" (click)="eliminar(it)">Eliminar</ion-button>
+      </ion-item>
+    </ion-list>
+
+    <ion-item lines="none">
+      <ion-label>Subtotal</ion-label>
+      <ion-note slot="end">S/ {{ subtotal() | number:'1.2-2' }}</ion-note>
+    </ion-item>
+
+    <ion-button expand="block" (click)="elegirMetodo()" [disabled]="items.length===0">Elegir método de pago</ion-button>
+  </ng-container>
+
+  <ng-template #empty>
+    <div class="center">No hay productos en el carrito</div>
+  </ng-template>
+</ion-content>

@@ -1,11 +1,16 @@
 import { Component } from '@angular/core';
-import { IonApp, IonRouterOutlet } from '@ionic/angular/standalone';
+import { IonicModule } from '@ionic/angular';
+import { CommonModule } from '@angular/common';
+import { CarritoService } from './services/carrito.service';
+import { CartFabComponent } from './components/cart-fab/cart-fab.component';
 
 @Component({
   selector: 'app-root',
   templateUrl: 'app.component.html',
-  imports: [IonApp, IonRouterOutlet],
+  imports: [CommonModule, IonicModule, CartFabComponent],
 })
 export class AppComponent {
-  constructor() {}
+  items$ = this.carrito.items$;
+
+  constructor(private carrito: CarritoService) {}
 }

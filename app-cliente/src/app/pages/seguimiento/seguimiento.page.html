@@ -1,0 +1,11 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-title>Seguimiento</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <p>Tu pedido fue creado correctamente.</p>
+  <pre *ngIf="pedido">{{ pedido | json }}</pre>
+  <ion-button expand="block" routerLink="/historial">Ir al historial</ion-button>
+</ion-content>

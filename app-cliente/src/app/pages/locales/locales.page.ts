@@ -1,14 +1,11 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router } from '@angular/router';
+import { IonicModule } from '@ionic/angular';
 import { LocalesService } from '../../services/locales';
-import { addIcons } from 'ionicons'; // Agregado: Para registrar iconos
-import { searchOutline, ellipse, ellipseOutline, chevronForward } from 'ionicons/icons'; // Agregado: Iconos específicos
-import {
-  IonLabel, IonToolbar, IonHeader, IonTitle, IonContent,
-  IonSearchbar, IonChip, IonList, IonItem, IonThumbnail, IonSpinner,
-  IonIcon // Agregado: Componente de icono
-} from "@ionic/angular/standalone";
+import { addIcons } from 'ionicons';
+import { searchOutline, ellipse, ellipseOutline, chevronForward } from 'ionicons/icons';
+// Use IonicModule to provide Ionic components in this standalone page
 
 @Component({
   selector: 'app-locales',
@@ -17,18 +14,7 @@ import {
   standalone: true,
   imports: [
     CommonModule,
-    IonHeader,
-    IonToolbar,
-    IonTitle,
-    IonContent,
-    IonLabel,
-    IonSearchbar,
-    IonChip,
-    IonList,
-    IonItem,
-    IonThumbnail,
-    IonSpinner,
-    IonIcon // Agregado
+    IonicModule
   ]
 })
 export class LocalesPage implements OnInit {
@@ -37,13 +23,12 @@ export class LocalesPage implements OnInit {
   filtrados: any[] = [];
   categorias: any[] = [];
   cargando = true;
-  categoriaSeleccionada: string = 'TODOS'; // Agregado: Para controlar el chip activo (morado)
+  categoriaSeleccionada: string = 'TODOS';
 
   constructor(
     private localesService: LocalesService,
     private router: Router
   ) {
-    // Agregado: Registrar los iconos usados en el HTML
     addIcons({ searchOutline, ellipse, ellipseOutline, chevronForward });
   }
 
@@ -53,10 +38,15 @@ export class LocalesPage implements OnInit {
 
   cargarLocales() {
     this.localesService.getLocales().subscribe((resp: any) => {
-      this.locales = resp.data;
+
+      // 🔥 Backend devuelve array directo
+      // resp = [ {...}, {...} ]
+      this.locales = Array.isArray(resp) ? resp : [];
+
+      // Copia segura
       this.filtrados = [...this.locales];
 
-      // Generar categorías únicas
+      // Categorías únicas
       this.categorias = [...new Set(this.locales.map(l => l.categoria))];
 
       this.cargando = false;
@@ -68,8 +58,6 @@ export class LocalesPage implements OnInit {
 
     if (texto.trim() === '') {
       this.filtrados = [...this.locales];
-      // Opcional: Si quieres mantener el filtro de categoría al limpiar búsqueda,
-      // podrías llamar a this.filtrarCategoria(this.categoriaSeleccionada) aquí.
       return;
     }
 
@@ -79,7 +67,7 @@ export class LocalesPage implements OnInit {
   }
 
   filtrarCategoria(cat: string) {
-    this.categoriaSeleccionada = cat; // Agregado: Actualizamos la selección visual
+    this.categoriaSeleccionada = cat;
 
     if (cat === 'TODOS') {
       this.filtrados = [...this.locales];
