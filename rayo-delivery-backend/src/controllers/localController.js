@@ -72,3 +72,16 @@ exports.update = async (req, res) => {
     }
 };
 
+// Obtener local por id (público)
+exports.getById = async (req, res) => {
+    try {
+        const id = req.params.id;
+        const local = await Local.getLocalById(id);
+        if (!local) return res.status(404).json({ error: 'Local no encontrado' });
+        res.json(local);
+    } catch (err) {
+        console.error(err);
+        res.status(500).json({ error: 'Error al obtener local' });
+    }
+};
+
