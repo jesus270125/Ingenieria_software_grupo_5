@@ -10,5 +10,7 @@ router.patch("/:id", auth, verifyRole("administrador"), controller.update);
 
 // Público
 router.get("/", controller.list);
+// Obtener local por id
+router.get("/:id", controller.getById);
 
 module.exports = router;

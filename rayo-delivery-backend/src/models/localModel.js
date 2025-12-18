@@ -30,6 +30,16 @@ exports.getLocales = () => {
     });
 };
 
+exports.getLocalById = (id) => {
+    return new Promise((resolve, reject) => {
+        const sql = `SELECT * FROM locales WHERE id = ?`;
+        db.query(sql, [id], (err, results) => {
+            if (err) reject(err);
+            else resolve(results && results.length ? results[0] : null);
+        });
+    });
+};
+
 exports.updateLocal = (id, data) => {
     return new Promise((resolve, reject) => {
         const sql = `
