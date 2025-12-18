@@ -1,5 +1,8 @@
 <ion-header>
   <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/locales"></ion-back-button>
+    </ion-buttons>
     <ion-title>{{ local?.nombre }}</ion-title>
   </ion-toolbar>
 </ion-header>
@@ -37,6 +40,12 @@
 
       <ion-card-content>
         {{ p.descripcion }}
+
+        <ion-row>
+          <ion-col>
+            <ion-button expand="block" color="primary" (click)="agregarProducto(p)">Agregar</ion-button>
+          </ion-col>
+        </ion-row>
       </ion-card-content>
 
     </ion-card>
@@ -45,3 +54,24 @@
   <ion-spinner *ngIf="cargando" style="display:block; margin:auto; margin-top:40px;"></ion-spinner>
 
 </ion-content>
+
+<ng-container *ngIf="!cargando && !local">
+  <ion-content class="ion-padding">
+    <div class="center">
+      <h3>No se encontró el local</h3>
+      <p *ngIf="errorMsg">{{ errorMsg }}</p>
+      <ion-button expand="block" routerLink="/locales">Volver a locales</ion-button>
+    </div>
+  </ion-content>
+</ng-container>
+
+<!-- FAB carrito -->
+<ion-fab vertical="bottom" horizontal="end" slot="fixed">
+  <ion-fab-button routerLink="/carrito" color="tertiary">
+    <ion-icon name="cart"></ion-icon>
+    <ion-badge *ngIf="(items$ | async)?.length">{{ (items$ | async)?.length }}</ion-badge>
+  </ion-fab-button>
+</ion-fab>
+
+<!-- Toast simple -->
+<ion-toast [isOpen]="showToast" message="{{ toastMsg }}" duration="1600"></ion-toast>

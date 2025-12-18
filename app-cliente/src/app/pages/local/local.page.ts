@@ -1,11 +1,13 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, RouterModule } from '@angular/router';
 import { LocalesService } from '../../services/locales';
+import { CarritoService } from '../../services/carrito.service';
 import { CommonModule } from '@angular/common';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonSearchbar, IonList,
   IonCard, IonCardHeader, IonCardTitle, IonCardSubtitle, IonCardContent,
-  IonSpinner
+  IonSpinner, IonButton, IonFab, IonFabButton, IonIcon, IonBadge, IonToast, IonRow, IonCol,
+  IonButtons, IonBackButton
 } from "@ionic/angular/standalone";
 
 @Component({
@@ -13,8 +15,9 @@ import {
   templateUrl: './local.page.html',
   styleUrls: ['./local.page.scss'],
   standalone: true,
-  imports: [
+  imports: [IonButton,
     CommonModule,
+    RouterModule,
     IonHeader,
     IonToolbar,
     IonTitle,
@@ -26,7 +29,16 @@ import {
     IonCardTitle,
     IonCardSubtitle,
     IonCardContent,
-    IonSpinner
+    IonSpinner,
+    IonFab,
+    IonFabButton,
+    IonIcon,
+    IonBadge,
+    IonToast,
+    IonRow,
+    IonCol,
+    IonButtons,
+    IonBackButton
   ]
 })
 export class LocalPage implements OnInit {
@@ -36,10 +48,15 @@ export class LocalPage implements OnInit {
   productos: any[] = [];
   productosOriginales: any[] = [];
   cargando = true;
+  errorMsg: string | null = null;
+  items$ = this.carrito.items$;
+  showToast = false;
+  toastMsg = '';
 
   constructor(
     private route: ActivatedRoute,
-    private localesService: LocalesService
+    private localesService: LocalesService,
+    private carrito: CarritoService
   ) {}
 
   ngOnInit() {
@@ -49,16 +66,47 @@ export class LocalPage implements OnInit {
   }
 
   cargarLocal() {
-    this.localesService.getLocalById(this.localId).subscribe((resp: any) => {
-      this.local = resp?.data;
+    this.localesService.getLocalById(this.localId).subscribe({
+      next: (resp: any) => {
+        // soportar wrapper { data: {...} }
+        if (resp && resp.data) {
+          this.local = resp.data;
+        } else if (resp && typeof resp === 'object') {
+          this.local = resp;
+        } else {
+          this.local = null;
+        }
+      },
+      error: (err) => {
+        console.error('Error cargando local', err);
+        this.local = null;
+        this.errorMsg = err?.message || 'Error al cargar el local';
+      }
     });
   }
 
   cargarProductos() {
-    this.localesService.getProductosByLocal(this.localId).subscribe((resp: any) => {
-      this.productos = resp?.data || [];
-      this.productosOriginales = [...this.productos];
-      this.cargando = false;
+    this.localesService.getProductosByLocal(this.localId).subscribe({
+      next: (resp: any) => {
+        // aceptar tanto array directo como wrapper { data: [...] }
+        if (Array.isArray(resp)) {
+          this.productos = resp;
+        } else if (resp && Array.isArray(resp.data)) {
+          this.productos = resp.data;
+        } else {
+          this.productos = [];
+        }
+
+        this.productosOriginales = [...this.productos];
+        this.cargando = false;
+      },
+      error: (err) => {
+        console.error('Error cargando productos', err);
+        this.productos = [];
+        this.productosOriginales = [];
+        this.cargando = false;
+        this.errorMsg = err?.message || 'Error al cargar los productos';
+      }
     });
   }
 
@@ -73,5 +121,12 @@ export class LocalPage implements OnInit {
     this.productos = this.productosOriginales.filter(p =>
       p.nombre.toLowerCase().includes(texto)
     );
+  }
+
+  agregarProducto(product: any) {
+    this.carrito.addProduct(product, 1);
+    this.toastMsg = `${product.nombre || product.name || 'Producto'} agregado al carrito`;
+    this.showToast = true;
+    setTimeout(() => this.showToast = false, 1800);
   }
 }

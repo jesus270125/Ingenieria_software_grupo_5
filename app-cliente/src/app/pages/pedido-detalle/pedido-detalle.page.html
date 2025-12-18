@@ -1,0 +1,34 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/historial"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle del pedido</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div *ngIf="pedido; else loading">
+    <h3>Pedido #{{ pedido.id || pedido._id }}</h3>
+    <p>Fecha: {{ (pedido.createdAt || pedido.fecha) | date:'short' }}</p>
+    <p>Método: {{ pedido.metodoPago || pedido.metodo }}</p>
+
+    <ion-list>
+      <ion-item *ngFor="let it of pedido.items || pedido.detalle || []">
+        <ion-label>
+          <h4>{{ it.producto?.nombre || it.nombre || it.product?.name }}</h4>
+          <p>{{ it.cantidad || it.quantity }} x S/ {{ (it.precio || it.producto?.precio || it.product?.price) | number:'1.2-2' }}</p>
+        </ion-label>
+      </ion-item>
+    </ion-list>
+
+    <ion-item>
+      <ion-label>Total</ion-label>
+      <ion-note slot="end">S/ {{ pedido.total || pedido.subtotal | number:'1.2-2' }}</ion-note>
+    </ion-item>
+  </div>
+
+  <ng-template #loading>
+    <div class="center">Cargando pedido...</div>
+  </ng-template>
+</ion-content>

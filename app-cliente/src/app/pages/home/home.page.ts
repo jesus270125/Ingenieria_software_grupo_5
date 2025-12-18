@@ -15,7 +15,6 @@ import {
   IonToolbar, 
   IonButtons, // Agregado
   IonButton,  // Agregado
-  IonTitle, 
   IonContent, 
   IonIcon,    // Agregado
   IonRippleEffect // Agregado para el efecto al tocar las tarjetas
@@ -32,7 +31,6 @@ import {
     IonToolbar,
     IonButtons,
     IonButton,
-    IonTitle,
     IonContent,
     IonIcon,
     IonRippleEffect
