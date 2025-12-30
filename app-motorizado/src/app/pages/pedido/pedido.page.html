@@ -1,0 +1,62 @@
+<ion-header>
+    <ion-toolbar>
+        <ion-buttons slot="start">
+            <ion-back-button defaultHref="/home"></ion-back-button>
+        </ion-buttons>
+        <ion-title>Pedido #{{ pedido?.id }}</ion-title>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding" *ngIf="pedido">
+    <ion-card>
+        <ion-card-header>
+            <ion-card-subtitle>Restaurante</ion-card-subtitle>
+            <ion-card-title>{{ pedido.restaurante }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+            {{ pedido.direccion_restaurante }}
+        </ion-card-content>
+    </ion-card>
+
+    <ion-card>
+        <ion-card-header>
+            <ion-card-subtitle>Cliente</ion-card-subtitle>
+            <ion-card-title>{{ pedido.cliente }}</ion-card-title>
+        </ion-card-header>
+        <ion-card-content>
+            {{ pedido.direccion_cliente }}
+        </ion-card-content>
+    </ion-card>
+
+    <ion-list>
+        <ion-item *ngFor="let item of pedido.detalles">
+            <ion-label>{{ item.cantidad }}x {{ item.producto }}</ion-label>
+            <ion-note slot="end">${{ item.precio }}</ion-note>
+        </ion-item>
+    </ion-list>
+
+    <div class="ion-text-center ion-margin-top">
+        <h3>Estado Actual: {{ pedido.estado }}</h3>
+
+        <ion-button expand="block" (click)="irAlMapa()">
+            <ion-icon name="map-outline" slot="start"></ion-icon>
+            Ver Ruta en Mapa
+        </ion-button>
+
+        <!-- Status progression buttons -->
+        <ion-button expand="block" color="secondary" *ngIf="pedido.estado === 'asignado'"
+            (click)="cambiarEstado('en_camino_restaurante')">
+            Ir al Restaurante
+        </ion-button>
+
+        <ion-button expand="block" color="warning" *ngIf="pedido.estado === 'en_camino_restaurante'"
+            (click)="cambiarEstado('en_camino_cliente')">
+            Recogido - Ir al Cliente
+        </ion-button>
+
+        <ion-button expand="block" color="success" *ngIf="pedido.estado === 'en_camino_cliente'"
+            (click)="cambiarEstado('entregado')">
+            Confirmar Entrega
+        </ion-button>
+    </div>
+</ion-content>
