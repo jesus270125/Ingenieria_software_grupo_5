@@ -1,0 +1,66 @@
+<div class="breadcrumb">
+    Panel / <strong>Historial de Catálogo</strong>
+</div>
+
+<div class="page-header">
+    <h1 class="page-title">Historial de Cambios</h1>
+    <p style="color: var(--text-muted); margin-top: 5px;">
+        Registro completo de movimientos y modificaciones en el sistema.
+    </p>
+</div>
+
+<div class="card">
+    <div class="table-responsive">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Tipo de Acción</th>
+                    <th>ID Referencia</th>
+                    <th>Descripción del Cambio</th>
+                    <th>Usuario Responsable</th>
+                    <th>Fecha y Hora</th>
+                </tr>
+            </thead>
+            <tbody>
+
+                <tr *ngFor="let v of versiones">
+                    <td>
+                        <span class="badge-action"
+                            [class.create]="v.tipo === 'CREACION' || v.tipo === 'ALTA'"
+                            [class.update]="v.tipo === 'EDICION' || v.tipo === 'MODIFICACION'"
+                            [class.delete]="v.tipo === 'ELIMINACION' || v.tipo === 'BAJA'">
+                            {{ v.tipo }}
+                        </span>
+                    </td>
+
+                    <td>
+                        <span class="ref-id">#{{ v.referencia_id }}</span>
+                    </td>
+
+                    <td class="desc-cell">{{ v.descripcion }}</td>
+
+                    <td>
+                        <div class="user-cell">
+                            <div class="user-icon-small">
+                                <svg xmlns="http://www.w3.org/2000/svg" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"></path>
+                                    <circle cx="12" cy="7" r="4"></circle>
+                                </svg>
+                            </div>
+                            {{ v.usuario }}
+                        </div>
+                    </td>
+
+                    <td class="date-cell">{{ v.fecha }}</td>
+                </tr>
+
+                <tr *ngIf="versiones.length === 0">
+                    <td colspan="5" class="empty-state">
+                        No hay registros en el historial.
+                    </td>
+                </tr>
+
+            </tbody>
+        </table>
+    </div>
+</div>
