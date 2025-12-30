@@ -1,0 +1,189 @@
+// Forzamos las variables localmente para ignorar el Modo Oscuro del sistema
+:host {
+  --ion-color-primary: #7e57c2;
+  --ion-color-primary-rgb: 126, 87, 194;
+  --ion-color-primary-contrast: #ffffff;
+  
+  // Fondo explícito (Gris/Lila muy suave)
+  --app-bg-color: #f3f0f9;
+}
+
+// Fondo general de la página - FORZADO
+ion-content {
+  --background: var(--app-bg-color);
+  --color: #333333; // Forzamos texto oscuro para que no salga blanco por el modo oscuro
+  background: var(--app-bg-color);
+}
+
+ion-toolbar {
+  --background: var(--ion-color-primary);
+  --color: #ffffff;
+}
+
+// --- Decoración Superior ---
+.header-background {
+  background: var(--ion-color-primary);
+  height: 25px;
+  border-bottom-left-radius: 25px;
+  border-bottom-right-radius: 25px;
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 0;
+}
+
+// --- Buscador ---
+.search-container {
+  position: relative;
+  z-index: 1;
+  padding: 0 10px;
+  margin-top: -5px;
+
+  ion-searchbar {
+    --background: #ffffff;
+    --color: #333333; // Texto oscuro
+    --icon-color: var(--ion-color-primary);
+    --placeholder-color: #666;
+    --box-shadow: 0 4px 10px rgba(0,0,0,0.08);
+    border-radius: 10px;
+    padding-bottom: 0;
+  }
+}
+
+// --- Categorías (Chips) ---
+.categorias-container {
+  padding: 15px;
+  display: flex;
+  overflow-x: auto;
+  gap: 10px;
+  scroll-behavior: smooth;
+  
+  -ms-overflow-style: none;
+  scrollbar-width: none;
+  
+  &::-webkit-scrollbar {
+    display: none;
+  }
+
+  ion-chip {
+    font-weight: 500;
+    white-space: nowrap;
+    border: 1px solid transparent;
+    background: #ffffff;
+    color: #666666; // Texto gris oscuro
+    transition: all 0.3s ease;
+
+    &.chip-activo {
+      background: var(--ion-color-primary) !important;
+      color: white !important;
+      border-color: var(--ion-color-primary) !important;
+      transform: scale(1.05);
+      box-shadow: 0 2px 6px rgba(126, 87, 194, 0.4);
+    }
+  }
+}
+
+// --- Lista de Restaurantes ---
+ion-list {
+  background: transparent;
+  padding-top: 5px;
+  padding-bottom: 20px;
+}
+
+.restaurante-item {
+  --background: #ffffff; // Fondo blanco forzado
+  --color: #333333;      // Texto oscuro forzado
+  --padding-start: 16px;
+  --inner-padding-end: 16px;
+  
+  margin-bottom: 12px; 
+  margin-left: 12px;
+  margin-right: 12px;
+  
+  border-radius: 16px;
+  box-shadow: 0 4px 15px rgba(126, 87, 194, 0.08);
+  overflow: hidden;
+
+  ion-thumbnail {
+    width: 75px;
+    height: 75px;
+    border-radius: 12px;
+    overflow: hidden;
+    margin-right: 15px;
+    background-color: #f0f0f0;
+    
+    img {
+      object-fit: cover;
+      width: 100%;
+      height: 100%;
+    }
+  }
+
+  ion-label {
+    margin-top: 12px;
+    margin-bottom: 12px;
+
+    .restaurante-nombre {
+      font-weight: 800;
+      font-size: 1.1rem;
+      margin-bottom: 4px;
+      color: #333333; // Aseguramos negro
+    }
+
+    .restaurante-categoria {
+      font-size: 0.75rem;
+      font-weight: 600;
+      letter-spacing: 0.8px;
+      text-transform: uppercase;
+      color: var(--ion-color-primary);
+      margin-bottom: 8px;
+    }
+  }
+}
+
+// --- Indicador de Estado ---
+.estado-container {
+  display: flex; 
+  align-items: center; 
+  font-size: 0.8rem;
+  background: #f8f9fa;
+  color: #333; // Texto base oscuro
+  padding: 4px 10px;
+  border-radius: 20px;
+  width: fit-content;
+
+  .texto-abierto { 
+    color: var(--ion-color-success); 
+    font-weight: 700; 
+  }
+  
+  .texto-cerrado { 
+    color: var(--ion-color-danger); 
+    font-weight: 700; 
+  }
+}
+
+// --- Estados Vacíos ---
+.sin-resultados {
+  text-align: center;
+  margin-top: 60px;
+  color: #666666; // Gris oscuro
+  
+  ion-icon {
+    font-size: 64px;
+    margin-bottom: 15px;
+    opacity: 0.5;
+  }
+  
+  p {
+    font-size: 1.1rem;
+    font-weight: 500;
+  }
+}
+
+.loader-container {
+  display: flex;
+  justify-content: center;
+  padding-top: 50px;
+}

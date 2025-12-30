@@ -1,0 +1,39 @@
+<ion-header>
+    <ion-toolbar color="primary">
+        <ion-title>Mis Pedidos</ion-title>
+        <ion-buttons slot="end">
+            <ion-button (click)="logout()">
+                <ion-icon name="log-out-outline"></ion-icon>
+            </ion-button>
+        </ion-buttons>
+    </ion-toolbar>
+</ion-header>
+
+<ion-content>
+    <ion-refresher slot="fixed" (ionRefresh)="doRefresh($event)">
+        <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+
+    <ion-item>
+        <ion-label>Disponible para entregas</ion-label>
+        <ion-toggle [checked]="isAvailable" (ionChange)="toggleAvailability($event)"></ion-toggle>
+    </ion-item>
+
+    <ion-list>
+        <ion-list-header>
+            <ion-label>Pedidos Asignados</ion-label>
+        </ion-list-header>
+
+        <ion-item *ngFor="let p of pedidos" button (click)="verPedido(p.id)">
+            <ion-label>
+                <h2>Pedido #{{ p.id }}</h2>
+                <p>{{ p.restaurante }} ➔ {{ p.cliente }}</p>
+                <p>Status: <ion-text color="secondary">{{ p.estado }}</ion-text></p>
+            </ion-label>
+        </ion-item>
+
+        <ion-item *ngIf="pedidos.length === 0">
+            <ion-label class="ion-text-center">No tienes pedidos asignados</ion-label>
+        </ion-item>
+    </ion-list>
+</ion-content>

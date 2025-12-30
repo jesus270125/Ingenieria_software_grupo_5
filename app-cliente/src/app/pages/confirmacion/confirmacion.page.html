@@ -1,0 +1,31 @@
+<ion-header>
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/carrito"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Confirmación</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-list>
+    <ion-item *ngFor="let it of items">
+      <ion-label>
+        <h3>{{ it.product.nombre || it.product.name }}</h3>
+        <p>{{ it.quantity }} x S/ {{ (it.product.precio || it.product.price) | number:'1.2-2' }}</p>
+      </ion-label>
+    </ion-item>
+  </ion-list>
+
+  <ion-item>
+    <ion-label>Método de pago</ion-label>
+    <ion-note slot="end">{{ metodo || 'No seleccionado' }}</ion-note>
+  </ion-item>
+
+  <ion-item lines="none">
+    <ion-label>Total</ion-label>
+    <ion-note slot="end">S/ {{ subtotal() | number:'1.2-2' }}</ion-note>
+  </ion-item>
+
+  <ion-button expand="block" (click)="confirmar()">Confirmar pedido</ion-button>
+</ion-content>
