@@ -3,64 +3,73 @@ const bcrypt = require('bcrypt');
 const jwt = require('jsonwebtoken');
 const userModel = require('../models/userModel');
 
-exports.registerUser = (req, res) => {
+exports.registerUser = async (req, res) => {
     const { nombre, dni_ruc, telefono, direccion, correo, password, rol, foto, placa, licencia } = req.body;
 
     if (!correo || !password || !rol)
         return res.status(400).json({ error: "Faltan datos obligatorios" });
 
-    userModel.findByEmail(correo, (err, results) => {
-        if (results.length > 0)
+    try {
+        const existingUser = await userModel.findByEmail(correo);
+        if (existingUser)
             return res.status(400).json({ error: "El correo ya está registrado" });
 
         // Encriptar contraseña
-        bcrypt.hash(password, 10, (err, hash) => {
-            const data = {
-                nombre, dni_ruc, telefono, direccion, correo,
-                password: hash, rol, foto, placa, licencia
-            };
+        const hash = await bcrypt.hash(password, 10);
 
-            userModel.createUser(data, (err, result) => {
-                if (err) {
-                    return res.status(500).json({ error: "Error en BD" });
-                }
-                return res.json({ message: "Usuario registrado correctamente" });
-            });
-        });
-    });
+        const data = {
+            nombre, dni_ruc, telefono, direccion, correo,
+            password: hash, rol, foto, placa, licencia
+        };
+
+        await userModel.createUser(data);
+        return res.json({ message: "Usuario registrado correctamente" });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Error en el servidor" });
+    }
 };
-exports.login = (req, res) => {
+
+exports.login = async (req, res) => {
     const { correo, password } = req.body;
 
     if (!correo || !password)
         return res.status(400).json({ error: "Correo y contraseña son obligatorios" });
 
-    userModel.findByEmail(correo, (err, results) => {
-        if (results.length === 0)
+    try {
+        const user = await userModel.findByEmail(correo);
+        if (!user)
             return res.status(404).json({ error: "Usuario no encontrado" });
 
-        const user = results[0];
+        const ok = await bcrypt.compare(password, user.password);
+        if (!ok)
+            return res.status(400).json({ error: "Contraseña incorrecta" });
 
-        bcrypt.compare(password, user.password, (err, ok) => {
-            if (!ok)
-                return res.status(400).json({ error: "Contraseña incorrecta" });
+        // Generar token
+        const token = jwt.sign(
+            { id: user.id, rol: user.rol },
+            process.env.JWT_SECRET,
+            { expiresIn: "7d" }
+        );
 
-            // Generar token
-            const token = jwt.sign(
-                { id: user.id, rol: user.rol },
-                process.env.JWT_SECRET,
-                { expiresIn: "7d" }
-            );
-
-            return res.json({
-                message: "Login correcto",
-                token,
+        return res.json({
+            message: "Login correcto",
+            token,
+            usuario: {
+                id: user.id,
                 rol: user.rol,
-                nombre: user.nombre
-            });
+                nombre: user.nombre,
+                correo: user.correo
+            }
         });
-    });
+
+    } catch (err) {
+        console.error(err);
+        return res.status(500).json({ error: "Error en el servidor" });
+    }
 };
+
 
 const nodemailer = require('nodemailer');
 
