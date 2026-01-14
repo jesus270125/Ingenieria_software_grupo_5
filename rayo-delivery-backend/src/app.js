@@ -1,21 +1,34 @@
- require('dotenv').config();
+require("dotenv").config();
+console.log("JWT_SECRET cargado:", process.env.JWT_SECRET);
 
-const port = process.env.PORT;
-console.log("Servidor corriendo en el puerto:", port);
+const express = require("express");
+const cors = require("cors");
 
-const express = require('express');
 const app = express();
-const cors = require('cors');
-require('dotenv').config();
-require('./config/db');
 
-app.use(cors());
 app.use(express.json());
+app.use(cors());
 
-app.use('/api/auth', require('./routes/authRoutes'));
+// Importar rutas
+const localRoutes = require("./routes/localRoutes");
+const productoRoutes = require("./routes/productRoutes");
+const authRoutes = require("./routes/authRoutes");
+const pedidoRoutes = require("./routes/pedidoRoutes");
+const motorizadoRoutes = require("./routes/motorizadoRoutes");
+const searchRoutes = require("./routes/searchRoutes");
+const versionRoutes = require("./routes/versionRoutes");
 
-app.listen(process.env.PORT, () => {
-    console.log("✔ Servidor iniciado en el puerto " + process.env.PORT);
+
+// Montar rutas con prefijo /api
+app.use("/api/locales", localRoutes);
+app.use("/api/productos", productoRoutes);
+app.use("/api/auth", authRoutes);
+app.use("/api/pedidos", pedidoRoutes);
+app.use("/api/motorizado", motorizadoRoutes);
+app.use("/buscar", searchRoutes);
+app.use("/versiones", versionRoutes);
+
+const PORT = 4000;
+app.listen(PORT, () => {
+  console.log(`Servidor corriendo en http://localhost:${PORT}`);
 });
-
-app.use('/api/protected', require('./routes/protectedRoutes'));
