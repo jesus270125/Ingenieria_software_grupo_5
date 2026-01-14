@@ -3,7 +3,11 @@
 // The list of file replacements can be found in `angular.json`.
 
 export const environment = {
-  production: false
+  production: false,
+  apiUrl: 'http://localhost:4000/api/motorizado',
+  socketUrl: 'http://localhost:4000'
+  ,
+  googleMapsApiKey: '' // Pon aquí tu API Key de Google Maps en desarrollo
 };
 
 /*

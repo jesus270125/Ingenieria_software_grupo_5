@@ -1,20 +1,22 @@
 import { Component, OnInit, ViewEncapsulation, OnDestroy, ChangeDetectorRef } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { Router, RouterModule, ActivatedRoute } from '@angular/router';
+import { FormsModule } from '@angular/forms';
 import { ProductosService } from '../../services/productos.service';
 import { Subscription } from 'rxjs';
 
 @Component({
   selector: 'app-productos',
   standalone: true,
-  imports: [CommonModule, RouterModule],
+  imports: [CommonModule, RouterModule, FormsModule],
   templateUrl: './productos.html',
-  styleUrls: ['./productos.css'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./productos.css']
 })
 export class ProductosPage implements OnInit, OnDestroy {
 
   productos: any[] = [];
+  productosFiltrados: any[] = [];
+  busqueda: string = '';
   localId!: number;
   localNombre!: string;
   cargando: boolean = true;
@@ -49,6 +51,7 @@ export class ProductosPage implements OnInit, OnDestroy {
       this.api.listarPorLocal(this.localId).subscribe({
         next: (res) => {
           this.productos = res;
+          this.filtrarProductos();
           this.cargando = false;
           this.cdr.detectChanges();
         },
@@ -61,6 +64,7 @@ export class ProductosPage implements OnInit, OnDestroy {
       this.api.listar().subscribe({
         next: (res) => {
           this.productos = res;
+          this.filtrarProductos();
           this.cargando = false;
           this.cdr.detectChanges();
         },
@@ -70,6 +74,23 @@ export class ProductosPage implements OnInit, OnDestroy {
         }
       });
     }
+  }
+
+  filtrarProductos() {
+    if (!this.busqueda.trim()) {
+      this.productosFiltrados = [...this.productos];
+      return;
+    }
+
+    const termino = this.busqueda.toLowerCase().trim();
+    this.productosFiltrados = this.productos.filter(producto => {
+      return (
+        producto.nombre?.toLowerCase().includes(termino) ||
+        producto.descripcion?.toLowerCase().includes(termino) ||
+        producto.sku?.toLowerCase().includes(termino) ||
+        producto.precio?.toString().includes(termino)
+      );
+    });
   }
 
   ngOnDestroy() {
@@ -87,6 +108,22 @@ export class ProductosPage implements OnInit, OnDestroy {
     // Permitir editar producto desde la vista general o de local
     this.router.navigate(['/admin/editar-producto', producto.id], {
       state: this.localId ? { ...producto, localId: this.localId } : producto
+    });
+  }
+
+  eliminar(producto: any) {
+    const ok = confirm(`¿Eliminar el producto "${producto.nombre}"? Esta acción no se puede deshacer.`);
+    if (!ok) return;
+
+    this.api.eliminar(producto.id).subscribe({
+      next: () => {
+        // Refrescar lista
+        this.cargarProductos();
+      },
+      error: (err) => {
+        console.error('Error al eliminar producto:', err);
+        alert('No se pudo eliminar el producto. Revisa la consola.');
+      }
     });
   }
 }

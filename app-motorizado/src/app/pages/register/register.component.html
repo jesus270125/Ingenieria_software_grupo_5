@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-title>Registro Motorizado</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <div class="register-container">
+
+    <div class="ion-text-center ion-margin-bottom">
+      <h2>Únete al equipo</h2>
+      <p>Regístrate para empezar a repartir</p>
+    </div>
+
+    <ion-list lines="none">
+
+      <!-- Nombre -->
+      <ion-item class="custom-input">
+        <ion-label position="stacked">Nombre Completo</ion-label>
+        <ion-input type="text" [(ngModel)]="usuario.nombre" placeholder="Ej. Juan Pérez"></ion-input>
+      </ion-item>
+
+      <!-- DNI -->
+      <ion-item class="custom-input">
+        <ion-label position="stacked">DNI / RUC</ion-label>
+        <ion-input type="text" [(ngModel)]="usuario.dni_ruc" placeholder="Documento de identidad"></ion-input>
+      </ion-item>
+
+      <!-- Correo -->
+      <ion-item class="custom-input">
+        <ion-label position="stacked">Correo Electrónico</ion-label>
+        <ion-input type="email" [(ngModel)]="usuario.correo" placeholder="correo@ejemplo.com"></ion-input>
+      </ion-item>
+
+      <!-- Contraseña -->
+      <ion-item class="custom-input">
+        <ion-label position="stacked">Contraseña</ion-label>
+        <ion-input type="password" [(ngModel)]="usuario.password" placeholder="********"></ion-input>
+      </ion-item>
+
+      <!-- Teléfono -->
+      <ion-item class="custom-input">
+        <ion-label position="stacked">Teléfono</ion-label>
+        <ion-input type="tel" [(ngModel)]="usuario.telefono" placeholder="+51 999 999 999"></ion-input>
+      </ion-item>
+
+      <!-- Dirección -->
+      <ion-item class="custom-input">
+        <ion-label position="stacked">Dirección</ion-label>
+        <ion-input type="text" [(ngModel)]="usuario.direccion" placeholder="Tu dirección actual"></ion-input>
+      </ion-item>
+
+      <!-- SECCIÓN VEHÍCULO -->
+      <div class="ion-padding-top">
+        <ion-label color="secondary">
+          <h3>Datos del Vehículo</h3>
+        </ion-label>
+      </div>
+
+      <!-- Placa -->
+      <ion-item class="custom-input">
+        <ion-label position="stacked">Placa del Vehículo</ion-label>
+        <ion-input type="text" [(ngModel)]="usuario.placa" placeholder="Ej. ABC-123"></ion-input>
+      </ion-item>
+
+      <!-- Licencia -->
+      <ion-item class="custom-input">
+        <ion-label position="stacked">N° Licencia de Conducir</ion-label>
+        <ion-input type="text" [(ngModel)]="usuario.licencia" placeholder="Ej. Q12345678"></ion-input>
+      </ion-item>
+
+      <!-- Foto del Motorizado -->
+      <ion-item class="custom-input">
+        <ion-label position="stacked">Foto (opcional pero recomendada)</ion-label>
+        <input type="file" accept="image/*" (change)="onFileSelected($event)" />
+      </ion-item>
+
+    </ion-list>
+
+    <div class="ion-padding-top">
+      <ion-button expand="block" shape="round" (click)="register()">
+        REGISTRARSE
+      </ion-button>
+
+      <ion-button expand="block" fill="clear" color="medium" (click)="irLogin()">
+        ¿Ya tienes cuenta? Inicia Sesión
+      </ion-button>
+    </div>
+
+  </div>
+</ion-content>

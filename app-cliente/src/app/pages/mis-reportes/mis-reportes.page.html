@@ -1,0 +1,105 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button fill="clear" (click)="goHome()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Mis Reportes</ion-title>
+    <ion-buttons slot="end">
+      <ion-button fill="clear" (click)="cargarIncidencias()">
+        <ion-icon name="refresh-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Pull to refresh -->
+  <ion-refresher slot="fixed" (ionRefresh)="handleRefresh($event)">
+    <ion-refresher-content></ion-refresher-content>
+  </ion-refresher>
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Cargando reportes...</p>
+  </div>
+
+  <!-- Sin reportes -->
+  <div *ngIf="!isLoading && incidencias.length === 0" class="empty-state">
+    <div style="font-size: 64px; color: #d1d5db;">📋</div>
+    <h2>No has reportado incidencias</h2>
+    <p>Tus reportes de problemas aparecerán aquí</p>
+  </div>
+
+  <!-- Lista de incidencias -->
+  <div *ngIf="!isLoading && incidencias.length > 0" class="incidencias-list">
+    <ion-card *ngFor="let incidencia of incidencias" class="incidencia-card">
+      <!-- Header -->
+      <ion-card-header>
+        <div class="card-header-content">
+          <div>
+            <ion-card-title>
+              <ion-icon name="alert-circle-outline"></ion-icon>
+              {{ getTipoLabel(incidencia.tipo_incidencia) }}
+            </ion-card-title>
+            <ion-card-subtitle>
+              Pedido #{{ incidencia.numero_pedido }}
+            </ion-card-subtitle>
+          </div>
+          <ion-badge [color]="getEstadoColor(incidencia.estado || 'pendiente')">
+            {{ getEstadoLabel(incidencia.estado || 'pendiente') }}
+          </ion-badge>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <!-- Fecha de reporte -->
+        <div class="fecha">
+          <ion-icon name="time-outline"></ion-icon>
+          <span>Reportado: {{ incidencia.fecha_creacion | date:'medium' }}</span>
+        </div>
+
+        <!-- Descripción -->
+        <div class="seccion">
+          <h3>Tu reporte:</h3>
+          <p class="descripcion-texto">{{ incidencia.descripcion }}</p>
+        </div>
+
+        <!-- Foto adjunta -->
+        <div class="seccion" *ngIf="incidencia.foto_url">
+          <h3>
+            <ion-icon name="image-outline"></ion-icon>
+            Foto adjunta:
+          </h3>
+          <img [src]="getFotoUrl(incidencia.foto_url)" alt="Foto incidencia" class="foto-incidencia" />
+        </div>
+
+        <!-- Respuesta del admin -->
+        <div class="seccion respuesta-admin" *ngIf="incidencia.respuesta_admin">
+          <h3>
+            <ion-icon name="chatbox-outline"></ion-icon>
+            Respuesta del Administrador:
+          </h3>
+          <p class="respuesta-texto">{{ incidencia.respuesta_admin }}</p>
+          
+          <div class="fecha-respuesta">
+            Respondido el {{ incidencia.fecha_actualizacion | date:'medium' }}
+          </div>
+        </div>
+
+        <!-- Pendiente de respuesta -->
+        <div class="seccion pendiente" *ngIf="!incidencia.respuesta_admin && incidencia.estado === 'pendiente'">
+          <ion-icon name="time-outline"></ion-icon>
+          <span>Pendiente de revisión. Te notificaremos cuando tengamos una respuesta.</span>
+        </div>
+
+        <!-- En revisión -->
+        <div class="seccion en-revision" *ngIf="!incidencia.respuesta_admin && incidencia.estado === 'en_revision'">
+          <ion-icon name="alert-circle-outline"></ion-icon>
+          <span>Tu reporte está siendo revisado por nuestro equipo.</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

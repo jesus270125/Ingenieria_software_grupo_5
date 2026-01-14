@@ -2,7 +2,7 @@ import { Component } from '@angular/core';
 import { IonicModule } from '@ionic/angular';
 import { CommonModule, Location } from '@angular/common';
 import { RouterModule } from '@angular/router';
-import { CarritoService } from '../../services/carrito.service';
+// Carrito removed
 
 @Component({
   selector: 'app-global-header',
@@ -17,20 +17,13 @@ import { CarritoService } from '../../services/carrito.service';
           </ion-button>
         </ion-buttons>
         <ion-title>Rayo Delivery</ion-title>
-        <ion-buttons slot="end">
-          <ion-button routerLink="/carrito">
-            <ion-icon name="cart" slot="icon-only"></ion-icon>
-            <ion-badge *ngIf="(items$ | async)?.length" color="light">{{ (items$ | async)?.length }}</ion-badge>
-          </ion-button>
-        </ion-buttons>
+    
       </ion-toolbar>
     </ion-header>
   `
 })
 export class GlobalHeaderComponent {
-  items$ = this.carrito.items$;
-
-  constructor(private location: Location, private carrito: CarritoService) {}
+  constructor(private location: Location) {}
 
   back() {
     this.location.back();

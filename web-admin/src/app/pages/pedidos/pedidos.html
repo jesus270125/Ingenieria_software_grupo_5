@@ -1,0 +1,107 @@
+<div class="breadcrumb">
+    Panel / <strong>Pedidos</strong>
+</div>
+
+<div class="page-header">
+    <h1 class="page-title">Gestión de Pedidos</h1>
+    <p style="color: var(--text-muted); margin-top: 5px;">
+        Visualiza y reasigna pedidos a motorizados disponibles
+    </p>
+</div>
+
+<!-- Loader -->
+<div *ngIf="loading" class="loader-container">
+    <div class="loader"></div>
+</div>
+
+<!-- Tabla de Pedidos -->
+<div class="card" *ngIf="!loading">
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Cliente</th>
+                    <th>Dirección</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Motorizado</th>
+                    <th>Fecha</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let pedido of pedidos">
+                    <td><strong>#{{ pedido.id }}</strong></td>
+                    <td>{{ pedido.usuario_nombre }}</td>
+                    <td>{{ pedido.direccion }}</td>
+                    <td>S/. {{ (pedido.total || 0) | number:'1.2-2' }}</td>
+                    <td>
+                        <span class="badge" [ngClass]="getEstadoBadgeClass(pedido.estado)">
+                            {{ pedido.estado }}
+                        </span>
+                    </td>
+                    <td>{{ getMotorizadoNombre(pedido) }}</td>
+                    <td>{{ pedido.created_at | date: 'dd/MM/yyyy HH:mm' }}</td>
+                    <td>
+                        <button class="btn-action btn-reassign" (click)="openReassignModal(pedido)"
+                            title="Reasignar motorizado">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M17 1l4 4-4 4"></path>
+                                <path d="M3 11V9a4 4 0 0 1 4-4h14"></path>
+                                <path d="M7 23l-4-4 4-4"></path>
+                                <path d="M21 13v2a4 4 0 0 1-4 4H3"></path>
+                            </svg>
+                            Reasignar
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div *ngIf="pedidos.length === 0" class="empty-state">
+            <p>No hay pedidos registrados</p>
+        </div>
+    </div>
+</div>
+
+<!-- Modal de Reasignación -->
+<div class="modal-overlay" *ngIf="showReassignModal" (click)="closeReassignModal()">
+    <div class="modal-content" (click)="$event.stopPropagation()">
+        <div class="modal-header">
+            <h2>Reasignar Pedido #{{ selectedPedido?.id }}</h2>
+            <button class="modal-close" (click)="closeReassignModal()">✕</button>
+        </div>
+
+        <div class="modal-body">
+            <div class="info-section">
+                <p><strong>Cliente:</strong> {{ selectedPedido?.usuario_nombre }}</p>
+                <p><strong>Dirección:</strong> {{ selectedPedido?.direccion }}</p>
+                <p><strong>Total:</strong> S/. {{ (selectedPedido?.total || 0) | number:'1.2-2' }}</p>
+                <p><strong>Motorizado Actual:</strong> {{ selectedPedido ? getMotorizadoNombre(selectedPedido) : 'N/A'
+                    }}
+                </p>
+            </div>
+
+            <div class="form-group">
+                <label for="motorizado-select">Seleccionar Nuevo Motorizado:</label>
+                <select id="motorizado-select" [(ngModel)]="selectedMotorizadoId" class="form-select">
+                    <option [value]="null">-- Seleccione un motorizado --</option>
+                    <option *ngFor="let motorizado of motorizados" [value]="motorizado.id">
+                        {{ motorizado.nombre }} - {{ motorizado.placa }}
+                        <span *ngIf="!motorizado.disponible">(No disponible)</span>
+                    </option>
+                </select>
+            </div>
+        </div>
+
+        <div class="modal-footer">
+            <button class="btn btn-secondary" (click)="closeReassignModal()">
+                Cancelar
+            </button>
+            <button class="btn btn-primary" (click)="confirmReassign()" [disabled]="!selectedMotorizadoId">
+                Confirmar Reasignación
+            </button>
+        </div>
+    </div>
+</div>

@@ -1,0 +1,204 @@
+<div class="promociones-container">
+  <div class="header">
+    <h2>Gestión de Promociones</h2>
+    <button class="btn btn-primary" (click)="abrirModalCrear()">+ Nueva Promoción</button>
+  </div>
+
+  <!-- Estadísticas -->
+  <div class="stats-grid">
+    <div class="stat-card">
+      <h3>{{ estadisticas.total || 0 }}</h3>
+      <p>Total Promociones</p>
+    </div>
+    <div class="stat-card activa">
+      <h3>{{ estadisticas.activas || 0 }}</h3>
+      <p>Activas</p>
+    </div>
+    <div class="stat-card inactiva">
+      <h3>{{ estadisticas.inactivas || 0 }}</h3>
+      <p>Inactivas</p>
+    </div>
+    <div class="stat-card expirada">
+      <h3>{{ estadisticas.expiradas || 0 }}</h3>
+      <p>Expiradas</p>
+    </div>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters">
+    <label>Filtrar por estado:</label>
+    <select [(ngModel)]="filtroEstado" class="form-control">
+      <option value="todas">Todas</option>
+      <option value="activa">Activas</option>
+      <option value="inactiva">Inactivas</option>
+      <option value="expirada">Expiradas</option>
+    </select>
+  </div>
+
+  <!-- Tabla de Promociones -->
+  <div class="table-container">
+    <table class="table">
+      <thead>
+        <tr>
+          <th>Código</th>
+          <th>Descripción</th>
+          <th>Tipo</th>
+          <th>Valor</th>
+          <th>Vigencia</th>
+          <th>Uso</th>
+          <th>Estado</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let promo of promocionesFiltradas">
+          <td><strong>{{ promo.codigo }}</strong></td>
+          <td>{{ promo.descripcion }}</td>
+          <td>
+            <span *ngIf="promo.tipo_descuento === 'porcentaje'">Porcentaje</span>
+            <span *ngIf="promo.tipo_descuento === 'monto_fijo'">Monto Fijo</span>
+          </td>
+          <td>
+            <span *ngIf="promo.tipo_descuento === 'porcentaje'">{{ promo.valor }}%</span>
+            <span *ngIf="promo.tipo_descuento === 'monto_fijo'">S/ {{ promo.valor }}</span>
+          </td>
+          <td>
+            <small>{{ formatDate(promo.fecha_inicio) }}</small><br>
+            <small>{{ formatDate(promo.fecha_fin) }}</small>
+          </td>
+          <td>
+            <span *ngIf="promo.uso_maximo">{{ promo.usos_actuales }}/{{ promo.uso_maximo }}</span>
+            <span *ngIf="!promo.uso_maximo">{{ promo.usos_actuales }}/∞</span>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="getEstadoBadgeClass(promo.estado)">
+              {{ promo.estado }}
+            </span>
+          </td>
+          <td>
+            <button class="btn btn-sm btn-edit" (click)="abrirModalEditar(promo)">Editar</button>
+            
+            <select class="form-control form-control-sm" 
+                    [value]="promo.estado" 
+                    (change)="cambiarEstado(promo.id, $any($event.target).value)"
+                    style="display: inline-block; width: auto; margin: 0 4px;">
+              <option value="activa">Activar</option>
+              <option value="inactiva">Desactivar</option>
+              <option value="expirada">Expirar</option>
+            </select>
+
+            <button class="btn btn-sm btn-delete" (click)="eliminar(promo.id)">Eliminar</button>
+          </td>
+        </tr>
+        <tr *ngIf="promocionesFiltradas.length === 0">
+          <td colspan="8" style="text-align: center; padding: 20px; color: #999;">
+            No hay promociones disponibles
+          </td>
+        </tr>
+      </tbody>
+    </table>
+  </div>
+</div>
+
+<!-- Panel Lateral Crear/Editar -->
+<div class="panel-overlay" *ngIf="mostrarModal" (click)="cerrarModal()" [@fadeAnimation]>
+</div>
+
+<div class="side-panel" *ngIf="mostrarModal" [@slideAnimation]>
+  <div class="panel-header">
+    <div class="panel-header-content">
+      <div class="panel-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M9 14.25l6-6m4.5-3.493V21.75l-3.75-1.5-3.75 1.5-3.75-1.5-3.75 1.5V4.757c0-1.108.806-2.057 1.907-2.185a48.507 48.507 0 0111.186 0c1.1.128 1.907 1.077 1.907 2.185zM9.75 9h.008v.008H9.75V9zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm4.125 4.5h.008v.008h-.008V13.5zm.375 0a.375.375 0 11-.75 0 .375.375 0 01.75 0z" />
+        </svg>
+      </div>
+      <div class="panel-title">
+        <h2>{{ modoEdicion ? 'Editar Promoción' : 'Nueva Promoción' }}</h2>
+        <p>{{ modoEdicion ? 'Actualiza los datos de la promoción' : 'Crea una nueva promoción' }}</p>
+      </div>
+    </div>
+    <button class="panel-close" (click)="cerrarModal()">
+      ✕
+    </button>
+  </div>
+
+  <div class="panel-body">
+    <div class="panel-section">
+      <div class="form-group">
+        <label>Código *</label>
+        <input type="text" [(ngModel)]="promocionForm.codigo" class="form-input" placeholder="VERANO2025" />
+      </div>
+
+      <div class="form-group">
+        <label>Descripción *</label>
+        <input type="text" [(ngModel)]="promocionForm.descripcion" class="form-input" 
+               placeholder="Descuento de verano" />
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Tipo de Descuento *</label>
+          <select [(ngModel)]="promocionForm.tipo_descuento" class="form-select">
+            <option value="porcentaje">Porcentaje</option>
+            <option value="monto_fijo">Monto Fijo</option>
+          </select>
+        </div>
+
+        <div class="form-group">
+          <label>Valor *</label>
+          <input type="number" [(ngModel)]="promocionForm.valor" class="form-input" 
+                 [placeholder]="promocionForm.tipo_descuento === 'porcentaje' ? '10' : '5.00'" />
+          <small *ngIf="promocionForm.tipo_descuento === 'porcentaje'">Porcentaje (0-100)</small>
+          <small *ngIf="promocionForm.tipo_descuento === 'monto_fijo'">Monto en soles</small>
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Fecha Inicio *</label>
+          <input type="datetime-local" [(ngModel)]="promocionForm.fecha_inicio" class="form-input" />
+        </div>
+
+        <div class="form-group">
+          <label>Fecha Fin *</label>
+          <input type="datetime-local" [(ngModel)]="promocionForm.fecha_fin" class="form-input" />
+        </div>
+      </div>
+
+      <div class="form-row">
+        <div class="form-group">
+          <label>Uso Máximo</label>
+          <input type="number" [(ngModel)]="promocionForm.uso_maximo" class="form-input" 
+                 placeholder="Dejar vacío para ilimitado" />
+          <small>Número máximo de usos (vacío = ilimitado)</small>
+        </div>
+
+        <div class="form-group">
+          <label>Monto Mínimo</label>
+          <input type="number" [(ngModel)]="promocionForm.monto_minimo" class="form-input" 
+                 placeholder="0.00" step="0.01" />
+          <small>Monto mínimo del pedido para aplicar</small>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Estado</label>
+        <select [(ngModel)]="promocionForm.estado" class="form-select">
+          <option value="activa">Activa</option>
+          <option value="inactiva">Inactiva</option>
+          <option value="expirada">Expirada</option>
+        </select>
+      </div>
+    </div>
+  </div>
+
+  <div class="panel-footer">
+    <button class="btn-cancel" (click)="cerrarModal()">Cancelar</button>
+    <button class="btn-save" (click)="guardarPromocion()">
+      <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+        <path stroke-linecap="round" stroke-linejoin="round" d="M4.5 12.75l6 6 9-13.5" />
+      </svg>
+      {{ modoEdicion ? 'Actualizar' : 'Crear' }}
+    </button>
+  </div>
+</div>

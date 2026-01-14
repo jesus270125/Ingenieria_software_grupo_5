@@ -21,7 +21,8 @@
 
     <!-- Buscador -->
     <div class="toolbar">
-        <input type="text" class="search-input" placeholder="Buscar producto...">
+        <input type="text" class="search-input" placeholder="Buscar producto..." 
+               [(ngModel)]="busqueda" (input)="filtrarProductos()">
     </div>
 
     <!-- Tabla de Productos -->
@@ -37,7 +38,7 @@
             </thead>
             <tbody>
 
-                <tr *ngFor="let p of productos">
+                <tr *ngFor="let p of productosFiltrados">
                     <td>
                         <div class="fw-bold">{{ p.nombre }}</div>
                         <div class="text-muted-small">SKU: {{ p.sku || '---' }}</div>
@@ -57,10 +58,19 @@
                                 <path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"></path>
                             </svg>
                         </button>
+                        <button class="btn-icon-action btn-danger" (click)="eliminar(p)" title="Eliminar" style="margin-left:8px;">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <polyline points="3 6 5 6 21 6"></polyline>
+                                <path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"></path>
+                                <path d="M10 11v6"></path>
+                                <path d="M14 11v6"></path>
+                                <path d="M9 6V4a1 1 0 0 1 1-1h4a1 1 0 0 1 1 1v2"></path>
+                            </svg>
+                        </button>
                     </td>
                 </tr>
 
-                <tr *ngIf="productos.length === 0">
+                <tr *ngIf="productosFiltrados.length === 0">
                     <td colspan="4" class="empty-state">
                         <span *ngIf="localId">No hay productos registrados para este local.</span>
                         <span *ngIf="!localId">No hay productos registrados.</span>

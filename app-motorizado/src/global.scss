@@ -1,3 +1,137 @@
+/* Header de paneles */
+.panel-toolbar {
+	--background: var(--ion-color-primary);
+	--color: #fff;
+	box-shadow: 0 2px 12px 0 rgba(111,45,189,0.10);
+	min-height: 60px;
+}
+.panel-title {
+	color: #fff !important;
+	font-size: 1.35em;
+	font-weight: 700;
+	letter-spacing: 1px;
+	text-shadow: 0 2px 8px rgba(111,45,189,0.10);
+}
+/* Fondo y panel para detalle de pedido */
+.pedido-bg {
+	--background: linear-gradient(135deg, #f3eaff 0%, #fff 100%);
+	min-height: 100vh;
+	padding-bottom: 32px;
+}
+.pedido-toolbar {
+	--background: var(--ion-color-primary);
+	--color: #fff;
+	box-shadow: 0 2px 12px 0 rgba(111,45,189,0.10);
+}
+.pedido-card-main {
+	margin-top: 18px;
+}
+.pedido-panel-footer {
+	margin-top: 24px;
+	display: flex;
+	flex-direction: column;
+	gap: 12px;
+	align-items: center;
+}
+.pedido-btn {
+	font-size: 1.1em;
+	font-weight: 600;
+	border-radius: 12px;
+	box-shadow: 0 2px 8px 0 rgba(111,45,189,0.08);
+	margin-bottom: 0;
+}
+/* Fondo degradado para login */
+.login-bg {
+	--background: linear-gradient(135deg, #6f2dbd 0%, #b298dc 100%);
+	min-height: 100vh;
+	display: flex;
+	align-items: center;
+	justify-content: center;
+}
+
+.login-card {
+	background: #fff;
+	border-radius: 18px;
+	box-shadow: 0 4px 32px 0 rgba(111,45,189,0.12);
+	padding: 32px 24px 24px 24px;
+	max-width: 350px;
+	margin: 40px auto;
+	width: 100%;
+	display: flex;
+	flex-direction: column;
+	align-items: center;
+}
+.login-logo {
+	width: 110px;
+	margin-bottom: 18px;
+}
+.login-title {
+	color: var(--ion-color-primary);
+	font-weight: 700;
+	margin-bottom: 18px;
+}
+.login-item {
+	border-radius: 12px;
+	margin-bottom: 12px;
+	--highlight-background: var(--ion-color-primary-tint);
+}
+.login-btn {
+	--background: var(--ion-color-primary);
+	--color: #fff;
+	font-weight: 600;
+	margin-top: 12px;
+}
+.login-link {
+	color: var(--ion-color-primary);
+	text-decoration: none;
+	font-size: 0.95em;
+}
+
+/* Mejorar tarjetas y badges en detalle de pedido */
+.pedido-card {
+	margin-bottom: 18px;
+	box-shadow: 0 2px 12px 0 rgba(111,45,189,0.08);
+	border-radius: 18px;
+	border: 1.5px solid var(--ion-color-primary-tint);
+	transition: box-shadow 0.2s;
+}
+.pedido-card:hover {
+	box-shadow: 0 4px 24px 0 rgba(111,45,189,0.18);
+	cursor: pointer;
+}
+.estado-badge {
+	display: flex;
+	align-items: center;
+	background: #f3eaff;
+	border-radius: 12px;
+	padding: 4px 12px;
+	width: fit-content;
+	font-size: 1rem;
+	margin-top: 4px;
+}
+/* Tarjeta de pedido personalizada */
+.pedido-card {
+	margin-bottom: 18px;
+	box-shadow: 0 2px 12px 0 rgba(111,45,189,0.08);
+	border-radius: 18px;
+	border: 1.5px solid var(--ion-color-primary-tint);
+	transition: box-shadow 0.2s;
+}
+.pedido-card:hover {
+	box-shadow: 0 4px 24px 0 rgba(111,45,189,0.18);
+	cursor: pointer;
+}
+
+.estado-badge {
+	display: flex;
+	align-items: center;
+	background: #f3eaff;
+	border-radius: 12px;
+	padding: 4px 12px;
+	width: fit-content;
+	font-size: 1rem;
+	margin-top: 4px;
+}
 /*
  * App Global CSS
  * ----------------------------------------------------------------------------
@@ -32,6 +166,53 @@
  * https://ionicframework.com/docs/theming/dark-mode
  */
 
+/* Remove automatic dark palette to enforce light UI */
 /* @import "@ionic/angular/css/palettes/dark.always.css"; */
 /* @import "@ionic/angular/css/palettes/dark.class.css"; */
-@import "@ionic/angular/css/palettes/dark.system.css";
+
+/* Force same global styles as app-cliente (light theme) */
+html, body, ion-app, ion-content {
+	background: #ffffff !important;
+	color: #2c2c2c !important;
+}
+
+:root {
+	--ion-background-color: #ffffff !important;
+	--ion-color-light: #ffffff !important;
+	--ion-toolbar-background: var(--ion-color-primary);
+	--ion-toolbar-color: var(--ion-color-primary-contrast);
+	--ion-item-background: #ffffff;
+	--card-background: #ffffff;
+}
+
+/* Global component polish */
+ion-header ion-toolbar {
+	--background: var(--ion-toolbar-background);
+	color: var(--ion-toolbar-color);
+}
+
+ion-card, .card {
+	background: var(--card-background);
+	border-radius: 12px;
+	box-shadow: 0 6px 18px rgba(0,0,0,0.06);
+	margin-bottom: 14px;
+}
+
+.card-header .title { font-weight: 600; color: #222; }
+.card .amount { font-weight:700; color: var(--ion-color-primary); }
+
+ion-button[fill="solid"], .ion-color-primary {
+	--background: var(--ion-color-primary);
+	--color: var(--ion-color-primary-contrast);
+	border-radius: 8px;
+}
+
+.status {
+	padding: 4px 8px;
+	border-radius: 8px;
+	font-size: 12px;
+	background: rgba(111,45,189,0.08);
+	color: var(--ion-color-primary);
+}
+
+.center { text-align:center }

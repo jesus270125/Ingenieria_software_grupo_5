@@ -1,62 +1,127 @@
-<ion-header>
-    <ion-toolbar>
+<ion-header class="ion-no-border">
+    <ion-toolbar class="custom-toolbar">
         <ion-buttons slot="start">
-            <ion-back-button defaultHref="/home"></ion-back-button>
+            <ion-back-button defaultHref="/home" color="light"></ion-back-button>
         </ion-buttons>
         <ion-title>Pedido #{{ pedido?.id }}</ion-title>
     </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding" *ngIf="pedido">
-    <ion-card>
-        <ion-card-header>
-            <ion-card-subtitle>Restaurante</ion-card-subtitle>
-            <ion-card-title>{{ pedido.restaurante }}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-            {{ pedido.direccion_restaurante }}
-        </ion-card-content>
-    </ion-card>
+<ion-content *ngIf="pedido">
+    <div class="header-bg"></div>
+    
+    <div class="content-wrapper">
+        <!-- Estado del pedido -->
+        <div class="estado-card">
+            <div class="estado-header">
+                <h3>Estado del Pedido</h3>
+                <div class="estado-badge" [ngClass]="getEstadoClass()">
+                    {{ getEstadoTexto() }}
+                </div>
+            </div>
+        </div>
 
-    <ion-card>
-        <ion-card-header>
-            <ion-card-subtitle>Cliente</ion-card-subtitle>
-            <ion-card-title>{{ pedido.cliente }}</ion-card-title>
-        </ion-card-header>
-        <ion-card-content>
-            {{ pedido.direccion_cliente }}
-        </ion-card-content>
-    </ion-card>
+        <!-- Restaurante -->
+        <div class="info-card">
+            <div class="card-header">
+                <ion-icon name="storefront-outline" class="header-icon"></ion-icon>
+                <div class="header-text">
+                    <h3>Restaurante</h3>
+                    <p>Punto de recogida</p>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="info-row">
+                    <ion-icon name="restaurant-outline"></ion-icon>
+                    <span class="info-value">{{ pedido.restaurante }}</span>
+                </div>
+                <div class="info-row">
+                    <ion-icon name="location-outline"></ion-icon>
+                    <span class="info-value">{{ pedido.direccion_restaurante }}</span>
+                </div>
+            </div>
+        </div>
 
-    <ion-list>
-        <ion-item *ngFor="let item of pedido.detalles">
-            <ion-label>{{ item.cantidad }}x {{ item.producto }}</ion-label>
-            <ion-note slot="end">${{ item.precio }}</ion-note>
-        </ion-item>
-    </ion-list>
+        <!-- Cliente -->
+        <div class="info-card">
+            <div class="card-header">
+                <ion-icon name="person-circle-outline" class="header-icon"></ion-icon>
+                <div class="header-text">
+                    <h3>Cliente</h3>
+                    <p>Destino de entrega</p>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="info-row">
+                    <ion-icon name="person-outline"></ion-icon>
+                    <span class="info-value">{{ pedido.cliente }}</span>
+                </div>
+                <div class="info-row">
+                    <ion-icon name="location-outline"></ion-icon>
+                    <span class="info-value">{{ pedido.direccion_cliente }}</span>
+                </div>
+                <div class="info-row" *ngIf="pedido.telefono_cliente">
+                    <ion-icon name="call-outline"></ion-icon>
+                    <a [href]="'tel:' + pedido.telefono_cliente" class="phone-link">
+                        {{ pedido.telefono_cliente }}
+                    </a>
+                </div>
+            </div>
+        </div>
 
-    <div class="ion-text-center ion-margin-top">
-        <h3>Estado Actual: {{ pedido.estado }}</h3>
+        <!-- Detalles del pedido -->
+        <div class="info-card">
+            <div class="card-header">
+                <ion-icon name="fast-food-outline" class="header-icon"></ion-icon>
+                <div class="header-text">
+                    <h3>Detalles del Pedido</h3>
+                    <p>{{ pedido.detalles.length || 0 }} producto(s)</p>
+                </div>
+            </div>
+            <div class="card-body">
+                <div class="producto-item" *ngFor="let item of pedido.detalles">
+                    <div class="producto-info">
+                        <span class="cantidad-badge">{{ item.cantidad }}x</span>
+                        <span class="producto-nombre">{{ item.producto }}</span>
+                    </div>
+                    <span class="producto-precio">${{ item.precio }}</span>
+                </div>
+            </div>
+        </div>
 
-        <ion-button expand="block" (click)="irAlMapa()">
-            <ion-icon name="map-outline" slot="start"></ion-icon>
-            Ver Ruta en Mapa
-        </ion-button>
+        <!-- Acciones -->
+        <div class="actions-section">
+            <ion-button expand="block" (click)="irAlMapa()" class="action-btn primary">
+                <ion-icon name="map-outline" slot="start"></ion-icon>
+                Ver Ruta en Mapa
+            </ion-button>
 
-        <!-- Status progression buttons -->
-        <ion-button expand="block" color="secondary" *ngIf="pedido.estado === 'asignado'"
-            (click)="cambiarEstado('en_camino_restaurante')">
-            Ir al Restaurante
-        </ion-button>
+            <ion-button 
+                expand="block" 
+                *ngIf="pedido.estado === 'asignado'"
+                (click)="cambiarEstado('en_camino_restaurante')" 
+                class="action-btn secondary">
+                <ion-icon name="bicycle-outline" slot="start"></ion-icon>
+                Ir al Restaurante
+            </ion-button>
 
-        <ion-button expand="block" color="warning" *ngIf="pedido.estado === 'en_camino_restaurante'"
-            (click)="cambiarEstado('en_camino_cliente')">
-            Recogido - Ir al Cliente
-        </ion-button>
+            <ion-button 
+                expand="block" 
+                *ngIf="pedido.estado === 'en_camino_restaurante'"
+                (click)="cambiarEstado('en_camino_cliente')" 
+                class="action-btn warning">
+                <ion-icon name="checkmark-circle-outline" slot="start"></ion-icon>
+                Pedido Recogido - Ir al Cliente
+            </ion-button>
 
-        <ion-button expand="block" color="success" *ngIf="pedido.estado === 'en_camino_cliente'"
-            (click)="cambiarEstado('entregado')">
-            Confirmar Entrega
-        </ion-button>
+            <ion-button 
+                expand="block" 
+                *ngIf="pedido.estado === 'en_camino_cliente'"
+                (click)="solicitarCodigoEntrega()" 
+                class="action-btn success">
+                <ion-icon name="keypad-outline" slot="start"></ion-icon>
+                Ingresar Código de Entrega
+            </ion-button>
+        </div>
     </div>
 </ion-content>

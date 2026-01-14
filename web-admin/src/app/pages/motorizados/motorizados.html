@@ -1,0 +1,120 @@
+<div class="breadcrumb">
+    Panel / <strong>Motorizados</strong>
+</div>
+
+<div class="page-header">
+    <h1 class="page-title">Gestión de Motorizados</h1>
+    <p>Asignación de pedidos a motorizados (máximo 2 pedidos activos por motorizado)</p>
+</div>
+
+<div class="card">
+    <div class="table-container">
+        <table class="custom-table">
+            <thead>
+                <tr>
+                    <th>Nombre</th>
+                    <th>Teléfono</th>
+                    <th>Placa</th>
+                    <th>Estado</th>
+                    <th>Pedidos Actuales</th>
+                    <th style="text-align: right;">Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let m of motorizados" [class.suspended-row]="m.estado_cuenta === 'inactivo'">
+                    <td>
+                        <div class="fw-bold">{{ m.nombre }}</div>
+                    </td>
+                    <td>{{ m.telefono }}</td>
+                    <td>{{ m.placa }}</td>
+                    <td>
+                        <ng-container *ngIf="m.estado_cuenta === 'inactivo'; else estadoNormal">
+                            <span class="badge-status inactive" style="background-color: #fef2f2; color: #ef4444; border: 1px solid #fca5a5;">
+                                Suspendido
+                            </span>
+                        </ng-container>
+                        <ng-template #estadoNormal>
+                            <span class="badge-status" [class.active]="m.disponible" [class.inactive]="!m.disponible">
+                                {{ m.disponible ? 'Conectado' : 'Desconectado' }}
+                            </span>
+                        </ng-template>
+                    </td>
+                    <td>
+                        <span class="fw-bold">{{ currentOrdersCount(m) }}</span> / 2
+                    </td>
+                    <td style="text-align: right; display: flex; gap: 0.5rem; justify-content: flex-end;">
+                        <button class="btn-primary btn-sm" (click)="openAssignPanel(m)" [disabled]="currentOrdersCount(m) >= 2 || m.estado_cuenta === 'inactivo'">
+                            <svg xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <line x1="12" y1="5" x2="12" y2="19"></line>
+                                <line x1="5" y1="12" x2="19" y2="12"></line>
+                            </svg>
+                            Asignar
+                        </button>
+                        
+                        <button class="btn-icon-danger" 
+                            (click)="suspenderMotorizado(m)" 
+                            [title]="m.estado_cuenta === 'inactivo' ? 'Activar Motorizado' : 'Suspender Motorizado'"
+                            [style.color]="m.estado_cuenta === 'inactivo' ? '#10b981' : '#ef4444'"
+                            [style.background]="m.estado_cuenta === 'inactivo' ? '#ecfdf5' : '#fef2f2'"
+                            [style.borderColor]="m.estado_cuenta === 'inactivo' ? '#a7f3d0' : '#fecaca'">
+                            
+                            <!-- Icono Bloquear / Suspender -->
+                            <svg *ngIf="m.estado_cuenta !== 'inactivo'" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <circle cx="12" cy="12" r="10"></circle>
+                                <line x1="4.93" y1="4.93" x2="19.07" y2="19.07"></line>
+                            </svg>
+                            
+                            <!-- Icono Activar / Desbloquear -->
+                            <svg *ngIf="m.estado_cuenta === 'inactivo'" xmlns="http://www.w3.org/2000/svg" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                                <path d="M21 2l-2 2m-7.61 7.61a5.5 5.5 0 1 1-7.778 7.778 5.5 5.5 0 0 1 7.777-7.777zm0 0L15.5 7.5m0 0l3 3m-3-3l-3 3"></path>
+                            </svg>
+                        </button>
+                    </td>
+                </tr>
+                <tr *ngIf="motorizados.length === 0">
+                    <td colspan="6" style="text-align: center; padding: 2rem; color: var(--text-secondary);">
+                        No hay motorizados registrados
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+    </div>
+</div>
+
+<!-- Panel lateral de asignación -->
+<div class="assign-panel" [class.open]="showAssignPanel">
+    <div class="panel-header">
+        <h3>Asignar pedido a: {{ selectedMotorizado?.nombre }}</h3>
+        <button class="panel-close" (click)="closeAssignPanel()">
+            <svg xmlns="http://www.w3.org/2000/svg" width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                <line x1="18" y1="6" x2="6" y2="18"></line>
+                <line x1="6" y1="6" x2="18" y2="18"></line>
+            </svg>
+        </button>
+    </div>
+
+    <div class="panel-body">
+        <p *ngIf="!pendingPedidos.length" class="empty-message">
+            No hay pedidos pendientes para asignar.
+        </p>
+
+        <div class="pending-list">
+            <div class="pending-item" *ngFor="let p of pendingPedidos">
+                <div class="item-info">
+                    <div class="item-title">
+                        <strong>Pedido #{{ p.id }}</strong>
+                        <span class="badge-status active">{{ p.estado }}</span>
+                    </div>
+                    <div class="item-detail">Cliente: {{ p.usuario_nombre }}</div>
+                    <div class="item-detail">Dirección: {{ p.direccion }}</div>
+                    <div class="item-detail">Total: S/ {{ p.total }}</div>
+                </div>
+                <div class="item-actions">
+                    <button class="btn-primary" (click)="assignPedido(p)" [disabled]="loading">
+                        {{ loading ? 'Asignando...' : 'Asignar' }}
+                    </button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

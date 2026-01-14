@@ -4,8 +4,10 @@
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
-  <p>Tu pedido fue creado correctamente.</p>
-  <pre *ngIf="pedido">{{ pedido | json }}</pre>
-  <ion-button expand="block" routerLink="/historial">Ir al historial</ion-button>
+<ion-content>
+  <div style="height:60vh" #map></div>
+  <div style="padding:12px">
+    <div id="eta">ETA: --</div>
+    <ion-button expand="block" routerLink="/historial">Ir al historial</ion-button>
+  </div>
 </ion-content>

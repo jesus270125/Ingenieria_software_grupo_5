@@ -38,15 +38,16 @@ ion-header {
 
 // --- Fondo Curvo Superior ---
 .top-background {
-  background: linear-gradient(135deg, var(--brand-color) 0%, var(--brand-light) 100%);
-  height: 280px; // Altura suficiente para cubrir el saludo
-  border-bottom-left-radius: 40px;
-  border-bottom-right-radius: 40px;
+  background: linear-gradient(135deg, #6f2dbd 0%, #9575cd 100%);
+  height: 300px;
+  border-bottom-left-radius: 50px;
+  border-bottom-right-radius: 50px;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   z-index: 0;
+  box-shadow: 0 10px 30px rgba(111, 45, 189, 0.15);
 }
 
 .main-container {
@@ -59,35 +60,42 @@ ion-header {
 .welcome-section {
   text-align: center;
   color: var(--text-light);
-  margin-bottom: 30px;
+  margin-bottom: 35px;
 
   .logo-container {
-    width: 80px;
-    height: 80px;
+    width: 90px;
+    height: 90px;
     background: white;
     border-radius: 50%;
-    margin: 0 auto 15px auto;
+    margin: 0 auto 20px auto;
     display: flex;
     align-items: center;
     justify-content: center;
-    box-shadow: 0 4px 15px rgba(0,0,0,0.1);
+    box-shadow: 0 8px 24px rgba(0,0,0,0.12);
+    transition: transform 0.3s ease;
+
+    &:active {
+      transform: scale(0.95);
+    }
 
     img {
-      width: 50px;
-      height: 50px;
+      width: 55px;
+      height: 55px;
     }
   }
 
   h2 {
-    font-size: 1.8rem;
-    font-weight: 700;
-    margin: 0 0 5px 0;
+    font-size: 2rem;
+    font-weight: 800;
+    margin: 0 0 8px 0;
+    letter-spacing: -0.5px;
   }
 
   p {
-    font-size: 1rem;
-    opacity: 0.9;
+    font-size: 1.05rem;
+    opacity: 0.95;
     margin: 0;
+    font-weight: 400;
   }
 }
 
@@ -114,45 +122,50 @@ ion-header {
 
 // Tarjeta Principal (Restaurantes)
 .menu-card.featured {
-  padding: 20px;
+  padding: 24px;
+  background: linear-gradient(135deg, #ffffff 0%, #fafafa 100%);
+  box-shadow: 0 12px 28px rgba(0,0,0,0.08);
   
   .card-content {
     display: flex;
     align-items: center;
-    gap: 15px;
+    gap: 16px;
   }
 
   .icon-box.primary {
-    background: var(--brand-bg);
-    color: var(--brand-color);
-    width: 50px;
-    height: 50px;
-    border-radius: 15px;
+    background: linear-gradient(135deg, #7e57c2 0%, #9575cd 100%);
+    color: white;
+    width: 56px;
+    height: 56px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 24px;
+    font-size: 26px;
     flex-shrink: 0;
+    box-shadow: 0 4px 12px rgba(126, 87, 194, 0.25);
   }
 
   .text-content {
     flex: 1;
     h3 {
       margin: 0;
-      font-size: 1.1rem;
-      font-weight: 700;
+      font-size: 1.2rem;
+      font-weight: 800;
       color: var(--text-dark);
+      letter-spacing: -0.3px;
     }
     p {
-      margin: 4px 0 0 0;
-      font-size: 0.85rem;
-      color: #888;
+      margin: 6px 0 0 0;
+      font-size: 0.88rem;
+      color: #777;
+      line-height: 1.4;
     }
   }
 
   .arrow-icon {
-    color: var(--brand-light);
-    font-size: 24px;
+    color: var(--brand-color);
+    font-size: 26px;
   }
 }
 
@@ -165,56 +178,84 @@ ion-header {
 
 // Tarjetas Secundarias (Pedidos / Perfil)
 .menu-card.secondary {
-  padding: 20px 15px;
+  padding: 22px 16px;
   text-align: center;
   display: flex;
   flex-direction: column;
   align-items: center;
   justify-content: center;
+  box-shadow: 0 6px 16px rgba(0,0,0,0.06);
+  min-height: 110px;
 
   .icon-box.secondary {
-    background: #f5f5f5;
-    color: #666;
-    width: 45px;
-    height: 45px;
-    border-radius: 50%;
+    width: 52px;
+    height: 52px;
+    border-radius: 16px;
     display: flex;
     align-items: center;
     justify-content: center;
-    font-size: 20px;
-    margin-bottom: 10px;
-    transition: all 0.3s ease;
+    font-size: 24px;
+    margin-bottom: 12px;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
   }
 
   h3 {
     margin: 0;
-    font-size: 0.95rem;
-    font-weight: 600;
+    font-size: 0.96rem;
+    font-weight: 700;
     color: var(--text-dark);
+    letter-spacing: -0.2px;
   }
 
-  // Efecto hover sutil
-  &:active .icon-box.secondary {
-    background: var(--brand-bg);
-    color: var(--brand-color);
+  &:active {
+    transform: scale(0.96);
   }
+
+  // Colores específicos por tarjeta
+  &:nth-child(1) .icon-box.secondary { background: #e8eaf6; color: #5e35b1; } // Pedidos - Purple
+  &:nth-child(2) .icon-box.secondary { background: #e3f2fd; color: #1976d2; } // Perfil - Blue
+  
+  &:active .icon-box.secondary {
+    transform: scale(1.1);
+    box-shadow: 0 4px 12px rgba(0,0,0,0.15);
+  }
+}
+
+// Colores específicos para segunda fila
+.grid-row:nth-child(3) {
+  .menu-card.secondary:nth-child(1) .icon-box.secondary { background: #fff3e0; color: #f57c00; } // Evaluaciones - Orange
+  .menu-card.secondary:nth-child(2) .icon-box.secondary { background: #e8f5e9; color: #388e3c; } // Soporte - Green
+}
+
+// Color específico para Reportes
+.grid-row:nth-child(4) {
+  .menu-card.secondary .icon-box.secondary { background: #fce4ec; color: #c2185b; } // Reportes - Pink
 }
 
 // Botón de Salir
 .logout-container {
-  margin-top: 10px;
+  margin-top: 15px;
   display: flex;
   align-items: center;
   justify-content: center;
-  gap: 8px;
-  padding: 15px;
-  color: #ff5252; // Rojo suave
-  font-weight: 600;
-  border-radius: 12px;
+  gap: 10px;
+  padding: 16px;
+  color: #ef5350;
+  font-weight: 700;
+  border-radius: 16px;
   position: relative;
   overflow: hidden;
+  background: white;
+  box-shadow: 0 4px 12px rgba(239, 83, 80, 0.08);
+  transition: all 0.3s ease;
+  font-size: 0.96rem;
 
   ion-icon {
-    font-size: 20px;
+    font-size: 22px;
+  }
+
+  &:active {
+    background: #ffebee;
+    transform: scale(0.98);
   }
 }

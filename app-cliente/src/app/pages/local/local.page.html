@@ -41,11 +41,7 @@
       <ion-card-content>
         {{ p.descripcion }}
 
-        <ion-row>
-          <ion-col>
-            <ion-button expand="block" color="primary" (click)="agregarProducto(p)">Agregar</ion-button>
-          </ion-col>
-        </ion-row>
+        <!-- Agregar al carrito deshabilitado -->
       </ion-card-content>
 
     </ion-card>
@@ -66,12 +62,7 @@
 </ng-container>
 
 <!-- FAB carrito -->
-<ion-fab vertical="bottom" horizontal="end" slot="fixed">
-  <ion-fab-button routerLink="/carrito" color="tertiary">
-    <ion-icon name="cart"></ion-icon>
-    <ion-badge *ngIf="(items$ | async)?.length">{{ (items$ | async)?.length }}</ion-badge>
-  </ion-fab-button>
-</ion-fab>
+<!-- FAB carrito removed -->
 
 <!-- Toast simple -->
 <ion-toast [isOpen]="showToast" message="{{ toastMsg }}" duration="1600"></ion-toast>

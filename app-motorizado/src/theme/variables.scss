@@ -1,2 +1,30 @@
+// Palette: morado (purple) y blanco (copied from app-cliente)
+:root {
+	--ion-color-primary: #6f2dbd; // morado principal
+	--ion-color-primary-rgb: 111,45,189;
+	--ion-color-primary-contrast: #ffffff;
+	--ion-color-primary-contrast-rgb: 255,255,255;
+	--ion-color-primary-shade: #6130a8;
+	--ion-color-primary-tint: #7e3fd0;
+
+	--ion-color-secondary: #ffffff;
+	--ion-color-secondary-rgb: 255,255,255;
+	--ion-color-secondary-contrast: #6f2dbd;
+
+	--ion-background-color: #ffffff;
+	--ion-text-color: #2c2c2c;
+
+	/* Additional theme helpers */
+	--ion-color-success: #10dc60;
+	--ion-color-danger: #eb445a;
+
+	/* Toolbar helpers */
+	--ion-toolbar-background: var(--ion-color-primary);
+	--ion-toolbar-color: var(--ion-color-primary-contrast);
+
+	/* App layout */
+	--page-padding: 16px;
+}
+
 // For information on how to create your own theme, please refer to:
 // https://ionicframework.com/docs/theming/

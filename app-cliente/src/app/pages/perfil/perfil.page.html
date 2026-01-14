@@ -1,0 +1,142 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar class="custom-toolbar">
+    <ion-buttons slot="start">
+      <ion-button (click)="goBack()" color="light">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Mi Perfil</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div class="header-bg"></div>
+
+  <div class="content-wrapper" *ngIf="usuario">
+    
+    <!-- Avatar y nombre -->
+    <div class="profile-header">
+      <div class="avatar-container">
+        <ion-avatar class="large-avatar">
+          <div class="avatar-placeholder">
+            {{ (usuario.nombre || 'U').charAt(0).toUpperCase() }}
+          </div>
+        </ion-avatar>
+      </div>
+      <h2>{{ usuario.nombre || 'Usuario' }}</h2>
+      <p class="role-badge">Cliente</p>
+    </div>
+
+    <!-- Información del usuario -->
+    <div class="info-card">
+      <div class="card-title">Información Personal</div>
+      
+      <div class="info-item editable">
+        <div class="icon-wrapper">
+          <ion-icon name="person-outline"></ion-icon>
+        </div>
+        <div class="info-content">
+          <div class="label">Nombre completo</div>
+          <div class="value" *ngIf="!editandoNombre">{{ usuario.nombre || 'No especificado' }}</div>
+          <input 
+            *ngIf="editandoNombre" 
+            type="text" 
+            class="edit-input" 
+            [(ngModel)]="nombreTemp"
+            placeholder="Ingresa tu nombre">
+        </div>
+        <button class="edit-btn" (click)="toggleEditNombre()" *ngIf="!editandoNombre">
+          <ion-icon name="create-outline"></ion-icon>
+        </button>
+        <button class="save-btn" (click)="toggleEditNombre()" *ngIf="editandoNombre">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+      <div class="info-item" *ngIf="usuario.dni_ruc">
+        <div class="icon-wrapper">
+          <ion-icon name="card-outline"></ion-icon>
+        </div>
+        <div class="info-content">
+          <div class="label">DNI / RUC</div>
+          <div class="value">{{ usuario.dni_ruc }}</div>
+        </div>
+      </div>
+      <div class="info-item">
+        <div class="icon-wrapper">
+          <ion-icon name="mail-outline"></ion-icon>
+        </div>
+        <div class="info-content">
+          <div class="label">Correo electrónico</div>
+          <div class="value">{{ usuario.correo || 'No especificado' }}</div>
+        </div>
+      </div>
+
+      <div class="info-item editable">
+        <div class="icon-wrapper">
+          <ion-icon name="call-outline"></ion-icon>
+        </div>
+        <div class="info-content">
+          <div class="label">Teléfono</div>
+          <div class="value" *ngIf="!editandoTelefono">{{ usuario.telefono || 'No especificado' }}</div>
+          <input 
+            *ngIf="editandoTelefono" 
+            type="tel" 
+            class="edit-input" 
+            [(ngModel)]="telefonoTemp"
+            placeholder="Ingresa tu teléfono">
+        </div>
+        <button class="edit-btn" (click)="toggleEditTelefono()" *ngIf="!editandoTelefono">
+          <ion-icon name="create-outline"></ion-icon>
+        </button>
+        <button class="save-btn" (click)="toggleEditTelefono()" *ngIf="editandoTelefono">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+
+      <div class="info-item editable">
+        <div class="icon-wrapper">
+          <ion-icon name="location-outline"></ion-icon>
+        </div>
+        <div class="info-content">
+          <div class="label">Dirección</div>
+          <div class="value" *ngIf="!editandoDireccion">{{ usuario.direccion || 'No especificado' }}</div>
+          <input 
+            *ngIf="editandoDireccion" 
+            type="text" 
+            class="edit-input" 
+            [(ngModel)]="direccionTemp"
+            placeholder="Ingresa tu dirección">
+        </div>
+        <button class="edit-btn" (click)="toggleEditDireccion()" *ngIf="!editandoDireccion">
+          <ion-icon name="create-outline"></ion-icon>
+        </button>
+        <button class="save-btn" (click)="toggleEditDireccion()" *ngIf="editandoDireccion">
+          <ion-icon name="close-outline"></ion-icon>
+        </button>
+      </div>
+    </div>
+
+    <!-- Acciones -->
+    <div class="actions-section">
+      <ion-button 
+        expand="block" 
+        color="primary" 
+        (click)="guardarCambios()" 
+        *ngIf="hayCambios()">
+        <ion-icon name="save-outline" slot="start"></ion-icon>
+        Guardar Cambios
+      </ion-button>
+      
+      <ion-button expand="block" fill="outline" color="danger" (click)="cerrarSesion()">
+        <ion-icon name="log-out-outline" slot="start"></ion-icon>
+        Cerrar Sesión
+      </ion-button>
+    </div>
+
+  </div>
+
+  <div class="loading-container" *ngIf="!usuario">
+    <p>Cargando perfil...</p>
+  </div>
+
+</ion-content>

@@ -3,7 +3,6 @@ import { IonicModule } from '@ionic/angular';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { Router } from '@angular/router';
-import { CarritoService } from '../../services/carrito.service';
 
 @Component({
   selector: 'app-metodo-pago',
@@ -15,16 +14,11 @@ import { CarritoService } from '../../services/carrito.service';
 export class MetodoPagoPage {
   metodo = '';
 
-  constructor(private carrito: CarritoService, private router: Router) {
-    this.metodo = this.carrito.getPaymentMethod() || '';
+  constructor(private router: Router) {
+    // Payment method selection disabled after cart removal
   }
 
   seleccionar() {
-    if (!this.metodo) {
-      alert('Selecciona un método de pago');
-      return;
-    }
-    this.carrito.setPaymentMethod(this.metodo);
-    this.router.navigate(['/confirmacion']);
+    alert('Funcionalidad de pago deshabilitada');
   }
 }

@@ -1,0 +1,104 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button fill="clear" (click)="goBack()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Reportar Incidencia</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <ion-card>
+    <ion-card-header>
+      <ion-card-title>
+        <ion-icon name="alert-circle-outline" style="vertical-align: middle; margin-right: 8px;"></ion-icon>
+        Pedido #{{ numeroPedido }}
+      </ion-card-title>
+    </ion-card-header>
+
+    <ion-card-content>
+      <p class="info-text">
+        Reporta cualquier problema con tu pedido. Revisaremos tu caso y te responderemos pronto.
+      </p>
+
+      <!-- Tipo de incidencia -->
+      <ion-item>
+        <ion-label position="stacked">Tipo de problema *</ion-label>
+        <ion-select [(ngModel)]="tipoIncidencia" interface="action-sheet">
+          <ion-select-option value="demora">Demora en la entrega</ion-select-option>
+          <ion-select-option value="mal_estado">Producto en mal estado</ion-select-option>
+          <ion-select-option value="perdida">Pedido perdido o no entregado</ion-select-option>
+          <ion-select-option value="otro">Otro problema</ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <!-- Descripción -->
+      <ion-item>
+        <ion-label position="stacked">Descripción del problema *</ion-label>
+        <ion-textarea
+          [(ngModel)]="descripcion"
+          placeholder="Describe detalladamente qué sucedió..."
+          rows="5"
+          maxlength="500"
+        ></ion-textarea>
+      </ion-item>
+      <div class="char-count">{{ descripcion.length }}/500</div>
+
+      <!-- Foto -->
+      <div class="foto-section">
+        <ion-label>
+          <ion-icon name="camera-outline"></ion-icon>
+          Foto (opcional)
+        </ion-label>
+        
+        <div *ngIf="!fotoPreview" class="foto-upload">
+          <input 
+            type="file" 
+            accept="image/*" 
+            (change)="onFileSelected($event)"
+            #fileInput
+            style="display: none;"
+          />
+          <ion-button expand="block" fill="outline" (click)="fileInput.click()">
+            <ion-icon name="camera-outline" slot="start"></ion-icon>
+            Seleccionar Foto
+          </ion-button>
+          <p class="help-text">Máximo 5MB. Formatos: JPG, PNG, GIF</p>
+        </div>
+
+        <div *ngIf="fotoPreview" class="foto-preview">
+          <img [src]="fotoPreview" alt="Preview" />
+          <ion-button fill="clear" color="danger" (click)="eliminarFoto()" class="btn-eliminar">
+            <ion-icon name="close-circle-outline"></ion-icon>
+            Eliminar
+          </ion-button>
+        </div>
+      </div>
+
+      <!-- Botones -->
+      <div class="botones-container">
+        <ion-button 
+          expand="block" 
+          color="primary"
+          (click)="reportarIncidencia()"
+          [disabled]="enviando || !descripcion.trim()"
+        >
+          <ion-spinner *ngIf="enviando" name="crescent"></ion-spinner>
+          <span *ngIf="!enviando">Enviar Reporte</span>
+        </ion-button>
+
+        <ion-button 
+          expand="block" 
+          fill="outline" 
+          color="medium"
+          (click)="goBack()"
+          [disabled]="enviando"
+        >
+          Cancelar
+        </ion-button>
+      </div>
+    </ion-card-content>
+  </ion-card>
+</ion-content>

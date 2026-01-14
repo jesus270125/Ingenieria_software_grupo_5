@@ -9,8 +9,7 @@ import { SearchService } from '../../services/search.service';
   standalone: true,
   imports: [CommonModule, FormsModule, RouterModule],
   templateUrl: './busqueda.html',
-  styleUrls: ['./busqueda.css'],
-  encapsulation: ViewEncapsulation.None
+  styleUrls: ['./busqueda.css']
 })
 export class BusquedaPage {
 

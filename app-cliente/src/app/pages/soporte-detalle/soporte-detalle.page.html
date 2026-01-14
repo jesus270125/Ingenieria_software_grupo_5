@@ -1,0 +1,93 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/soporte"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Detalle del Ticket</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <div *ngIf="cargando" class="loading-state">
+    <ion-spinner></ion-spinner>
+  </div>
+
+  <div *ngIf="!cargando && ticket" class="ticket-detalle">
+    <ion-card>
+      <ion-card-header>
+        <div class="header-content">
+          <ion-card-subtitle>Ticket #{{ ticket.id }}</ion-card-subtitle>
+          <ion-chip [color]="getEstadoColor(ticket.estado)">
+            <ion-label>{{ getEstadoTexto(ticket.estado) }}</ion-label>
+          </ion-chip>
+        </div>
+        <ion-card-title>{{ ticket.asunto }}</ion-card-title>
+      </ion-card-header>
+
+      <ion-card-content>
+        <div class="info-row">
+          <ion-chip [color]="getPrioridadColor(ticket.prioridad)">
+            <ion-icon name="flag-outline"></ion-icon>
+            <ion-label>Prioridad: {{ ticket.prioridad }}</ion-label>
+          </ion-chip>
+          <ion-chip>
+            <ion-icon name="folder-outline"></ion-icon>
+            <ion-label>{{ getCategoriaTexto(ticket.categoria) }}</ion-label>
+          </ion-chip>
+        </div>
+
+        <div class="descripcion-section">
+          <h3>Descripción</h3>
+          <p>{{ ticket.descripcion }}</p>
+        </div>
+
+        <div class="info-section">
+          <div class="info-item">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <div>
+              <strong>Fecha de creación:</strong>
+              <span>{{ ticket.fecha_creacion | date:'medium' }}</span>
+            </div>
+          </div>
+
+          <div class="info-item" *ngIf="ticket.fecha_resolucion">
+            <ion-icon name="checkmark-circle-outline"></ion-icon>
+            <div>
+              <strong>Fecha de resolución:</strong>
+              <span>{{ ticket.fecha_resolucion | date:'medium' }}</span>
+            </div>
+          </div>
+
+          <div class="info-item" *ngIf="ticket.asignado_nombre">
+            <ion-icon name="person-outline"></ion-icon>
+            <div>
+              <strong>Asignado a:</strong>
+              <span>{{ ticket.asignado_nombre }}</span>
+            </div>
+          </div>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <!-- Respuestas -->
+    <ion-card *ngIf="ticket.respuestas && ticket.respuestas.length > 0">
+      <ion-card-header>
+        <ion-card-title>Respuestas</ion-card-title>
+      </ion-card-header>
+      <ion-card-content>
+        <div *ngFor="let respuesta of ticket.respuestas" class="respuesta-item">
+          <div class="respuesta-header">
+            <strong>{{ respuesta.usuario_nombre }}</strong>
+            <span class="fecha">{{ respuesta.fecha_respuesta | date:'short' }}</span>
+          </div>
+          <p class="respuesta-texto">{{ respuesta.respuesta }}</p>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <div *ngIf="!ticket.respuestas || ticket.respuestas.length === 0" class="no-respuestas">
+      <ion-icon name="help-circle-outline"></ion-icon>
+      <p>Aún no hay respuestas. Te notificaremos cuando recibas una respuesta.</p>
+    </div>
+  </div>
+</ion-content>

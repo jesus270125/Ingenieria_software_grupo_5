@@ -1,0 +1,63 @@
+<ion-header class="ion-no-border" *ngIf="local">
+  <ion-toolbar>
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/locales" icon="chevron-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title>{{ local.nombre }}</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content *ngIf="isLoading" class="ion-text-center ion-padding">
+  <ion-spinner></ion-spinner>
+</ion-content>
+
+<ion-content *ngIf="!isLoading && local">
+
+  <!-- Banner Local -->
+  <div class="local-banner">
+    <img [src]="local.imagen ? 'http://localhost:4000/uploads/' + local.imagen : 'assets/placeholder-local.svg'">
+    <div class="overlay">
+      <h1>{{ local.nombre }}</h1>
+      <p><ion-icon name="time-outline"></ion-icon> {{ local.hora_apertura }} - {{ local.hora_cierre }}</p>
+      <span class="badgge">{{ local.categoria }}</span>
+      <div [style.marginTop]="'8px'">
+        <ion-chip [color]="localAbierto ? 'success' : 'danger'">
+          <ion-label>{{ localAbierto ? '🟢 Abierto' : '🔴 Cerrado' }}</ion-label>
+        </ion-chip>
+      </div>
+    </div>
+  </div>
+
+  <!-- Buscador Menu -->
+  <div class="ion-padding-horizontal ion-margin-top">
+    <ion-searchbar placeholder="Buscar en el menú..." (ionInput)="buscarProducto($event)"></ion-searchbar>
+  </div>
+
+  <!-- Lista Productos -->
+  <ion-list lines="full">
+    <ion-item-sliding *ngFor="let prod of productosFiltrados">
+
+      <ion-item detail="false">
+        <ion-thumbnail slot="start">
+          <img [src]="prod.imagen ? 'http://localhost:4000/uploads/' + prod.imagen : 'assets/placeholder-food.svg'">
+        </ion-thumbnail>
+
+        <ion-label>
+          <h2>{{ prod.nombre }}</h2>
+          <p class="desc">{{ prod.descripcion }}</p>
+          <p class="price">S/. {{ prod.precio | number:'1.2-2' }}</p>
+        </ion-label>
+
+        <ion-button slot="end" fill="clear" (click)="agregarAlCarrito(prod)" [disabled]="!localAbierto">
+          <ion-icon slot="icon-only" name="add-circle-outline" size="large"></ion-icon>
+        </ion-button>
+      </ion-item>
+
+    </ion-item-sliding>
+  </ion-list>
+
+  <div *ngIf="productosFiltrados.length === 0" class="ion-text-center ion-padding text-muted">
+    No hay productos disponibles.
+  </div>
+
+</ion-content>

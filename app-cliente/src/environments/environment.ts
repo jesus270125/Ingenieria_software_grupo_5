@@ -4,7 +4,9 @@
 
 export const environment = {
   production: false,
-  apiUrl: 'http://localhost:4000/api'   // Ajusta según tu servidor
+  apiUrl: 'http://localhost:4000/api',   // Ajusta según tu servidor
+  socketUrl: 'http://localhost:4000',
+  googleMapsApiKey: '' // Pon aquí tu API Key de Google Maps en desarrollo
 };
 
 /*

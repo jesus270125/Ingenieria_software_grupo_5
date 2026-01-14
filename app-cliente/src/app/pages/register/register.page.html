@@ -37,6 +37,28 @@
           </ion-input>
         </ion-item>
 
+        <!-- DNI / RUC -->
+        <ion-item lines="none" class="custom-input">
+          <ion-icon name="card-outline" slot="start" class="input-icon"></ion-icon>
+          <ion-label position="stacked">DNI / RUC</ion-label>
+          <ion-input
+            type="text"
+            placeholder="Documento de Identidad"
+            [(ngModel)]="dni_ruc">
+          </ion-input>
+        </ion-item>
+        
+        <!-- DIRECCIÓN -->
+        <ion-item lines="none" class="custom-input">
+          <ion-icon name="location-outline" slot="start" class="input-icon"></ion-icon>
+          <ion-label position="stacked">Dirección</ion-label>
+          <ion-input
+            type="text"
+            placeholder="Tu dirección completa"
+            [(ngModel)]="direccion">
+          </ion-input>
+        </ion-item>
+
         <!-- TELÉFONO -->
         <ion-item lines="none" class="custom-input">
           <ion-icon name="call-outline" slot="start" class="input-icon"></ion-icon>

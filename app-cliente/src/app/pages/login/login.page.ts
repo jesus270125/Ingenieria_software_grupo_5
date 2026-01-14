@@ -59,12 +59,29 @@ export class LoginPage implements AfterViewInit {
           return;
         }
 
-        localStorage.setItem('token', res.token);
+        // Guardar token y usuario mediante AuthService
+        try {
+          this.auth.saveToken(res.token);
+        } catch (e) {
+          // fallback directo si saveToken no está disponible
+          localStorage.setItem('token', res.token);
+        }
+        try {
+          if (res.usuario) this.auth.saveUser(res.usuario);
+        } catch (e) {
+          localStorage.setItem('usuario', JSON.stringify(res.usuario || null));
+        }
         localStorage.setItem('rol', res.rol);
+        if (res.refreshToken) {
+          localStorage.setItem('refresh_token', res.refreshToken);
+        }
 
         // 👇 limpia también después de login
         this.correo = '';
         this.password = '';
+
+        // Quitar foco del elemento activo antes de navegar para evitar warnings ARIA
+        try { (document.activeElement as HTMLElement | null)?.blur(); } catch (e) { /* ignore */ }
 
         this.router.navigate(['/home']);
       },
@@ -76,7 +93,13 @@ export class LoginPage implements AfterViewInit {
   }
 
   irARegistro() {
+    try { (document.activeElement as HTMLElement | null)?.blur(); } catch (e) { /* ignore */ }
     this.router.navigate(['/register']);
+  }
+
+  // Al salir de la vista, aseguramos que nada quede enfocado dentro de esta página
+  ionViewWillLeave() {
+    try { (document.activeElement as HTMLElement | null)?.blur(); } catch (e) { /* ignore */ }
   }
 }
 

@@ -1,0 +1,143 @@
+.loading-state {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  min-height: 200px;
+}
+
+.ticket-detalle {
+  padding: 16px;
+}
+
+.header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 8px;
+}
+
+.info-row {
+  display: flex;
+  gap: 8px;
+  flex-wrap: wrap;
+  margin-bottom: 16px;
+
+  ion-chip {
+    ion-icon {
+      margin-right: 4px;
+    }
+  }
+}
+
+.descripcion-section {
+  margin: 20px 0;
+  padding: 16px;
+  background: var(--ion-color-light);
+  border-radius: 8px;
+
+  h3 {
+    margin: 0 0 8px 0;
+    color: var(--ion-color-dark);
+    font-size: 1rem;
+  }
+
+  p {
+    margin: 0;
+    color: var(--ion-color-medium-shade);
+    line-height: 1.6;
+  }
+}
+
+.info-section {
+  margin-top: 20px;
+
+  .info-item {
+    display: flex;
+    gap: 12px;
+    align-items: flex-start;
+    padding: 12px 0;
+    border-bottom: 1px solid var(--ion-color-light);
+
+    &:last-child {
+      border-bottom: none;
+    }
+
+    ion-icon {
+      font-size: 20px;
+      color: var(--ion-color-primary);
+      margin-top: 2px;
+    }
+
+    div {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      gap: 4px;
+
+      strong {
+        color: var(--ion-color-dark);
+        font-size: 0.9rem;
+      }
+
+      span {
+        color: var(--ion-color-medium);
+        font-size: 0.85rem;
+      }
+    }
+  }
+}
+
+.respuesta-item {
+  padding: 12px;
+  margin-bottom: 12px;
+  background: var(--ion-color-light);
+  border-radius: 8px;
+  border-left: 3px solid var(--ion-color-primary);
+
+  &:last-child {
+    margin-bottom: 0;
+  }
+
+  .respuesta-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+
+    strong {
+      color: var(--ion-color-dark);
+      font-size: 0.9rem;
+    }
+
+    .fecha {
+      color: var(--ion-color-medium);
+      font-size: 0.75rem;
+    }
+  }
+
+  .respuesta-texto {
+    margin: 0;
+    color: var(--ion-color-medium-shade);
+    line-height: 1.5;
+  }
+}
+
+.no-respuestas {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 40px 20px;
+  text-align: center;
+
+  ion-icon {
+    font-size: 60px;
+    color: var(--ion-color-medium);
+    margin-bottom: 16px;
+  }
+
+  p {
+    color: var(--ion-color-medium);
+    margin: 0;
+  }
+}

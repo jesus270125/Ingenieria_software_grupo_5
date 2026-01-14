@@ -1,0 +1,296 @@
+<div class="breadcrumb">
+    Panel / <strong>Historial de Pedidos</strong>
+</div>
+
+<div class="page-header">
+    <h1 class="page-title">Historial de Pedidos</h1>
+    <p style="color: var(--text-muted); margin-top: 5px;">
+        Consulta pedidos entregados y cancelados con filtros avanzados
+    </p>
+</div>
+
+<!-- Estadísticas Rápidas -->
+<div class="stats-row">
+    <div class="stat-card stat-total">
+        <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M2.25 2.25a.75.75 0 000 1.5h1.386c.17 0 .318.114.362.278l2.558 9.592a3.752 3.752 0 00-2.806 3.63c0 .414.336.75.75.75h15.75a.75.75 0 000-1.5H5.378A2.25 2.25 0 017.5 15h11.218a.75.75 0 00.674-.421 60.358 60.358 0 002.96-7.228.75.75 0 00-.525-.965A60.864 60.864 0 005.68 4.509l-.232-.867A1.875 1.875 0 003.636 2.25H2.25zM3.75 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0zM16.5 20.25a1.5 1.5 0 113 0 1.5 1.5 0 01-3 0z" />
+            </svg>
+        </div>
+        <div class="stat-info">
+            <div class="stat-label">Total Pedidos</div>
+            <div class="stat-value">{{ getTotalPedidos() }}</div>
+        </div>
+    </div>
+    <div class="stat-card stat-ingresos">
+        <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M10.464 8.746c.227-.18.497-.311.786-.394v2.795a2.252 2.252 0 01-.786-.393c-.394-.313-.546-.681-.546-1.004 0-.323.152-.691.546-1.004zM12.75 15.662v-2.824c.347.085.664.228.921.421.427.32.579.686.579.991 0 .305-.152.671-.579.991a2.534 2.534 0 01-.921.42z" />
+                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zM12.75 6a.75.75 0 00-1.5 0v.816a3.836 3.836 0 00-1.72.756c-.712.566-1.112 1.35-1.112 2.178 0 .829.4 1.612 1.113 2.178.502.4 1.102.647 1.719.756v2.978a2.536 2.536 0 01-.921-.421l-.879-.66a.75.75 0 00-.9 1.2l.879.66c.533.4 1.169.645 1.821.75V18a.75.75 0 001.5 0v-.81a4.124 4.124 0 001.821-.749c.745-.559 1.179-1.344 1.179-2.191 0-.847-.434-1.632-1.179-2.191a4.122 4.122 0 00-1.821-.75V8.354c.29.082.559.213.786.393l.415.33a.75.75 0 00.933-1.175l-.415-.33a3.836 3.836 0 00-1.719-.755V6z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        <div class="stat-info">
+            <div class="stat-label">Ingresos Totales</div>
+            <div class="stat-value">S/. {{ getTotalIngresos() | number:'1.2-2' }}</div>
+        </div>
+    </div>
+    <div class="stat-card stat-entregados">
+        <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        <div class="stat-info">
+            <div class="stat-label">Entregados</div>
+            <div class="stat-value">{{ getPedidosEntregados() }}</div>
+        </div>
+    </div>
+    <div class="stat-card stat-cancelados">
+        <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        <div class="stat-info">
+            <div class="stat-label">Cancelados</div>
+            <div class="stat-value">{{ getPedidosCancelados() }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="card filters-card">
+    <div class="filters-header">
+        <div class="filters-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M3.792 2.938A49.069 49.069 0 0112 2.25c2.797 0 5.54.236 8.209.688a1.857 1.857 0 011.541 1.836v1.044a3 3 0 01-.879 2.121l-6.182 6.182a1.5 1.5 0 00-.439 1.061v2.927a3 3 0 01-1.658 2.684l-1.757.878A.75.75 0 019.75 21v-5.818a1.5 1.5 0 00-.44-1.06L3.13 7.938a3 3 0 01-.879-2.121V4.774c0-.897.64-1.683 1.542-1.836z" clip-rule="evenodd" />
+            </svg>
+            <h3>Filtros de Búsqueda</h3>
+        </div>
+        <button class="btn btn-clear" (click)="limpiarFiltros()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clip-rule="evenodd" />
+            </svg>
+            Limpiar
+        </button>
+    </div>
+    
+    <div class="filters-grid">
+        <div class="filter-group">
+            <label>Estado</label>
+            <select [(ngModel)]="estadoFiltro" (change)="aplicarFiltros()" class="form-select">
+                <option value="todos">Todos</option>
+                <option value="entregado">Entregados</option>
+                <option value="cancelado">Cancelados</option>
+            </select>
+        </div>
+
+        <div class="filter-group">
+            <label>Desde</label>
+            <input type="date" [(ngModel)]="fechaInicio" (change)="aplicarFiltros()" class="form-input">
+        </div>
+
+        <div class="filter-group">
+            <label>Hasta</label>
+            <input type="date" [(ngModel)]="fechaFin" (change)="aplicarFiltros()" class="form-input">
+        </div>
+
+        <div class="filter-group">
+            <label>Buscar Cliente</label>
+            <input type="text" [(ngModel)]="busquedaCliente" (input)="aplicarFiltros()" 
+                   placeholder="Nombre del cliente..." class="form-input">
+        </div>
+    </div>
+</div>
+
+<!-- Loader -->
+<div *ngIf="loading" class="loader-container">
+    <div class="loader"></div>
+</div>
+
+<!-- Tabla de Historial -->
+<div class="card" *ngIf="!loading">
+    <div class="table-header">
+        <div class="table-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.625 1.5H9a3.75 3.75 0 013.75 3.75v1.875c0 1.036.84 1.875 1.875 1.875H16.5a3.75 3.75 0 013.75 3.75v7.875c0 1.035-.84 1.875-1.875 1.875H5.625a1.875 1.875 0 01-1.875-1.875V3.375c0-1.036.84-1.875 1.875-1.875zm5.845 17.03a.75.75 0 001.06 0l3-3a.75.75 0 10-1.06-1.06l-1.72 1.72V12a.75.75 0 00-1.5 0v4.19l-1.72-1.72a.75.75 0 00-1.06 1.06l3 3z" clip-rule="evenodd" />
+                <path d="M14.25 5.25a5.23 5.23 0 00-1.279-3.434 9.768 9.768 0 016.963 6.963A5.23 5.23 0 0016.5 7.5h-1.875a.375.375 0 01-.375-.375V5.25z" />
+            </svg>
+            <h3>Pedidos <span class="count">({{ pedidosFiltrados.length }})</span></h3>
+        </div>
+        <button class="btn btn-export" (click)="exportarCSV()" *ngIf="pedidosFiltrados.length > 0">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM21 9.375A.375.375 0 0020.625 9h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zM10.875 18.75a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5zM3.375 15h7.5a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375zm0-3.75h7.5a.375.375 0 00.375-.375v-1.5A.375.375 0 0010.875 9h-7.5A.375.375 0 003 9.375v1.5c0 .207.168.375.375.375z" clip-rule="evenodd" />
+            </svg>
+            Exportar CSV
+        </button>
+    </div>
+
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Fecha</th>
+                    <th>Cliente</th>
+                    <th>Dirección</th>
+                    <th>Total</th>
+                    <th>Estado</th>
+                    <th>Método Pago</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let pedido of pedidosFiltrados">
+                    <td><strong>#{{ pedido.id }}</strong></td>
+                    <td>{{ pedido.created_at | date: 'dd/MM/yyyy HH:mm' }}</td>
+                    <td>{{ pedido.usuario_nombre }}</td>
+                    <td class="direccion-cell">{{ pedido.direccion }}</td>
+                    <td><strong>S/. {{ toNumber(pedido.total) | number:'1.2-2' }}</strong></td>
+                    <td>
+                        <span class="badge" [ngClass]="getEstadoBadgeClass(pedido.estado)">
+                            {{ pedido.estado }}
+                        </span>
+                    </td>
+                    <td>{{ pedido.metodo_pago }}</td>
+                    <td>
+                        <button class="btn-action btn-view" (click)="verDetalles(pedido)" title="Ver detalles">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+                                <path fill-rule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 010-1.113zM17.25 12a5.25 5.25 0 11-10.5 0 5.25 5.25 0 0110.5 0z" clip-rule="evenodd" />
+                            </svg>
+                            Ver
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div *ngIf="pedidosFiltrados.length === 0" class="empty-state">
+            <p>No hay pedidos que coincidan con los filtros</p>
+        </div>
+    </div>
+</div>
+
+<!-- Panel Lateral de Detalles -->
+<div class="panel-overlay" *ngIf="showDetailsModal" (click)="closeDetailsModal()" [@fadeAnimation]></div>
+
+<div class="side-panel" *ngIf="showDetailsModal" [@slideAnimation]>
+    <!-- Header del Panel -->
+    <div class="panel-header">
+        <div class="panel-header-content">
+            <div class="panel-icon">
+                📦
+            </div>
+            <div class="panel-title">
+                <h2>Pedido #{{ selectedPedido?.id }}</h2>
+                <p>{{ selectedPedido?.created_at | date: 'dd/MM/yyyy HH:mm' }}</p>
+            </div>
+        </div>
+        <button class="panel-close" (click)="closeDetailsModal()">
+            ✕
+        </button>
+    </div>
+
+    <!-- Contenido del Panel -->
+    <div class="panel-body" *ngIf="detallesPedido">
+        <!-- Información del Cliente -->
+        <div class="panel-section">
+            <div class="section-header">
+                <span class="section-icon">👤</span>
+                <h3>Información del Cliente</h3>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Nombre</span>
+                <span class="info-value">{{ selectedPedido?.usuario_nombre }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Dirección</span>
+                <span class="info-value">{{ selectedPedido?.direccion }}</span>
+            </div>
+        </div>
+
+        <!-- Estado del Pedido -->
+        <div class="panel-section">
+            <div class="section-header">
+                <span class="section-icon">📋</span>
+                <h3>Estado del Pedido</h3>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Estado</span>
+                <span class="badge" [ngClass]="getEstadoBadgeClass(selectedPedido?.estado || '')">
+                    {{ selectedPedido?.estado }}
+                </span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Método de Pago</span>
+                <span class="info-value">{{ selectedPedido?.metodo_pago }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Estado Pago</span>
+                <span class="info-value">{{ selectedPedido?.estado_pago }}</span>
+            </div>
+        </div>
+
+        <!-- Productos -->
+        <div class="panel-section">
+            <div class="section-header">
+                <span class="section-icon">🛒</span>
+                <h3>Productos del Pedido</h3>
+            </div>
+            <div class="products-list">
+                <div class="product-item" *ngFor="let item of detallesPedido.items">
+                    <div class="product-info">
+                        <div class="product-name">{{ item.producto_nombre }}</div>
+                        <div class="product-details">
+                            <span class="product-quantity">x{{ item.cantidad }}</span>
+                            <span class="product-price">S/. {{ toNumber(item.precio) | number:'1.2-2' }}</span>
+                        </div>
+                    </div>
+                    <div class="product-total">
+                        S/. {{ toNumber(item.cantidad * item.precio) | number:'1.2-2' }}
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Totales -->
+        <div class="panel-section totals-section">
+            <div class="section-header">
+                <span class="section-icon">💰</span>
+                <h3>Resumen de Pago</h3>
+            </div>
+            <div class="total-row">
+                <span>Subtotal</span>
+                <span>S/. {{ toNumber(selectedPedido?.subtotal) | number:'1.2-2' }}</span>
+            </div>
+            <div class="total-row">
+                <span>Envío</span>
+                <span>S/. {{ toNumber(selectedPedido?.envio) | number:'1.2-2' }}</span>
+            </div>
+            <div class="total-row total-final">
+                <span>Total</span>
+                <span>S/. {{ toNumber(selectedPedido?.total) | number:'1.2-2' }}</span>
+            </div>
+        </div>
+
+        <!-- Motorizado (si aplica) -->
+        <div class="panel-section" *ngIf="selectedPedido?.motorizado_nombre">
+            <div class="section-header">
+                <span class="section-icon">🏍️</span>
+                <h3>Motorizado Asignado</h3>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Nombre</span>
+                <span class="info-value">{{ selectedPedido?.motorizado_nombre }}</span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer del Panel -->
+    <div class="panel-footer">
+        <button class="btn btn-close" (click)="closeDetailsModal()">
+            Cerrar
+        </button>
+    </div>
+</div>

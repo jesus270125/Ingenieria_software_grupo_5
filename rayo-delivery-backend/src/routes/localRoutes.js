@@ -5,8 +5,8 @@ const auth = require("../middlewares/auth");
 const verifyRole = require("../middlewares/verifyRole");
 
 // Solo admin crea o edita
-router.post("/", auth, verifyRole("administrador"), controller.create);
-router.patch("/:id", auth, verifyRole("administrador"), controller.update);
+router.post("/", auth, verifyRole("administrador"), controller.uploadMiddleware, controller.create);
+router.patch("/:id", auth, verifyRole("administrador"), controller.uploadMiddleware, controller.update);
 
 // Público
 router.get("/", controller.list);

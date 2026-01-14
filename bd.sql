@@ -16,6 +16,16 @@ CREATE TABLE usuarios (
   fecha_registro TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
 
+CREATE TABLE refresh_tokens (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  token VARCHAR(255) NOT NULL,
+  user_id INT NOT NULL,
+  expires_at DATETIME NOT NULL,
+  created_at DATETIME DEFAULT CURRENT_TIMESTAMP,
+  INDEX (token),
+  FOREIGN KEY (user_id) REFERENCES usuarios(id) ON DELETE CASCADE
+);
+
 SELECT * FROM usuarios;
 TRUNCATE TABLE usuarios;
 SELECT * FROM locales;
@@ -55,7 +65,10 @@ CREATE TABLE catalogo_versiones (
     id INT AUTO_INCREMENT PRIMARY KEY,
     tipo VARCHAR(20),               -- local o producto
     referencia_id INT,              -- id del local o producto modificado
+    accion VARCHAR(50),             -- CREACION, EDICION, ELIMINACION
     descripcion VARCHAR(255),
+    datos_anteriores JSON,          -- Snapshot completo antes del cambio
+    datos_nuevos JSON,              -- Snapshot completo después del cambio
     usuario VARCHAR(100),
     fecha TIMESTAMP DEFAULT CURRENT_TIMESTAMP
 );
@@ -83,10 +96,31 @@ CREATE TABLE IF NOT EXISTS detalle_pedidos (
   FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE
 );
 
+CREATE TABLE IF NOT EXISTS historial_estados_pedido (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  pedido_id INT NOT NULL,
+  estado_anterior VARCHAR(50),
+  estado_nuevo VARCHAR(50) NOT NULL,
+  observaciones TEXT,
+  fecha_cambio TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE,
+  INDEX idx_pedido (pedido_id),
+  INDEX idx_fecha (fecha_cambio)
+);
+
 SET FOREIGN_KEY_CHECKS = 0;
 TRUNCATE TABLE productos;
 TRUNCATE TABLE locales;
 SET FOREIGN_KEY_CHECKS = 1;
+
+ALTER TABLE pedidos 
+ADD COLUMN codigo_entrega VARCHAR(6) NULL AFTER estado,
+ADD COLUMN fecha_entrega DATETIME NULL AFTER codigo_entrega;
+
+-- Agregar columnas para promociones (RF-24)
+ALTER TABLE pedidos
+ADD COLUMN codigo_promocional VARCHAR(50) NULL AFTER total,
+ADD COLUMN descuento DECIMAL(10,2) DEFAULT 0 AFTER codigo_promocional;
 
 INSERT INTO locales (nombre, direccion, categoria, hora_apertura, hora_cierre) VALUES
 ('La Esquina Del Sabor','Av. Principal 100','Comida rápida','08:00:00','23:00:00'),
@@ -244,3 +278,163 @@ ALTER TABLE pedidos ADD CONSTRAINT fk_motorizado FOREIGN KEY (motorizado_id) REF
 ALTER TABLE usuarios ADD COLUMN disponible TINYINT(1) DEFAULT 1; -- 1: Disponible, 0: No disponible
 ALTER TABLE usuarios ADD COLUMN lat DOUBLE NULL;
 ALTER TABLE usuarios ADD COLUMN lng DOUBLE NULL;
+
+USE rayo_delivery;
+
+-- Agrega columna para el código de 6 dígitos
+ALTER TABLE usuarios ADD COLUMN recovery_code VARCHAR(6) NULL;
+
+-- Agrega columna para la fecha de expiración del código
+ALTER TABLE usuarios ADD COLUMN recovery_expires TIMESTAMP NULL;
+
+USE rayo_delivery;
+ALTER TABLE productos ADD COLUMN estado ENUM('activo', 'inactivo') DEFAULT 'activo';
+ALTER TABLE pedidos ADD COLUMN estado_pago VARCHAR(20) DEFAULT 'pendiente' AFTER estado;
+
+ALTER TABLE pedidos ADD COLUMN motorizado_id INT NULL;
+ALTER TABLE pedidos ADD CONSTRAINT fk_motorizado FOREIGN KEY (motorizado_id) REFERENCES usuarios(id);
+
+ALTER TABLE pedidos
+  ADD COLUMN latitude DOUBLE NULL,
+  ADD COLUMN longitude DOUBLE NULL;
+
+-- ==========================================
+-- RF-17: CONFIGURACIÓN DEL SISTEMA
+-- ==========================================
+CREATE TABLE IF NOT EXISTS configuracion (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  clave VARCHAR(100) UNIQUE NOT NULL,
+  valor TEXT NOT NULL,
+  descripcion VARCHAR(255),
+  tipo ENUM('numero', 'texto', 'boolean') DEFAULT 'texto',
+  actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP
+);
+
+-- Insertar configuraciones por defecto
+INSERT INTO configuracion (clave, valor, descripcion, tipo) VALUES
+('tarifa_base_envio', '5.00', 'Tarifa base de envío en soles', 'numero'),
+('tarifa_por_km', '1.50', 'Tarifa adicional por kilómetro', 'numero'),
+('radio_entrega_km', '10', 'Radio máximo de entrega en kilómetros', 'numero'),
+('tiempo_preparacion_min', '15', 'Tiempo estimado de preparación en minutos', 'numero'),
+('permitir_pedidos_programados', 'true', 'Permitir pedidos programados', 'boolean'),
+('telefono_soporte', '999999999', 'Teléfono de soporte', 'texto'),
+('email_soporte', 'soporte@rayodelivery.com', 'Email de soporte', 'texto'),
+('nombre_app', 'Rayo Delivery', 'Nombre de la aplicación', 'texto'),
+('mensaje_bienvenida', 'Bienvenido a Rayo Delivery', 'Mensaje de bienvenida', 'texto')
+ON DUPLICATE KEY UPDATE valor=valor;
+
+-- ==========================================
+-- RF-22: EVALUACIONES Y COMENTARIOS
+-- ==========================================
+CREATE TABLE IF NOT EXISTS evaluaciones (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  pedido_id INT NOT NULL,
+  cliente_id INT NOT NULL,
+  motorizado_id INT NOT NULL,
+  calificacion INT NOT NULL CHECK (calificacion >= 1 AND calificacion <= 5),
+  comentario TEXT,
+  respuesta_admin TEXT,
+  accion_tomada VARCHAR(255),
+  fecha_evaluacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  fecha_respuesta TIMESTAMP NULL,
+  FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE,
+  FOREIGN KEY (cliente_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+  FOREIGN KEY (motorizado_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+  INDEX idx_motorizado (motorizado_id),
+  INDEX idx_pedido (pedido_id),
+  INDEX idx_calificacion (calificacion)
+);
+
+-- ==========================================
+-- RF-23: REGISTRO DE INCIDENCIAS
+-- ==========================================
+CREATE TABLE IF NOT EXISTS incidencias (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  pedido_id INT NOT NULL,
+  usuario_id INT NOT NULL,
+  tipo_incidencia ENUM('demora', 'mal_estado', 'perdida', 'otro') NOT NULL,
+  descripcion TEXT NOT NULL,
+  foto_url VARCHAR(255),
+  estado ENUM('pendiente', 'en_revision', 'resuelto') DEFAULT 'pendiente',
+  respuesta_admin TEXT,
+  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  FOREIGN KEY (pedido_id) REFERENCES pedidos(id) ON DELETE CASCADE,
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+  INDEX idx_pedido (pedido_id),
+  INDEX idx_usuario (usuario_id),
+  INDEX idx_estado (estado),
+  INDEX idx_tipo (tipo_incidencia)
+);
+
+-- Tabla de Promociones y Códigos de Descuento (RF-24)
+CREATE TABLE promociones (
+  id INT PRIMARY KEY AUTO_INCREMENT,
+  codigo VARCHAR(50) NOT NULL UNIQUE,
+  descripcion VARCHAR(255) NOT NULL,
+  tipo_descuento ENUM('porcentaje', 'monto_fijo') NOT NULL,
+  valor DECIMAL(10,2) NOT NULL,
+  fecha_inicio DATETIME NOT NULL,
+  fecha_fin DATETIME NOT NULL,
+  estado ENUM('activa', 'inactiva', 'expirada') DEFAULT 'activa',
+  uso_maximo INT DEFAULT NULL COMMENT 'NULL = uso ilimitado',
+  usos_actuales INT DEFAULT 0,
+  monto_minimo DECIMAL(10,2) DEFAULT 0 COMMENT 'Monto mínimo del pedido para aplicar',
+  creado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  actualizado_en TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  INDEX idx_codigo (codigo),
+  INDEX idx_estado (estado),
+  INDEX idx_fechas (fecha_inicio, fecha_fin)
+);
+
+-- ==========================================
+-- RF-28: SISTEMA DE TICKETS DE SOPORTE
+-- ==========================================
+CREATE TABLE IF NOT EXISTS tickets_soporte (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  usuario_id INT NOT NULL,
+  asunto VARCHAR(255) NOT NULL,
+  categoria ENUM('consulta', 'problema_tecnico', 'pedido', 'pago', 'cuenta', 'otro') NOT NULL DEFAULT 'consulta',
+  descripcion TEXT NOT NULL,
+  estado ENUM('abierto', 'en_proceso', 'resuelto', 'cerrado') DEFAULT 'abierto',
+  prioridad ENUM('baja', 'media', 'alta', 'urgente') DEFAULT 'media',
+  asignado_a INT NULL COMMENT 'ID del administrador asignado',
+  respuesta_admin TEXT,
+  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  fecha_actualizacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
+  fecha_resolucion TIMESTAMP NULL,
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+  FOREIGN KEY (asignado_a) REFERENCES usuarios(id) ON DELETE SET NULL,
+  INDEX idx_usuario (usuario_id),
+  INDEX idx_estado (estado),
+  INDEX idx_categoria (categoria),
+  INDEX idx_asignado (asignado_a),
+  INDEX idx_fecha (fecha_creacion)
+);
+
+-- Tabla de respuestas para tickets
+CREATE TABLE IF NOT EXISTS ticket_respuestas (
+  id INT AUTO_INCREMENT PRIMARY KEY,
+  ticket_id INT NOT NULL,
+  usuario_id INT NOT NULL,
+  respuesta TEXT NOT NULL,
+  fecha_creacion TIMESTAMP DEFAULT CURRENT_TIMESTAMP,
+  FOREIGN KEY (ticket_id) REFERENCES tickets_soporte(id) ON DELETE CASCADE,
+  FOREIGN KEY (usuario_id) REFERENCES usuarios(id) ON DELETE CASCADE,
+  INDEX idx_ticket (ticket_id),
+  INDEX idx_fecha (fecha_creacion)
+);
+
+ALTER TABLE catalogo_versiones 
+ADD COLUMN accion VARCHAR(50) AFTER referencia_id,
+ADD COLUMN datos_anteriores JSON AFTER descripcion,
+ADD COLUMN datos_nuevos JSON AFTER datos_anteriores;
+
+SHOW COLUMNS FROM catalogo_versiones;
+
+UPDATE catalogo_versiones 
+SET accion = 'EDICION' 
+WHERE accion IS NULL OR accion = '';
+
+SHOW COLUMNS FROM catalogo_versiones;
+SELECT * FROM catalogo_versiones ORDER BY fecha DESC LIMIT 5;

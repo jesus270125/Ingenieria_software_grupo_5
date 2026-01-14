@@ -14,22 +14,29 @@
         <table class="custom-table">
             <thead>
                 <tr>
-                    <th>Tipo de Acción</th>
-                    <th>ID Referencia</th>
+                    <th>Tipo</th>
+                    <th>Acción</th>
+                    <th>ID Ref.</th>
                     <th>Descripción del Cambio</th>
                     <th>Usuario Responsable</th>
                     <th>Fecha y Hora</th>
+                    <th style="text-align: right;">Acciones</th>
                 </tr>
             </thead>
             <tbody>
 
                 <tr *ngFor="let v of versiones">
                     <td>
+                        <span class="badge-type">{{ v.tipo }}</span>
+                    </td>
+
+                    <td>
                         <span class="badge-action"
-                            [class.create]="v.tipo === 'CREACION' || v.tipo === 'ALTA'"
-                            [class.update]="v.tipo === 'EDICION' || v.tipo === 'MODIFICACION'"
-                            [class.delete]="v.tipo === 'ELIMINACION' || v.tipo === 'BAJA'">
-                            {{ v.tipo }}
+                            [class.create]="v.accion === 'CREACION' || (!v.accion && v.descripcion?.includes('Creación'))"
+                            [class.update]="v.accion === 'EDICION' || (!v.accion && v.descripcion?.includes('Edición'))"
+                            [class.delete]="v.accion === 'ELIMINACION' || (!v.accion && v.descripcion?.includes('Eliminación'))"
+                            [class.revert]="v.accion === 'REVERSION'">
+                            {{ v.accion || (v.descripcion?.includes('Creación') ? 'CREACION' : v.descripcion?.includes('Edición') ? 'EDICION' : v.descripcion?.includes('Eliminación') ? 'ELIMINACION' : 'REGISTRO') }}
                         </span>
                     </td>
 
@@ -51,11 +58,23 @@
                         </div>
                     </td>
 
-                    <td class="date-cell">{{ v.fecha }}</td>
+                    <td class="date-cell">{{ formatearFecha(v.fecha) }}</td>
+
+                    <td style="text-align: right;">
+                        <button 
+                            *ngIf="puedeRevertir(v)" 
+                            class="btn-revert"
+                            (click)="revertir(v)"
+                            [disabled]="cargando"
+                            title="Revertir a esta versión">
+                            ↶ Revertir
+                        </button>
+                        <span *ngIf="!puedeRevertir(v)" class="text-muted-small">-</span>
+                    </td>
                 </tr>
 
                 <tr *ngIf="versiones.length === 0">
-                    <td colspan="5" class="empty-state">
+                    <td colspan="7" class="empty-state">
                         No hay registros en el historial.
                     </td>
                 </tr>

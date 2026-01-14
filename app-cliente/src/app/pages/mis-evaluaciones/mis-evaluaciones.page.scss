@@ -1,0 +1,160 @@
+.loading-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  color: #6b7280;
+}
+
+.empty-state {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 60px 20px;
+  text-align: center;
+}
+
+.empty-state h2 {
+  margin: 20px 0 10px;
+  color: #374151;
+  font-size: 1.25rem;
+}
+
+.empty-state p {
+  margin: 0;
+  color: #9ca3af;
+  max-width: 300px;
+}
+
+.evaluaciones-list {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+  padding-bottom: 20px;
+}
+
+.evaluacion-card {
+  border-radius: 12px;
+  box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
+.card-header-content {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-start;
+  gap: 16px;
+}
+
+.rating-badge {
+  display: flex;
+  flex-direction: column;
+  align-items: flex-end;
+  gap: 4px;
+}
+
+.stars {
+  display: flex;
+  gap: 2px;
+}
+
+.stars ion-icon {
+  font-size: 18px;
+}
+
+.rating-number {
+  font-size: 14px;
+  font-weight: 600;
+  color: #F59E0B;
+}
+
+.fecha {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  color: #9ca3af;
+  font-size: 0.875rem;
+  margin-bottom: 16px;
+}
+
+.seccion {
+  margin-top: 16px;
+  padding-top: 16px;
+  border-top: 1px solid #e5e7eb;
+}
+
+.seccion h3 {
+  margin: 0 0 8px 0;
+  font-size: 0.95rem;
+  font-weight: 600;
+  color: #374151;
+  display: flex;
+  align-items: center;
+  gap: 6px;
+}
+
+.comentario-texto {
+  margin: 0;
+  color: #4b5563;
+  line-height: 1.5;
+  background: #f9fafb;
+  padding: 12px;
+  border-radius: 8px;
+}
+
+.respuesta-admin {
+  background: #eff6ff;
+  padding: 16px;
+  border-radius: 8px;
+  border-left: 3px solid #3b82f6;
+  margin-top: 16px;
+}
+
+.respuesta-admin h3 {
+  color: #1e40af;
+  margin-bottom: 12px;
+}
+
+.respuesta-texto {
+  margin: 0 0 12px 0;
+  color: #1e3a8a;
+  line-height: 1.5;
+}
+
+.accion-tomada {
+  background: rgba(59, 130, 246, 0.1);
+  padding: 10px 12px;
+  border-radius: 6px;
+  margin-top: 12px;
+  font-size: 0.875rem;
+  color: #1e40af;
+}
+
+.accion-tomada strong {
+  font-weight: 600;
+}
+
+.fecha-respuesta {
+  margin-top: 12px;
+  font-size: 0.8rem;
+  color: #60a5fa;
+  font-style: italic;
+}
+
+.pendiente {
+  background: #fffbeb;
+  padding: 12px;
+  border-radius: 8px;
+  border-left: 3px solid #f59e0b;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  color: #92400e;
+  font-size: 0.875rem;
+}
+
+.pendiente ion-icon {
+  font-size: 20px;
+  color: #f59e0b;
+}

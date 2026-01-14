@@ -1,0 +1,91 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-button fill="clear" (click)="goHome()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+    <ion-title>Mis Evaluaciones</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="loading-container">
+    <ion-spinner></ion-spinner>
+    <p>Cargando evaluaciones...</p>
+  </div>
+
+  <!-- Sin evaluaciones -->
+  <div *ngIf="!isLoading && evaluaciones.length === 0" class="empty-state">
+    <div style="font-size: 64px; color: #d1d5db;">⭐</div>
+    <h2>No has realizado evaluaciones</h2>
+    <p>Tus evaluaciones aparecerán aquí después de completar tus pedidos</p>
+  </div>
+
+  <!-- Lista de evaluaciones -->
+  <div *ngIf="!isLoading && evaluaciones.length > 0" class="evaluaciones-list">
+    <ion-card *ngFor="let eval of evaluaciones" class="evaluacion-card">
+      <!-- Header con info del pedido -->
+      <ion-card-header>
+        <div class="card-header-content">
+          <div>
+            <ion-card-title>Pedido #{{ eval.pedido_numero }}</ion-card-title>
+            <ion-card-subtitle>
+              Motorizado: {{ eval.motorizado_nombre }}
+              <span *ngIf="eval.motorizado_placa"> ({{ eval.motorizado_placa }})</span>
+            </ion-card-subtitle>
+          </div>
+          <div class="rating-badge">
+            <div class="stars">
+              <span 
+                *ngFor="let i of getEstrellas(eval.calificacion)" 
+                [style.color]="i <= eval.calificacion ? '#F59E0B' : '#D1D5DB'"
+                style="font-size: 20px;">
+                {{ i <= eval.calificacion ? '⭐' : '☆' }}
+              </span>
+            </div>
+            <span class="rating-number">{{ eval.calificacion }}/5</span>
+          </div>
+        </div>
+      </ion-card-header>
+
+      <ion-card-content>
+        <!-- Fecha de evaluación -->
+        <div class="fecha">
+          <ion-icon name="time-outline"></ion-icon>
+          <span>{{ eval.fecha_evaluacion | date:'medium' }}</span>
+        </div>
+
+        <!-- Tu comentario -->
+        <div class="seccion" *ngIf="eval.comentario">
+          <h3>Tu comentario:</h3>
+          <p class="comentario-texto">{{ eval.comentario }}</p>
+        </div>
+
+        <!-- Respuesta del administrador -->
+        <div class="seccion respuesta-admin" *ngIf="eval.respuesta_admin">
+          <h3>
+            <ion-icon name="chatbox-outline"></ion-icon>
+            Respuesta del Administrador:
+          </h3>
+          <p class="respuesta-texto">{{ eval.respuesta_admin }}</p>
+          
+          <div *ngIf="eval.accion_tomada" class="accion-tomada">
+            <strong>Acción tomada:</strong> {{ eval.accion_tomada }}
+          </div>
+          
+          <div class="fecha-respuesta">
+            Respondido el {{ eval.fecha_respuesta | date:'medium' }}
+          </div>
+        </div>
+
+        <!-- Pendiente de respuesta -->
+        <div class="seccion pendiente" *ngIf="!eval.respuesta_admin">
+          <ion-icon name="time-outline"></ion-icon>
+          <span>Pendiente de respuesta del administrador</span>
+        </div>
+      </ion-card-content>
+    </ion-card>
+  </div>
+</ion-content>

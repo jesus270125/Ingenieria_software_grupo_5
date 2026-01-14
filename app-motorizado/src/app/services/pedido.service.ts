@@ -7,9 +7,10 @@ export interface Pedido {
     id: number;
     cliente: string;
     direccion_cliente: string;
+    telefono_cliente?: string;
     restaurante: string;
     direccion_restaurante: string;
-    estado: 'asignado' | 'en_camino_restaurante' | 'en_camino_cliente' | 'entregado';
+    estado: string; // Permitir cualquier valor que venga del backend
     detalles: any[];
     total: number;
     lat_restaurante?: number;
@@ -41,7 +42,17 @@ export class PedidoService {
         return this.http.put(`${this.motorizadoUrl}/disponibilidad`, { disponible });
     }
 
+    getPerfilMotorizado(): Observable<any> {
+        // RF21 - Obtener estado de disponibilidad actual
+        return this.http.get(`${this.motorizadoUrl}/perfil`);
+    }
+
     getPedido(id: number): Observable<Pedido> {
         return this.http.get<Pedido>(`${this.apiUrl}/${id}`);
+    }
+
+    // RF-15: Confirmar entrega con código
+    confirmarEntrega(pedidoId: number, codigo: string): Observable<any> {
+        return this.http.post(`${this.apiUrl}/${pedidoId}/confirmar-entrega`, { codigo });
     }
 }

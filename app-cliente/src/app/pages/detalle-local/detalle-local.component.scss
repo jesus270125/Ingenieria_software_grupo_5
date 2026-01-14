@@ -1,0 +1,75 @@
+.local-banner {
+    width: 100%;
+    height: 200px;
+    position: relative;
+
+    img {
+        width: 100%;
+        height: 100%;
+        object-fit: cover;
+    }
+
+    .overlay {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        right: 0;
+        background: linear-gradient(to top, rgba(0, 0, 0, 0.8), transparent);
+        padding: 20px;
+        color: white;
+
+        h1 {
+            margin: 0;
+            font-size: 1.5rem;
+            text-shadow: 1px 1px 3px rgba(0, 0, 0, 0.5);
+        }
+
+        p {
+            margin: 5px 0 0;
+            font-size: 0.9rem;
+            opacity: 0.9;
+            display: flex;
+            align-items: center;
+            gap: 5px;
+        }
+
+        .badgge {
+            position: absolute;
+            top: -140px;
+            /* Ajustar posición relativa */
+            right: 20px;
+            background: #F59E0B;
+            color: white;
+            padding: 4px 8px;
+            border-radius: 4px;
+            font-size: 0.8rem;
+        }
+    }
+}
+
+ion-thumbnail {
+    --size: 70px;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+.desc {
+    white-space: normal;
+    font-size: 0.85rem;
+    color: #666;
+    margin-bottom: 4px;
+    display: -webkit-box;
+    -webkit-line-clamp: 2;
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+}
+
+.price {
+    font-weight: bold;
+    color: #4F46E5;
+    font-size: 1rem;
+}
+
+ion-button {
+    --color: #4F46E5;
+}

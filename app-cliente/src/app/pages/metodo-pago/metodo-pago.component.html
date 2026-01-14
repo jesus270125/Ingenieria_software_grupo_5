@@ -1,0 +1,42 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/carrito" icon="chevron-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Método de Pago</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <h2 class="section-title">¿Cómo deseas pagar?</h2>
+
+  <ion-list lines="none">
+    <ion-radio-group [(ngModel)]="metodoSeleccionado">
+
+      <ion-item class="payment-option" [class.selected]="metodoSeleccionado === 'Efectivo'" (click)="seleccionar('Efectivo')">
+        <ion-icon slot="start" name="cash-outline" color="success"></ion-icon>
+        <ion-label>Efectivo</ion-label>
+        <ion-radio slot="end" value="Efectivo"></ion-radio>
+      </ion-item>
+
+      <ion-item class="payment-option" [class.selected]="metodoSeleccionado === 'Tarjeta'" (click)="seleccionar('Tarjeta')">
+        <ion-icon slot="start" name="card-outline" color="primary"></ion-icon>
+        <ion-label>Tarjeta (POS)</ion-label>
+        <ion-radio slot="end" value="Tarjeta"></ion-radio>
+      </ion-item>
+
+      <ion-item class="payment-option" [class.selected]="metodoSeleccionado === 'Yape'" (click)="seleccionar('Yape')">
+        <ion-icon slot="start" name="phone-portrait-outline" color="tertiary"></ion-icon>
+        <ion-label>Yape / Plin</ion-label>
+        <ion-radio slot="end" value="Yape"></ion-radio>
+      </ion-item>
+
+    </ion-radio-group>
+  </ion-list>
+
+  <ion-button expand="block" shape="round" class="ion-margin-top btn-continue" [disabled]="!metodoSeleccionado" (click)="continuar()">
+    Continuar y pagar
+  </ion-button>
+
+</ion-content>

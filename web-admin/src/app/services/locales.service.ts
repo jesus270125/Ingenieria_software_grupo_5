@@ -8,17 +8,17 @@ export class LocalesService {
 
   private API = 'http://localhost:4000/api/locales';
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   listar() {
     return this.http.get<any[]>(this.API);
   }
 
-  crear(data: any) {
+  crear(data: FormData | any) {
     return this.http.post(this.API, data);
   }
 
-  editar(id: number, data: any) {
+  editar(id: number, data: FormData | any) {
     return this.http.patch(`${this.API}/${id}`, data);
   }
 }

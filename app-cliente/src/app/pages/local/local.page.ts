@@ -1,7 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, RouterModule } from '@angular/router';
 import { LocalesService } from '../../services/locales';
-import { CarritoService } from '../../services/carrito.service';
 import { CommonModule } from '@angular/common';
 import {
   IonHeader, IonToolbar, IonTitle, IonContent, IonSearchbar, IonList,
@@ -49,14 +48,13 @@ export class LocalPage implements OnInit {
   productosOriginales: any[] = [];
   cargando = true;
   errorMsg: string | null = null;
-  items$ = this.carrito.items$;
+  // Carrito functionality removed
   showToast = false;
   toastMsg = '';
 
   constructor(
     private route: ActivatedRoute,
-    private localesService: LocalesService,
-    private carrito: CarritoService
+    private localesService: LocalesService
   ) {}
 
   ngOnInit() {
@@ -123,10 +121,5 @@ export class LocalPage implements OnInit {
     );
   }
 
-  agregarProducto(product: any) {
-    this.carrito.addProduct(product, 1);
-    this.toastMsg = `${product.nombre || product.name || 'Producto'} agregado al carrito`;
-    this.showToast = true;
-    setTimeout(() => this.showToast = false, 1800);
-  }
+  // agregarProducto removed
 }

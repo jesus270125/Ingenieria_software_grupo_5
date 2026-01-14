@@ -1,35 +1,87 @@
-<ion-header>
-  <ion-toolbar>
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
     <ion-buttons slot="start">
       <ion-back-button defaultHref="/home"></ion-back-button>
     </ion-buttons>
-    <ion-title>Carrito</ion-title>
+    <ion-title>Tu Pedido</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="eliminarTodo()">
+        <ion-icon slot="icon-only" name="trash-outline"></ion-icon>
+      </ion-button>
+    </ion-buttons>
   </ion-toolbar>
 </ion-header>
 
-<ion-content class="ion-padding">
+<ion-content class="ion-padding-vertical">
+
   <ng-container *ngIf="(items$ | async) as items">
-    <ion-list *ngIf="items.length; else empty">
-      <ion-item *ngFor="let it of items">
-        <ion-label>
-          <h3>{{ it.product.nombre || it.product.name }}</h3>
-          <p>{{ (it.product.precio || it.product.price) | number:'1.2-2' }} x {{ it.quantity }}</p>
-        </ion-label>
-        <ion-button fill="clear" (click)="decrementar(it)">-</ion-button>
-        <ion-button fill="clear" (click)="incrementar(it)">+</ion-button>
-        <ion-button color="danger" fill="clear" (click)="eliminar(it)">Eliminar</ion-button>
-      </ion-item>
-    </ion-list>
 
-    <ion-item lines="none">
-      <ion-label>Subtotal</ion-label>
-      <ion-note slot="end">S/ {{ subtotal() | number:'1.2-2' }}</ion-note>
-    </ion-item>
+    <div *ngIf="items.length; else empty" class="cart-container">
 
-    <ion-button expand="block" (click)="elegirMetodo()" [disabled]="items.length===0">Elegir método de pago</ion-button>
+      <ion-list lines="none">
+        <ion-item-sliding *ngFor="let it of items">
+
+          <ion-item class="cart-item">
+            <ion-thumbnail slot="start">
+              <img
+                [src]="it.product.imagen ? 'http://localhost:4000/uploads/' + it.product.imagen : 'assets/placeholder-food.svg'">
+            </ion-thumbnail>
+
+            <ion-label class="ion-text-wrap">
+              <h2>{{ it.product.nombre }}</h2>
+              <p>S/. {{ it.product.precio | number:'1.2-2' }} unit.</p>
+            </ion-label>
+
+            <div class="quantity-controls" slot="end">
+              <ion-button size="small" fill="outline" (click)="decrementar(it)">-</ion-button>
+              <span class="qty">{{ it.quantity }}</span>
+              <ion-button size="small" fill="outline" (click)="incrementar(it)">+</ion-button>
+            </div>
+          </ion-item>
+
+          <ion-item-options side="end">
+            <ion-item-option color="danger" (click)="eliminar(it)">
+              <ion-icon slot="top" name="trash"></ion-icon>
+              Borrar
+            </ion-item-option>
+          </ion-item-options>
+
+        </ion-item-sliding>
+      </ion-list>
+
+      <div class="summary-card ion-padding">
+        <div class="row">
+          <span>Subtotal</span>
+          <span>S/. {{ subtotal() | number:'1.2-2' }}</span>
+        </div>
+        <div class="row">
+          <span>Envío</span>
+          <span>S/. 5.00</span>
+        </div>
+        <div class="divider"></div>
+        <div class="row total">
+          <span>Total</span>
+          <span>S/. {{ subtotal() + 5 | number:'1.2-2' }}</span>
+        </div>
+
+        <ion-button expand="block" shape="round" class="ion-margin-top" (click)="elegirMetodo()">
+          Continuar al Pago
+        </ion-button>
+      </div>
+
+    </div>
+
+    <ng-template #empty>
+      <div class="empty-cart ion-padding ion-text-center">
+        <ion-icon name="cart-outline" style="font-size: 60px; color: #ccc;"></ion-icon>
+        <h3>Tu carrito está vacío</h3>
+        <p>¡Agrega deliciosos platillos!</p>
+        <ion-button routerLink="/locales" fill="outline" class="ion-margin-top">
+          Ir a Restaurantes
+        </ion-button>
+      </div>
+    </ng-template>
+
   </ng-container>
 
-  <ng-template #empty>
-    <div class="center">No hay productos en el carrito</div>
-  </ng-template>
 </ion-content>

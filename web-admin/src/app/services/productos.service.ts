@@ -11,10 +11,11 @@ export class ProductosService {
 
   private API = `${environment.apiUrl}/productos`;
 
-  constructor(private http: HttpClient) {}
+  constructor(private http: HttpClient) { }
 
   listarPorLocal(localId: number) {
-    return this.http.get<any[]>(`${this.API}/local/${localId}`);
+    // Usar la ruta de admin para ver todos (activos e inactivos)
+    return this.http.get<any[]>(`${this.API}/admin/local/${localId}`);
   }
 
   listar() {
@@ -26,11 +27,15 @@ export class ProductosService {
     );
   }
 
-  crear(data: any) {
+  crear(data: FormData | any) {
     return this.http.post(this.API, data);
   }
 
-  editar(id: number, data: any) {
+  editar(id: number, data: FormData | any) {
     return this.http.patch(`${this.API}/${id}`, data);
+  }
+
+  eliminar(id: number) {
+    return this.http.delete(`${this.API}/${id}`);
   }
 }

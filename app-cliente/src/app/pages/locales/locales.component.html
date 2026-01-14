@@ -1,0 +1,61 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" icon="chevron-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Restaurantes</ion-title>
+  </ion-toolbar>
+
+  <ion-toolbar color="primary">
+    <ion-searchbar placeholder="Buscar restaurante..." (ionInput)="buscar($event)" animated="true"
+      showCancelButton="focus"></ion-searchbar>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding-top">
+
+  <!-- Filtro Categorías -->
+  <div class="categorias-container">
+    <ion-chip *ngFor="let cat of categorias" [color]="categoriaSeleccionada === cat ? 'primary' : 'medium'"
+      [outline]="categoriaSeleccionada !== cat" (click)="filtrarPorCategoria(cat)">
+      <ion-label>{{ cat }}</ion-label>
+    </ion-chip>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="isLoading" class="ion-text-center ion-padding">
+    <ion-spinner name="crescent"></ion-spinner>
+    <p>Cargando locales...</p>
+  </div>
+
+  <!-- Lista Locales -->
+  <div class="locales-grid" *ngIf="!isLoading">
+
+    <div class="local-card" *ngFor="let local of localesFiltrados" [routerLink]="['/locales', local.id]">
+
+      <div class="card-image">
+        <img [src]="local.imagen ? 'http://localhost:4000/uploads/' + local.imagen : 'assets/placeholder-local.svg'"
+          alt="local">
+        <div class="badge-status" [class.closed]="local.estado === 'Cerrado'">
+          {{ local.estado }}
+        </div>
+      </div>
+
+      <div class="card-info">
+        <h3>{{ local.nombre }}</h3>
+        <p class="category">{{ local.categoria }}</p>
+        <div class="meta">
+          <span><ion-icon name="time-outline"></ion-icon> {{ local.hora_apertura }} - {{ local.hora_cierre }}</span>
+        </div>
+      </div>
+
+    </div>
+
+    <!-- Empty State -->
+    <div *ngIf="localesFiltrados.length === 0" class="empty-state">
+      <p>No se encontraron locales.</p>
+    </div>
+
+  </div>
+
+</ion-content>

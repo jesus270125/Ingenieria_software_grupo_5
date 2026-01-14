@@ -17,7 +17,8 @@
 
     <!-- Buscador -->
     <div class="toolbar">
-        <input type="text" class="search-input" placeholder="Buscar local...">
+        <input type="text" class="search-input" placeholder="Buscar local..." 
+               [(ngModel)]="busqueda" (input)="filtrarLocales()">
     </div>
 
     <!-- Tabla -->
@@ -34,7 +35,7 @@
             </thead>
             <tbody>
 
-                <tr *ngFor="let l of locales">
+                <tr *ngFor="let l of localesFiltrados">
                     <td>
                         <div class="fw-bold">{{ l.nombre }}</div>
                         <div class="text-muted-small">ID: {{ l.id }}</div>
@@ -46,9 +47,9 @@
 
                     <td>
                         <span class="badge-status" 
-                              [class.active]="l.estado === 'Activo'" 
-                              [class.inactive]="l.estado !== 'Activo'">
-                            {{ l.estado }}
+                              [class.active]="esAbierto(l)" 
+                              [class.inactive]="!esAbierto(l)">
+                            {{ esAbierto(l) ? 'Abierto' : 'Cerrado' }}
                         </span>
                     </td>
 
@@ -68,7 +69,7 @@
                     </td>
                 </tr>
 
-                <tr *ngIf="locales.length === 0">
+                <tr *ngIf="localesFiltrados.length === 0">
                     <td colspan="5" class="empty-state">
                         No hay locales registrados.
                     </td>

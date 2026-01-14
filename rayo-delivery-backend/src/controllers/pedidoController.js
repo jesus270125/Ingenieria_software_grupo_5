@@ -1,6 +1,7 @@
 
 const Pedido = require('../models/pedidoModel');
 const User = require('../models/userModel');
+const tarifaService = require('../services/tarifaService');
 
 const METODOS_VALIDOS = ['Efectivo', 'Yape', 'Plin'];
 
@@ -15,15 +16,18 @@ exports.createPedido = async (req, res) => {
       envio,
       total,
       direccion,
-      metodo_pago
+      metodo_pago,
+      latitude,
+      longitude,
+      local_id
     } = req.body;
 
     // Validaciones básicas
     if (!Array.isArray(productos) || productos.length === 0)
       return res.status(400).json({ error: 'Productos requeridos' });
 
-    if (typeof subtotal !== 'number' || typeof envio !== 'number' || typeof total !== 'number')
-      return res.status(400).json({ error: 'Totales inválidos' });
+    if (typeof subtotal !== 'number')
+      return res.status(400).json({ error: 'Subtotal inválido' });
 
     if (!direccion || typeof direccion !== 'string')
       return res.status(400).json({ error: 'Dirección requerida' });
@@ -31,11 +35,61 @@ exports.createPedido = async (req, res) => {
     if (!METODOS_VALIDOS.includes(metodo_pago))
       return res.status(400).json({ error: 'Método de pago inválido' });
 
+    // RF-29: Validar horarios de atención del local
+    if (local_id) {
+      const LocalModel = require('../models/localModel');
+      const local = await LocalModel.getLocalById(local_id);
+      
+      if (local) {
+        const horaActual = new Date().toLocaleTimeString('en-US', {
+          hour12: false,
+          hour: '2-digit',
+          minute: '2-digit'
+        });
+        
+        const abierto = horaActual >= local.hora_apertura && horaActual <= local.hora_cierre;
+        
+        if (!abierto) {
+          return res.status(400).json({ 
+            error: 'El local está cerrado en este momento',
+            horario: `${local.hora_apertura} - ${local.hora_cierre}`
+          });
+        }
+      }
+    }
+
     // Validar cada producto
     for (const p of productos) {
       if (typeof p.cantidad !== 'number' || typeof p.precio_unitario !== 'number')
         return res.status(400).json({ error: 'Producto con cantidad o precio inválido' });
     }
+
+    // RF-19: Calcular envío automáticamente si hay coordenadas, sino usar valor enviado o tarifa base
+    let envioCalc = 5.00;
+    
+    if (latitude && longitude) {
+      try {
+        const resultadoTarifa = await tarifaService.calcularTarifaDesdeLocal(
+          parseFloat(latitude),
+          parseFloat(longitude)
+        );
+        envioCalc = resultadoTarifa.tarifa;
+        console.log(`Tarifa calculada: S/ ${envioCalc} (${resultadoTarifa.distanciaKm} km)`);
+      } catch (error) {
+        console.error('Error calculando tarifa automática:', error);
+        const config = await tarifaService.obtenerConfiguracionTarifas();
+        envioCalc = config.tarifaBase;
+      }
+    } else if (typeof envio === 'number') {
+      // Si el cliente envió un valor de envío, usarlo (compatibilidad hacia atrás)
+      envioCalc = envio;
+    } else {
+      // Sin coordenadas ni envío, usar tarifa base de configuración
+      const config = await tarifaService.obtenerConfiguracionTarifas();
+      envioCalc = config.tarifaBase;
+    }
+    
+    const totalCalc = subtotal + envioCalc;
 
     // RF10: Asignación automática
     let motorizadoId = null;
@@ -54,8 +108,8 @@ exports.createPedido = async (req, res) => {
     const pedidoData = {
       usuario_id: usuarioId,
       subtotal,
-      envio,
-      total,
+      envio: envioCalc,
+      total: totalCalc,
       direccion,
       metodo_pago,
       estado,
@@ -150,8 +204,27 @@ exports.updateEstadoPedido = async (req, res) => {
       return res.status(403).json({ error: 'No autorizado para modificar este pedido' });
     }
 
-    await Pedido.updateEstado(pedidoId, estado);
-    res.json({ message: 'Estado actualizado' });
+    const resultado = await Pedido.updateEstado(pedidoId, estado);
+    
+    // Emitir evento de cambio de estado al cliente vía Socket.IO
+    try {
+      const io = req.app.get('io');
+      if (io) {
+        io.to(`pedido_${pedidoId}`).emit('pedido:estado_actualizado', {
+          pedidoId,
+          estado,
+          codigo_entrega: resultado.codigo_entrega || null,
+          timestamp: new Date()
+        });
+      }
+    } catch (e) {
+      console.warn('No se pudo emitir evento de cambio de estado:', e);
+    }
+    
+    res.json({ 
+      message: 'Estado actualizado',
+      codigo_entrega: resultado.codigo_entrega || null
+    });
   } catch (err) {
     console.error(err);
     res.status(500).json({ error: 'Error actualizando estado' });
@@ -177,3 +250,74 @@ exports.asignarManual = async (req, res) => {
   }
 };
 
+// RF-14: Obtener historial de estados de un pedido
+exports.getHistorialEstados = async (req, res) => {
+  try {
+    const pedidoId = req.params.id;
+    
+    // Verificar que el pedido existe
+    const pedido = await Pedido.getPedidoById(pedidoId);
+    if (!pedido) {
+      return res.status(404).json({ error: 'Pedido no encontrado' });
+    }
+    
+    // Verificar permisos: el cliente dueño del pedido, el motorizado asignado, o admin
+    const userId = req.user.id;
+    const userRole = req.user.rol;
+    
+    if (userRole !== 'admin' && userRole !== 'administrador' && 
+        pedido.usuario_id !== userId && pedido.motorizado_id !== userId) {
+      return res.status(403).json({ error: 'No autorizado para ver este historial' });
+    }
+    
+    const historial = await Pedido.getHistorialEstados(pedidoId);
+    res.json(historial);
+  } catch (err) {
+    console.error(err);
+    res.status(500).json({ error: 'Error obteniendo historial de estados' });
+  }
+};
+// RF-15: Confirmar entrega con código
+exports.confirmarEntrega = async (req, res) => {
+  try {
+    const pedidoId = req.params.id;
+    const { codigo } = req.body;
+    const motorizadoId = req.user.id;
+
+    if (!codigo) {
+      return res.status(400).json({ error: 'Código de entrega requerido' });
+    }
+
+    // Verificar que el pedido existe y pertenece al motorizado
+    const pedido = await Pedido.getPedidoById(pedidoId);
+    if (!pedido) {
+      return res.status(404).json({ error: 'Pedido no encontrado' });
+    }
+
+    if (pedido.motorizado_id !== motorizadoId && req.user.rol !== 'admin') {
+      return res.status(403).json({ error: 'No autorizado para confirmar este pedido' });
+    }
+
+    // Confirmar entrega
+    const resultado = await Pedido.confirmarEntrega(pedidoId, codigo);
+    
+    // Emitir evento de entrega confirmada
+    try {
+      const io = req.app.get('io');
+      if (io) {
+        io.to(`pedido_${pedidoId}`).emit('pedido:estado_actualizado', {
+          pedidoId,
+          estado: 'entregado',
+          timestamp: new Date()
+        });
+      }
+    } catch (e) {
+      console.warn('No se pudo emitir evento de entrega:', e);
+    }
+
+    res.json(resultado);
+  } catch (err) {
+    console.error(err);
+    res.status(400).json({ error: err.message || 'Error confirmando entrega' });
+  }
+};

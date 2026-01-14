@@ -1,0 +1,272 @@
+<div class="breadcrumb">
+    Panel / <strong>Clientes</strong>
+</div>
+
+<div class="page-header">
+    <h1 class="page-title">Gestión de Clientes</h1>
+    <p style="color: var(--text-muted); margin-top: 5px;">
+        Administra los clientes registrados en el sistema
+    </p>
+</div>
+
+<!-- Estadísticas -->
+<div class="stats-row">
+    <div class="stat-card stat-total">
+        <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path d="M4.5 6.375a4.125 4.125 0 118.25 0 4.125 4.125 0 01-8.25 0zM14.25 8.625a3.375 3.375 0 116.75 0 3.375 3.375 0 01-6.75 0zM1.5 19.125a7.125 7.125 0 0114.25 0v.003l-.001.119a.75.75 0 01-.363.63 13.067 13.067 0 01-6.761 1.873c-2.472 0-4.786-.684-6.76-1.873a.75.75 0 01-.364-.63l-.001-.122zM17.25 19.128l-.001.144a2.25 2.25 0 01-.233.96 10.088 10.088 0 005.06-1.01.75.75 0 00.42-.643 4.875 4.875 0 00-6.957-4.611 8.586 8.586 0 011.71 5.157v.003z" />
+            </svg>
+        </div>
+        <div class="stat-info">
+            <div class="stat-label">Total Clientes</div>
+            <div class="stat-value">{{ getTotalClientes() }}</div>
+        </div>
+    </div>
+    <div class="stat-card stat-activos">
+        <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        <div class="stat-info">
+            <div class="stat-label">Activos</div>
+            <div class="stat-value">{{ getClientesActivos() }}</div>
+        </div>
+    </div>
+    <div class="stat-card stat-inactivos">
+        <div class="stat-icon">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clip-rule="evenodd" />
+            </svg>
+        </div>
+        <div class="stat-info">
+            <div class="stat-label">Inactivos</div>
+            <div class="stat-value">{{ getClientesInactivos() }}</div>
+        </div>
+    </div>
+</div>
+
+<!-- Filtros -->
+<div class="card filters-card">
+    <div class="filters-header">
+        <div class="filters-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M3.792 2.938A49.069 49.069 0 0112 2.25c2.797 0 5.54.236 8.209.688a1.857 1.857 0 011.541 1.836v1.044a3 3 0 01-.879 2.121l-6.182 6.182a1.5 1.5 0 00-.439 1.061v2.927a3 3 0 01-1.658 2.684l-1.757.878A.75.75 0 019.75 21v-5.818a1.5 1.5 0 00-.44-1.06L3.13 7.938a3 3 0 01-.879-2.121V4.774c0-.897.64-1.683 1.542-1.836z" clip-rule="evenodd" />
+            </svg>
+            <h3>Filtros de Búsqueda</h3>
+        </div>
+        <button class="btn btn-clear" (click)="limpiarFiltros()">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M5.47 5.47a.75.75 0 011.06 0L12 10.94l5.47-5.47a.75.75 0 111.06 1.06L13.06 12l5.47 5.47a.75.75 0 11-1.06 1.06L12 13.06l-5.47 5.47a.75.75 0 01-1.06-1.06L10.94 12 5.47 6.53a.75.75 0 010-1.06z" clip-rule="evenodd" />
+            </svg>
+            Limpiar
+        </button>
+    </div>
+    
+    <div class="filters-grid">
+        <div class="filter-group">
+            <label>Buscar</label>
+            <input type="text" [(ngModel)]="busqueda" (input)="aplicarFiltros()" 
+                   placeholder="Nombre, teléfono o correo..." class="form-input">
+        </div>
+
+        <div class="filter-group">
+            <label>Estado</label>
+            <select [(ngModel)]="estadoFiltro" (change)="aplicarFiltros()" class="form-select">
+                <option value="todos">Todos</option>
+                <option value="activo">Activos</option>
+                <option value="inactivo">Inactivos</option>
+            </select>
+        </div>
+    </div>
+</div>
+
+<!-- Loader -->
+<div *ngIf="loading" class="loader-container">
+    <div class="loader"></div>
+</div>
+
+<!-- Tabla de Clientes -->
+<div class="card" *ngIf="!loading">
+    <div class="table-header">
+        <div class="table-title">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M8.25 6.75a3.75 3.75 0 117.5 0 3.75 3.75 0 01-7.5 0zM15.75 9.75a3 3 0 116 0 3 3 0 01-6 0zM2.25 9.75a3 3 0 116 0 3 3 0 01-6 0zM6.31 15.117A6.745 6.745 0 0112 12a6.745 6.745 0 016.709 7.498.75.75 0 01-.372.568A12.696 12.696 0 0112 21.75c-2.305 0-4.47-.612-6.337-1.684a.75.75 0 01-.372-.568 6.787 6.787 0 011.019-4.38z" clip-rule="evenodd" />
+                <path d="M5.082 14.254a8.287 8.287 0 00-1.308 5.135 9.687 9.687 0 01-1.764-.44l-.115-.04a.563.563 0 01-.373-.487l-.01-.121a3.75 3.75 0 013.57-4.047zM20.226 19.389a8.287 8.287 0 00-1.308-5.135 3.75 3.75 0 013.57 4.047l-.01.121a.563.563 0 01-.373.486l-.115.04c-.567.2-1.156.349-1.764.441z" />
+            </svg>
+            <h3>Clientes <span class="count">({{ clientesFiltrados.length }})</span></h3>
+        </div>
+        <button class="btn btn-export" (click)="exportarCSV()" *ngIf="clientesFiltrados.length > 0">
+            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                <path fill-rule="evenodd" d="M1.5 5.625c0-1.036.84-1.875 1.875-1.875h17.25c1.035 0 1.875.84 1.875 1.875v12.75c0 1.035-.84 1.875-1.875 1.875H3.375A1.875 1.875 0 011.5 18.375V5.625zM21 9.375A.375.375 0 0020.625 9h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zm0 3.75a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5a.375.375 0 00.375-.375v-1.5zM10.875 18.75a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375h7.5zM3.375 15h7.5a.375.375 0 00.375-.375v-1.5a.375.375 0 00-.375-.375h-7.5a.375.375 0 00-.375.375v1.5c0 .207.168.375.375.375zm0-3.75h7.5a.375.375 0 00.375-.375v-1.5A.375.375 0 0010.875 9h-7.5A.375.375 0 003 9.375v1.5c0 .207.168.375.375.375z" clip-rule="evenodd" />
+            </svg>
+            Exportar CSV
+        </button>
+    </div>
+
+    <div class="table-container">
+        <table class="data-table">
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Nombre</th>
+                    <th>DNI/RUC</th>
+                    <th>Teléfono</th>
+                    <th>Correo</th>
+                    <th>Dirección</th>
+                    <th>Estado</th>
+                    <th>Registro</th>
+                    <th>Acciones</th>
+                </tr>
+            </thead>
+            <tbody>
+                <tr *ngFor="let cliente of clientesFiltrados">
+                    <td><strong>#{{ cliente.id }}</strong></td>
+                    <td>{{ cliente.nombre }}</td>
+                    <td>{{ cliente.dni_ruc || 'N/A' }}</td>
+                    <td>{{ cliente.telefono }}</td>
+                    <td>{{ cliente.correo || 'N/A' }}</td>
+                    <td class="direccion-cell">{{ cliente.direccion || 'N/A' }}</td>
+                    <td>
+                        <span class="badge" [ngClass]="getEstadoBadgeClass(cliente.estado_cuenta)">
+                            {{ cliente.estado_cuenta }}
+                        </span>
+                    </td>
+                    <td>{{ cliente.fecha_registro | date: 'dd/MM/yyyy' }}</td>
+                    <td>
+                        <button class="btn-action btn-view" (click)="verDetalles(cliente)" title="Ver detalles">
+                            <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M12 15a3 3 0 100-6 3 3 0 000 6z" />
+                                <path fill-rule="evenodd" d="M1.323 11.447C2.811 6.976 7.028 3.75 12.001 3.75c4.97 0 9.185 3.223 10.675 7.69.12.362.12.752 0 1.113-1.487 4.471-5.705 7.697-10.677 7.697-4.97 0-9.186-3.223-10.675-7.69a1.762 1.762 0 010-1.113zM17.25 12a5.25 5.25 0 11-10.5 0 5.25 5.25 0 0110.5 0z" clip-rule="evenodd" />
+                            </svg>
+                            Ver
+                        </button>
+                    </td>
+                </tr>
+            </tbody>
+        </table>
+
+        <div *ngIf="clientesFiltrados.length === 0" class="empty-state">
+            <p>No hay clientes que coincidan con los filtros</p>
+        </div>
+    </div>
+</div>
+
+<!-- Panel Lateral de Detalles -->
+<div class="panel-overlay" *ngIf="showDetailsModal" (click)="closeDetailsModal()" [@fadeAnimation]></div>
+
+<div class="side-panel" *ngIf="showDetailsModal" [@slideAnimation]>
+    <!-- Header del Panel -->
+    <div class="panel-header">
+        <div class="panel-header-content">
+            <div class="panel-icon">
+                👤
+            </div>
+            <div class="panel-title">
+                <h2>Cliente #{{ selectedCliente?.id }}</h2>
+                <p>{{ selectedCliente?.nombre }}</p>
+            </div>
+        </div>
+        <button class="panel-close" (click)="closeDetailsModal()">
+            ✕
+        </button>
+    </div>
+
+    <!-- Contenido del Panel -->
+    <div class="panel-body" *ngIf="selectedCliente">
+        <!-- Información Personal -->
+        <div class="panel-section">
+            <div class="section-header">
+                <span class="section-icon">👤</span>
+                <h3>Información Personal</h3>
+            </div>
+            <div class="info-row">
+                <span class="info-label">DNI/RUC</span>
+                <span class="info-value">{{ selectedCliente.dni_ruc || 'N/A' }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Teléfono</span>
+                <span class="info-value">{{ selectedCliente.telefono }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Correo</span>
+                <span class="info-value">{{ selectedCliente.correo || 'N/A' }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Dirección</span>
+                <span class="info-value">{{ selectedCliente.direccion || 'N/A' }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Fecha Registro</span>
+                <span class="info-value">{{ selectedCliente.fecha_registro | date: 'dd/MM/yyyy HH:mm' }}</span>
+            </div>
+            <div class="info-row">
+                <span class="info-label">Estado</span>
+                <span class="badge" [ngClass]="getEstadoBadgeClass(selectedCliente.estado_cuenta)">
+                    {{ selectedCliente.estado_cuenta }}
+                </span>
+            </div>
+        </div>
+
+        <!-- Estadísticas -->
+        <div class="panel-section" *ngIf="estadisticas">
+            <div class="section-header">
+                <span class="section-icon">📊</span>
+                <h3>Estadísticas de Compra</h3>
+            </div>
+            <div class="stats-grid">
+                <div class="stat-box">
+                    <div class="stat-number">{{ estadisticas.total_pedidos }}</div>
+                    <div class="stat-text">Total Pedidos</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">{{ estadisticas.pedidos_completados }}</div>
+                    <div class="stat-text">Completados</div>
+                </div>
+                <div class="stat-box">
+                    <div class="stat-number">{{ estadisticas.pedidos_cancelados }}</div>
+                    <div class="stat-text">Cancelados</div>
+                </div>
+                <div class="stat-box stat-money">
+                    <div class="stat-number">S/. {{ estadisticas.total_gastado | number:'1.2-2' }}</div>
+                    <div class="stat-text">Total Gastado</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- Acciones -->
+        <div class="panel-section actions-section">
+            <div class="section-header">
+                <span class="section-icon">⚙️</span>
+                <h3>Acciones Disponibles</h3>
+            </div>
+            <div class="action-buttons">
+                <button 
+                    class="btn btn-activate" 
+                    *ngIf="selectedCliente.estado_cuenta === 'inactivo'"
+                    (click)="cambiarEstado(selectedCliente, 'activo')">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path fill-rule="evenodd" d="M2.25 12c0-5.385 4.365-9.75 9.75-9.75s9.75 4.365 9.75 9.75-4.365 9.75-9.75 9.75S2.25 17.385 2.25 12zm13.36-1.814a.75.75 0 10-1.22-.872l-3.236 4.53L9.53 12.22a.75.75 0 00-1.06 1.06l2.25 2.25a.75.75 0 001.14-.094l3.75-5.25z" clip-rule="evenodd" />
+                    </svg>
+                    Activar Cliente
+                </button>
+                <button 
+                    class="btn btn-deactivate" 
+                    *ngIf="selectedCliente.estado_cuenta === 'activo'"
+                    (click)="cambiarEstado(selectedCliente, 'inactivo')">
+                    <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 24 24" fill="currentColor">
+                        <path fill-rule="evenodd" d="M12 2.25c-5.385 0-9.75 4.365-9.75 9.75s4.365 9.75 9.75 9.75 9.75-4.365 9.75-9.75S17.385 2.25 12 2.25zm-1.72 6.97a.75.75 0 10-1.06 1.06L10.94 12l-1.72 1.72a.75.75 0 101.06 1.06L12 13.06l1.72 1.72a.75.75 0 101.06-1.06L13.06 12l1.72-1.72a.75.75 0 10-1.06-1.06L12 10.94l-1.72-1.72z" clip-rule="evenodd" />
+                    </svg>
+                    Desactivar Cliente
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Footer del Panel -->
+    <div class="panel-footer">
+        <button class="btn btn-close" (click)="closeDetailsModal()">
+            Cerrar
+        </button>
+    </div>
+</div>

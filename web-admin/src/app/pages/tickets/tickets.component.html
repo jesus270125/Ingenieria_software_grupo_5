@@ -1,0 +1,262 @@
+<div class="tickets-container">
+  <div class="page-header">
+    <h1>Gestión de Tickets de Soporte</h1>
+    <p>Administra las solicitudes de soporte de los clientes</p>
+  </div>
+
+  <!-- Filtros -->
+  <div class="filters-section">
+    <div class="search-box">
+      <input 
+        type="text" 
+        [(ngModel)]="filtros.busqueda" 
+        placeholder="Buscar por asunto o descripción..."
+        class="search-input">
+    </div>
+
+    <div class="filter-group">
+      <select [(ngModel)]="filtros.estado" class="filter-select">
+        <option value="">Todos los estados</option>
+        <option value="abierto">Abierto</option>
+        <option value="en_proceso">En Proceso</option>
+        <option value="resuelto">Resuelto</option>
+        <option value="cerrado">Cerrado</option>
+      </select>
+
+      <select [(ngModel)]="filtros.prioridad" class="filter-select">
+        <option value="">Todas las prioridades</option>
+        <option value="baja">Baja</option>
+        <option value="media">Media</option>
+        <option value="alta">Alta</option>
+        <option value="urgente">Urgente</option>
+      </select>
+
+      <select [(ngModel)]="filtros.categoria" class="filter-select">
+        <option value="">Todas las categorías</option>
+        <option value="consulta">Consulta</option>
+        <option value="problema_tecnico">Problema Técnico</option>
+        <option value="pedido">Pedido</option>
+        <option value="pago">Pago</option>
+        <option value="cuenta">Cuenta</option>
+        <option value="otro">Otro</option>
+      </select>
+
+      <button (click)="limpiarFiltros()" class="btn-secondary">Limpiar</button>
+    </div>
+  </div>
+
+  <!-- Loading -->
+  <div *ngIf="cargando" class="loading">
+    <div class="spinner"></div>
+    <p>Cargando tickets...</p>
+  </div>
+
+  <!-- Tabla de Tickets -->
+  <div *ngIf="!cargando" class="table-container">
+    <table class="tickets-table">
+      <thead>
+        <tr>
+          <th>ID</th>
+          <th>Asunto</th>
+          <th>Cliente</th>
+          <th>Categoría</th>
+          <th>Prioridad</th>
+          <th>Estado</th>
+          <th>Asignado</th>
+          <th>Fecha</th>
+          <th>Acciones</th>
+        </tr>
+      </thead>
+      <tbody>
+        <tr *ngFor="let ticket of ticketsFiltrados">
+          <td><strong>#{{ ticket.id }}</strong></td>
+          <td class="asunto-cell">{{ ticket.asunto }}</td>
+          <td>{{ ticket.usuario_nombre || 'N/A' }}</td>
+          <td>
+            <span class="badge badge-info">{{ getCategoriaTexto(ticket.categoria) }}</span>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="getPrioridadClass(ticket.prioridad)">
+              {{ ticket.prioridad }}
+            </span>
+          </td>
+          <td>
+            <span class="badge" [ngClass]="getEstadoClass(ticket.estado)">
+              {{ ticket.estado }}
+            </span>
+          </td>
+          <td>{{ ticket.asignado_nombre || 'Sin asignar' }}</td>
+          <td>{{ ticket.fecha_creacion | date:'short' }}</td>
+          <td>
+            <button (click)="verDetalle(ticket)" class="btn-sm btn-primary">
+              Ver
+            </button>
+          </td>
+        </tr>
+      </tbody>
+    </table>
+
+    <div *ngIf="ticketsFiltrados.length === 0" class="empty-state">
+      <p>No se encontraron tickets con los filtros seleccionados</p>
+    </div>
+  </div>
+</div>
+
+<!-- Panel lateral de detalle -->
+<div class="panel-overlay" *ngIf="mostrarModal" (click)="cerrarModal()" [@fadeAnimation]>
+</div>
+
+<div class="side-panel" *ngIf="mostrarModal && ticketSeleccionado" [@slideAnimation]>
+  <div class="panel-header">
+    <div class="panel-header-content">
+      <div class="panel-icon">
+        <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+          <path stroke-linecap="round" stroke-linejoin="round" d="M16.5 6v.75m0 3v.75m0 3v.75m0 3V18m-9-5.25h5.25M7.5 15h3M3.375 5.25c-.621 0-1.125.504-1.125 1.125v3.026a2.999 2.999 0 010 5.198v3.026c0 .621.504 1.125 1.125 1.125h17.25c.621 0 1.125-.504 1.125-1.125v-3.026a2.999 2.999 0 010-5.198V6.375c0-.621-.504-1.125-1.125-1.125H3.375z" />
+        </svg>
+      </div>
+      <div class="panel-title">
+        <h2>Ticket #{{ ticketSeleccionado.id }}</h2>
+        <p>{{ ticketSeleccionado.usuario_nombre }}</p>
+      </div>
+    </div>
+    <button class="panel-close" (click)="cerrarModal()">
+      ✕
+    </button>
+  </div>
+
+  <div class="panel-body">
+    <!-- Información del ticket -->
+    <div class="panel-section">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M11.25 11.25l.041-.02a.75.75 0 011.063.852l-.708 2.836a.75.75 0 001.063.853l.041-.021M21 12a9 9 0 11-18 0 9 9 0 0118 0zm-9-3.75h.008v.008H12V8.25z" />
+          </svg>
+        </div>
+        <h3>Información del Ticket</h3>
+      </div>
+
+      <div class="info-row">
+        <span class="info-label">Cliente</span>
+        <span class="info-value">{{ ticketSeleccionado.usuario_nombre }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Fecha</span>
+        <span class="info-value">{{ ticketSeleccionado.fecha_creacion | date:'dd/MM/yyyy HH:mm' }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Asunto</span>
+        <span class="info-value">{{ ticketSeleccionado.asunto }}</span>
+      </div>
+      <div class="info-row">
+        <span class="info-label">Categoría</span>
+        <span class="info-value">
+          <span class="badge badge-info">{{ getCategoriaTexto(ticketSeleccionado.categoria) }}</span>
+        </span>
+      </div>
+      <div class="info-row description-row">
+        <span class="info-label">Descripción</span>
+        <p class="descripcion">{{ ticketSeleccionado.descripcion }}</p>
+      </div>
+    </div>
+
+    <!-- Gestión del ticket -->
+    <div class="panel-section">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M9.594 3.94c.09-.542.56-.94 1.11-.94h2.593c.55 0 1.02.398 1.11.94l.213 1.281c.063.374.313.686.645.87.074.04.147.083.22.127.324.196.72.257 1.075.124l1.217-.456a1.125 1.125 0 011.37.49l1.296 2.247a1.125 1.125 0 01-.26 1.431l-1.003.827c-.293.24-.438.613-.431.992a6.759 6.759 0 010 .255c-.007.378.138.75.43.99l1.005.828c.424.35.534.954.26 1.43l-1.298 2.247a1.125 1.125 0 01-1.369.491l-1.217-.456c-.355-.133-.75-.072-1.076.124a6.57 6.57 0 01-.22.128c-.331.183-.581.495-.644.869l-.213 1.28c-.09.543-.56.941-1.11.941h-2.594c-.55 0-1.02-.398-1.11-.94l-.213-1.281c-.062-.374-.312-.686-.644-.87a6.52 6.52 0 01-.22-.127c-.325-.196-.72-.257-1.076-.124l-1.217.456a1.125 1.125 0 01-1.369-.49l-1.297-2.247a1.125 1.125 0 01.26-1.431l1.004-.827c.292-.24.437-.613.43-.992a6.932 6.932 0 010-.255c.007-.378-.138-.75-.43-.99l-1.004-.828a1.125 1.125 0 01-.26-1.43l1.297-2.247a1.125 1.125 0 011.37-.491l1.216.456c.356.133.751.072 1.076-.124.072-.044.146-.087.22-.128.332-.183.582-.495.644-.869l.214-1.281z" />
+            <path stroke-linecap="round" stroke-linejoin="round" d="M15 12a3 3 0 11-6 0 3 3 0 016 0z" />
+          </svg>
+        </div>
+        <h3>Gestión</h3>
+      </div>
+      
+      <div class="form-group">
+        <label>Estado</label>
+        <div class="input-group">
+          <select [(ngModel)]="nuevoEstado" class="form-select">
+            <option value="abierto">Abierto</option>
+            <option value="en_proceso">En Proceso</option>
+            <option value="resuelto">Resuelto</option>
+            <option value="cerrado">Cerrado</option>
+          </select>
+          <button (click)="actualizarEstado()" class="btn-update">Actualizar</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Prioridad</label>
+        <div class="input-group">
+          <select [(ngModel)]="nuevaPrioridad" class="form-select">
+            <option value="baja">Baja</option>
+            <option value="media">Media</option>
+            <option value="alta">Alta</option>
+            <option value="urgente">Urgente</option>
+          </select>
+          <button (click)="actualizarPrioridad()" class="btn-update">Actualizar</button>
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label>Asignar a</label>
+        <div class="input-group">
+          <select [(ngModel)]="asignadoA" class="form-select">
+            <option value="">Sin asignar</option>
+            <option *ngFor="let p of personal" [value]="p.id">{{ p.nombre }}</option>
+          </select>
+          <button (click)="asignarTicket()" class="btn-update">Asignar</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Respuestas -->
+    <div class="panel-section">
+      <div class="section-header">
+        <div class="section-icon">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M7.5 8.25h9m-9 3H12m-9.75 1.51c0 1.6 1.123 2.994 2.707 3.227 1.129.166 2.27.293 3.423.379.35.026.67.21.865.501L12 21l2.755-4.133a1.14 1.14 0 01.865-.501 48.172 48.172 0 003.423-.379c1.584-.233 2.707-1.626 2.707-3.228V6.741c0-1.602-1.123-2.995-2.707-3.228A48.394 48.394 0 0012 3c-2.392 0-4.744.175-7.043.513C3.373 3.746 2.25 5.14 2.25 6.741v6.018z" />
+          </svg>
+        </div>
+        <h3>Historial de Respuestas</h3>
+        <button (click)="mostrarRespuesta = !mostrarRespuesta" class="btn-toggle">
+          {{ mostrarRespuesta ? 'Cancelar' : '+ Responder' }}
+        </button>
+      </div>
+
+      <!-- Formulario respuesta -->
+      <div *ngIf="mostrarRespuesta" class="respuesta-form">
+        <textarea 
+          [(ngModel)]="nuevaRespuesta" 
+          placeholder="Escribe tu respuesta..."
+          rows="4"
+          class="form-textarea">
+        </textarea>
+        <button (click)="enviarRespuesta()" class="btn-send" [disabled]="!nuevaRespuesta.trim()">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M6 12L3.269 3.126A59.768 59.768 0 0121.485 12 59.77 59.77 0 013.27 20.876L5.999 12zm0 0h7.5" />
+          </svg>
+          Enviar Respuesta
+        </button>
+      </div>
+
+      <!-- Lista de respuestas -->
+      <div class="respuestas-list">
+        <div *ngFor="let respuesta of ticketSeleccionado.respuestas" class="respuesta-item">
+          <div class="respuesta-header">
+            <strong>{{ respuesta.usuario_nombre }}</strong>
+            <span class="fecha">{{ respuesta.fecha_creacion | date:'dd/MM/yyyy HH:mm' }}</span>
+          </div>
+          <p>{{ respuesta.respuesta }}</p>
+        </div>
+
+        <div *ngIf="!ticketSeleccionado.respuestas || ticketSeleccionado.respuestas.length === 0" class="no-respuestas">
+          <svg xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24" stroke-width="1.5" stroke="currentColor">
+            <path stroke-linecap="round" stroke-linejoin="round" d="M8.625 12a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H8.25m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0H12m4.125 0a.375.375 0 11-.75 0 .375.375 0 01.75 0zm0 0h-.375M21 12c0 4.556-4.03 8.25-9 8.25a9.764 9.764 0 01-2.555-.337A5.972 5.972 0 015.41 20.97a5.969 5.969 0 01-.474-.065 4.48 4.48 0 00.978-2.025c.09-.457-.133-.901-.467-1.226C3.93 16.178 3 14.189 3 12c0-4.556 4.03-8.25 9-8.25s9 3.694 9 8.25z" />
+          </svg>
+          <p>No hay respuestas aún</p>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,23 +1,65 @@
 <ion-header>
   <ion-toolbar>
     <ion-buttons slot="start">
-      <ion-back-button defaultHref="/home"></ion-back-button>
+      <ion-button fill="clear" (click)="goHome()">
+        <ion-icon name="chevron-back-outline"></ion-icon>
+      </ion-button>
     </ion-buttons>
     <ion-title>Historial de pedidos</ion-title>
   </ion-toolbar>
 </ion-header>
 
 <ion-content class="ion-padding">
-  <ion-list>
-    <ion-item *ngFor="let p of pedidos">
-      <ion-label>
-        <h3>Pedido #{{ p.id || p._id }}</h3>
-        <p>{{ (p.createdAt || p.fecha) | date:'short' }}</p>
-        <p>Total: S/ {{ (p.total || p.subtotal) | number:'1.2-2' }}</p>
-      </ion-label>
-      <ion-button slot="end" fill="outline" [routerLink]="['/pedido', p.id || p._id]">Ver</ion-button>
-    </ion-item>
-  </ion-list>
-
   <div *ngIf="!pedidos.length" class="center">No hay pedidos</div>
+
+  <div class="cards">
+    <div class="card" *ngFor="let p of pedidos">
+      <div class="card-header">
+        <div class="left">
+          <div class="title">Pedido #{{ p.id || p._id }}</div>
+          <div class="local-name">{{ p.local?.nombre || p.nombre_local || 'Local' }}</div>
+          <div class="date">{{ (p.createdAt || p.fecha || p.created_at) | date:'short' }}</div>
+        </div>
+        <div class="right">
+          <div class="amount">S/ {{ (p.total || p.subtotal) | number:'1.2-2' }}</div>
+          <ion-badge [color]="getEstadoColor(p.estado)">{{ getEstadoTexto(p.estado) }}</ion-badge>
+        </div>
+      </div>
+
+      <div class="card-body">
+        <!-- Código de entrega (RF-15) -->
+        <div *ngIf="p.codigo_entrega && p.estado === 'en_camino_cliente'" 
+             style="background: linear-gradient(135deg, #667eea 0%, #764ba2 100%); 
+                    padding: 16px; 
+                    border-radius: 12px; 
+                    margin-bottom: 16px;
+                    text-align: center;
+                    box-shadow: 0 4px 15px rgba(102, 126, 234, 0.3);">
+          <div style="color: rgba(255,255,255,0.9); font-size: 12px; font-weight: 600; letter-spacing: 1px; margin-bottom: 8px;">
+            CÓDIGO DE ENTREGA
+          </div>
+          <div style="color: #fff; font-size: 32px; font-weight: 700; letter-spacing: 4px; font-family: 'Courier New', monospace;">
+            {{ p.codigo_entrega }}
+          </div>
+          <div style="color: rgba(255,255,255,0.85); font-size: 11px; margin-top: 8px;">
+            Proporciona este código al motorizado para confirmar la entrega
+          </div>
+        </div>
+
+        <div class="items">
+          <div class="item" *ngFor="let it of p.detalles || p.items || []">
+            <div class="item-left">
+              <div class="item-name">{{ it.nombre || it.producto?.nombre || it.product?.name }}</div>
+              <div class="item-qty">{{ it.cantidad || it.quantity }} x S/ {{ (it.precio_unitario || it.precio || it.producto?.precio) | number:'1.2-2' }}</div>
+            </div>
+            <div class="item-right">S/ {{ (it.total || (it.cantidad * (it.precio_unitario||it.precio||0))) | number:'1.2-2' }}</div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card-footer">
+        <ion-button fill="solid" color="primary" size="small" [routerLink]="['/pedido', p.id || p._id]">Ver detalle</ion-button>
+      </div>
+    </div>
+  </div>
 </ion-content>

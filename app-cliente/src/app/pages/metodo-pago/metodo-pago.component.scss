@@ -1,0 +1,39 @@
+.section-title {
+    font-size: 1.2rem;
+    font-weight: 600;
+    color: #374151;
+    margin-bottom: 20px;
+    margin-top: 10px;
+}
+
+.payment-option {
+    --padding-start: 16px;
+    --inner-padding-end: 16px;
+    margin-bottom: 12px;
+    border-radius: 12px;
+    border: 1px solid #E5E7EB;
+    transition: all 0.2s;
+
+    &.selected {
+        border-color: #4F46E5;
+        background: #EEF2FF;
+        --background: #EEF2FF;
+    }
+
+    ion-icon {
+        font-size: 1.5rem;
+    }
+
+    ion-label {
+        font-weight: 500;
+        margin-left: 10px;
+    }
+}
+
+.btn-continue {
+    --padding-top: 14px;
+    --padding-bottom: 14px;
+    font-size: 1.05rem;
+    font-weight: 700;
+    --border-radius: 10px;
+}

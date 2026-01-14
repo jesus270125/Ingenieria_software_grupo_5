@@ -7,7 +7,10 @@ import {
   chevronForwardCircle, 
   receiptOutline, 
   personOutline, 
-  logOutOutline 
+  logOutOutline, 
+  starOutline, 
+  alertCircleOutline, 
+  helpCircleOutline 
 } from 'ionicons/icons'; // Los iconos específicos que usamos en el HTML
 
 import { 
@@ -39,13 +42,6 @@ import {
 export class HomePage {
   constructor() {
     // Registramos los iconos para poder usarlos en el HTML por su nombre (string)
-    addIcons({ 
-      notificationsOutline, 
-      fastFoodOutline, 
-      chevronForwardCircle, 
-      receiptOutline, 
-      personOutline, 
-      logOutOutline 
-    });
+    addIcons({notificationsOutline,fastFoodOutline,chevronForwardCircle,receiptOutline,starOutline,alertCircleOutline,personOutline,logOutOutline,helpCircleOutline});
   }
 }

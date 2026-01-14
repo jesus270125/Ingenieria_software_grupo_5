@@ -6,12 +6,14 @@ import { AuthService } from '../../services/auth';
 
 // 1. IMPORTAR HERRAMIENTAS DE ICONOS (Necesario para Ionic 7+)
 import { addIcons } from 'ionicons';
-import { 
-  personAddOutline, 
-  personOutline, 
-  mailOutline, 
-  callOutline, 
-  lockClosedOutline 
+import {
+  personAddOutline,
+  personOutline,
+  mailOutline,
+  callOutline,
+  lockClosedOutline,
+  cardOutline,
+  locationOutline
 } from 'ionicons/icons';
 
 @Component({
@@ -24,30 +26,36 @@ import {
 export class RegisterPage {
 
   nombre = '';
+  dni_ruc = '';
+  direccion = '';
   correo = '';
   password = '';
   telefono = '';
 
   constructor(private auth: AuthService, private router: Router) {
     // 2. REGISTRAR ICONOS MANUALMENTE
-    addIcons({ 
-      personAddOutline, 
-      personOutline, 
-      mailOutline, 
-      callOutline, 
-      lockClosedOutline 
+    addIcons({
+      personAddOutline,
+      personOutline,
+      mailOutline,
+      callOutline,
+      lockClosedOutline,
+      cardOutline,
+      locationOutline
     });
   }
 
   register() {
     // Validación rápida antes de enviar
-    if (!this.nombre || !this.correo || !this.password || !this.telefono) {
-      alert("Por favor completa todos los campos.");
+    if (!this.nombre || !this.correo || !this.password || !this.telefono || !this.dni_ruc || !this.direccion) {
+      alert("Por favor completa todos los campos (incluyendo DNI y Dirección).");
       return;
     }
 
     this.auth.register({
       nombre: this.nombre,
+      dni_ruc: this.dni_ruc,
+      direccion: this.direccion,
       correo: this.correo,
       password: this.password,
       telefono: this.telefono,

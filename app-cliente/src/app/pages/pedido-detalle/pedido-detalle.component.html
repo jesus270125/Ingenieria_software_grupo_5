@@ -1,0 +1,126 @@
+<ion-header class="ion-no-border">
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home" icon="chevron-back-outline"></ion-back-button>
+    </ion-buttons>
+    <ion-title *ngIf="pedido">Pedido #{{ pedido.id }}</ion-title>
+    <ion-title *ngIf="!pedido">Detalle</ion-title>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content class="ion-padding">
+
+  <div *ngIf="isLoading" class="ion-text-center ion-padding">
+    <ion-spinner></ion-spinner>
+    <p>Cargando recibo...</p>
+  </div>
+
+  <div *ngIf="!isLoading && pedido" class="receipt-container">
+
+    <div class="status-banner">
+      <h2>{{ pedido.estado | uppercase }}</h2>
+      <p class="status-pago">{{ pedido.estado_pago | uppercase }}</p>
+    </div>
+
+    <div class="receipt-body">
+      <div class="row">
+        <span>Fecha:</span>
+        <span>{{ pedido.created_at | date:'medium' }}</span>
+      </div>
+      <div class="row">
+        <span>Cliente:</span>
+        <span>{{ pedido.usuario_nombre }}</span>
+      </div>
+      <div class="row">
+        <span>Dirección:</span>
+        <span class="address">{{ pedido.direccion }}</span>
+      </div>
+      <div class="row">
+        <span>Método Pago:</span>
+        <span>{{ pedido.metodo_pago }}</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <h3>Detalle de Consumo</h3>
+      <div class="item-row" *ngFor="let det of pedido.detalles">
+        <span>{{ det.cantidad }}x {{ det.nombre }}</span>
+        <span>S/. {{ det.total | number:'1.2-2' }}</span>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="total-row">
+        <span>Total</span>
+        <span>S/. {{ pedido.total | number:'1.2-2' }}</span>
+      </div>
+    </div>
+
+    <div class="footer-note">
+      <ion-icon name="receipt-outline"></ion-icon>
+      <p>Comprobante Generado por Rayo Delivery</p>
+    </div>
+
+    <!-- RF-22: Botón para calificar -->
+    <div *ngIf="puedeEvaluar && !mostrarFormEvaluacion" class="ion-padding">
+      <ion-button expand="block" color="warning" (click)="abrirFormularioEvaluacion()">
+        <ion-icon name="star-outline" slot="start"></ion-icon>
+        Calificar Servicio
+      </ion-button>
+    </div>
+
+    <!-- RF-22: Formulario de evaluación -->
+    <ion-card *ngIf="mostrarFormEvaluacion" class="evaluacion-card">
+      <ion-card-header>
+        <ion-card-title>Califica tu experiencia</ion-card-title>
+        <ion-card-subtitle>¿Cómo fue el servicio de entrega?</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <!-- Estrellas de calificación -->
+        <div class="rating-container">
+          <ion-icon 
+            *ngFor="let i of [1,2,3,4,5]" 
+            [name]="i <= calificacion ? 'star' : 'star-outline'"
+            [class.selected]="i <= calificacion"
+            (click)="seleccionarCalificacion(i)"
+            class="star-icon">
+          </ion-icon>
+        </div>
+
+        <!-- Comentario -->
+        <ion-item class="ion-margin-top">
+          <ion-label position="floating">Comentario (opcional)</ion-label>
+          <ion-textarea 
+            [(ngModel)]="comentario" 
+            rows="3"
+            placeholder="Cuéntanos sobre tu experiencia...">
+          </ion-textarea>
+        </ion-item>
+
+        <!-- Botones -->
+        <div class="button-group ion-margin-top">
+          <ion-button 
+            expand="block" 
+            color="success" 
+            (click)="enviarEvaluacion()"
+            [disabled]="enviandoEvaluacion || calificacion === 0">
+            <ion-icon name="checkmark" slot="start"></ion-icon>
+            {{ enviandoEvaluacion ? 'Enviando...' : 'Enviar Evaluación' }}
+          </ion-button>
+          
+          <ion-button 
+            expand="block" 
+            fill="outline" 
+            color="medium" 
+            (click)="cancelarEvaluacion()"
+            [disabled]="enviandoEvaluacion">
+            Cancelar
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+  </div>
+
+</ion-content>

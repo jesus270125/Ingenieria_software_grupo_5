@@ -1,0 +1,109 @@
+<ion-header>
+  <ion-toolbar color="primary">
+    <ion-buttons slot="start">
+      <ion-back-button defaultHref="/home"></ion-back-button>
+    </ion-buttons>
+    <ion-title>Soporte</ion-title>
+    <ion-buttons slot="end">
+      <ion-button (click)="toggleFormulario()">
+        <ion-icon [name]="mostrarFormulario ? 'close-circle-outline' : 'add-circle-outline'" slot="icon-only"></ion-icon>
+      </ion-button>
+    </ion-buttons>
+  </ion-toolbar>
+</ion-header>
+
+<ion-content>
+  <!-- Formulario nuevo ticket -->
+  <ion-card *ngIf="mostrarFormulario">
+    <ion-card-header>
+      <ion-card-title>Nuevo Ticket de Soporte</ion-card-title>
+    </ion-card-header>
+    <ion-card-content>
+      <ion-item>
+        <ion-label position="floating">Asunto *</ion-label>
+        <ion-input [(ngModel)]="nuevoTicket.asunto" placeholder="¿En qué podemos ayudarte?"></ion-input>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Categoría *</ion-label>
+        <ion-select [(ngModel)]="nuevoTicket.categoria">
+          <ion-select-option *ngFor="let cat of categorias" [value]="cat.value">
+            {{ cat.label }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Prioridad *</ion-label>
+        <ion-select [(ngModel)]="nuevoTicket.prioridad">
+          <ion-select-option *ngFor="let prio of prioridades" [value]="prio.value">
+            {{ prio.label }}
+          </ion-select-option>
+        </ion-select>
+      </ion-item>
+
+      <ion-item>
+        <ion-label position="floating">Descripción *</ion-label>
+        <ion-textarea 
+          [(ngModel)]="nuevoTicket.descripcion" 
+          rows="5"
+          placeholder="Describe tu problema o consulta con el mayor detalle posible">
+        </ion-textarea>
+      </ion-item>
+
+      <ion-button 
+        expand="block" 
+        (click)="crearTicket()" 
+        [disabled]="cargando || !nuevoTicket.asunto || !nuevoTicket.descripcion"
+        class="ion-margin-top">
+        <ion-icon name="send-outline" slot="start"></ion-icon>
+        Enviar Ticket
+      </ion-button>
+    </ion-card-content>
+  </ion-card>
+
+  <!-- Lista de tickets -->
+  <div class="tickets-container">
+    <ion-refresher slot="fixed" (ionRefresh)="cargarTickets()">
+      <ion-refresher-content></ion-refresher-content>
+    </ion-refresher>
+
+    <ion-card *ngFor="let ticket of tickets" (click)="verDetalle(ticket.id)">
+      <ion-card-header>
+        <div class="ticket-header">
+          <ion-card-subtitle>#{{ ticket.id }} - {{ ticket.asunto }}</ion-card-subtitle>
+          <ion-chip [color]="getEstadoColor(ticket.estado)">
+            <ion-label>{{ getEstadoTexto(ticket.estado) }}</ion-label>
+          </ion-chip>
+        </div>
+      </ion-card-header>
+      <ion-card-content>
+        <p class="descripcion">{{ ticket.descripcion }}</p>
+        <div class="ticket-meta">
+          <ion-chip [color]="getPrioridadColor(ticket.prioridad)" outline="true">
+            <ion-icon name="flag-outline"></ion-icon>
+            <ion-label>{{ ticket.prioridad }}</ion-label>
+          </ion-chip>
+          <ion-chip outline="true">
+            <ion-icon name="folder-outline"></ion-icon>
+            <ion-label>{{ ticket.categoria }}</ion-label>
+          </ion-chip>
+          <ion-chip outline="true">
+            <ion-icon name="calendar-outline"></ion-icon>
+            <ion-label>{{ ticket.fecha_creacion | date:'short' }}</ion-label>
+          </ion-chip>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
+    <div *ngIf="!cargando && tickets.length === 0" class="empty-state">
+      <ion-icon name="chatbubbles-outline"></ion-icon>
+      <h2>No tienes tickets de soporte</h2>
+      <p>Presiona el botón + para crear uno</p>
+    </div>
+
+    <div *ngIf="cargando" class="loading-state">
+      <ion-spinner></ion-spinner>
+    </div>
+  </div>
+</ion-content>

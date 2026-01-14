@@ -1,4 +1,3 @@
-
 const db = require('../config/db');
 
 exports.findByEmail = (email) => {
@@ -14,8 +13,8 @@ exports.findByEmail = (email) => {
 exports.createUser = (user) => {
     return new Promise((resolve, reject) => {
         const sql = `INSERT INTO usuarios 
-        (nombre, dni_ruc, telefono, direccion, correo, password, rol, placa, licencia, estado_cuenta, disponible, lat, lng) 
-        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, 'activo', 1, NULL, NULL)`;
+        (nombre, dni_ruc, telefono, direccion, correo, password, rol, placa, licencia, foto, estado_cuenta, disponible, lat, lng) 
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, 'activo', 1, NULL, NULL)`;
 
         db.query(sql, [
             user.nombre,
@@ -26,7 +25,8 @@ exports.createUser = (user) => {
             user.password,
             user.rol || 'cliente',
             user.placa,
-            user.licencia
+            user.licencia,
+            user.foto
         ], (err, result) => {
             if (err) return reject(err);
             resolve(result.insertId);
@@ -40,6 +40,38 @@ exports.findById = (id) => {
         db.query('SELECT * FROM usuarios WHERE id = ?', [id], (err, results) => {
             if (err) return reject(err);
             resolve(results[0]);
+        });
+    });
+};
+
+exports.updateUser = (id, datos) => {
+    return new Promise((resolve, reject) => {
+        const campos = [];
+        const valores = [];
+
+        if (datos.nombre !== undefined) {
+            campos.push('nombre = ?');
+            valores.push(datos.nombre);
+        }
+        if (datos.telefono !== undefined) {
+            campos.push('telefono = ?');
+            valores.push(datos.telefono);
+        }
+        if (datos.direccion !== undefined) {
+            campos.push('direccion = ?');
+            valores.push(datos.direccion);
+        }
+
+        if (campos.length === 0) {
+            return resolve({ message: 'No hay datos para actualizar' });
+        }
+
+        valores.push(id);
+        const sql = `UPDATE usuarios SET ${campos.join(', ')} WHERE id = ?`;
+        
+        db.query(sql, valores, (err, result) => {
+            if (err) return reject(err);
+            resolve(result);
         });
     });
 };
@@ -77,6 +109,109 @@ exports.findAvailableMotorizado = () => {
         db.query(sql, (err, results) => {
             if (err) return reject(err);
             resolve(results[0]);
+        });
+    });
+};
+
+// --- Recuperación de Contraseña ---
+
+exports.saveRecoveryCode = (userId, code, expires) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'UPDATE usuarios SET recovery_code = ?, recovery_expires = ? WHERE id = ?';
+        db.query(sql, [code, expires, userId], (err, result) => {
+            if (err) return reject(err);
+            console.log('💾 Código guardado en BD:', { userId, code, expires, updated: result.affectedRows });
+            resolve(result);
+        });
+    });
+};
+
+exports.verifyRecoveryCode = (email, code) => {
+    return new Promise((resolve, reject) => {
+        // Busca usuario con ese email, código coincidente y que NO haya expirado
+        const sql = 'SELECT * FROM usuarios WHERE correo = ? AND recovery_code = ? AND recovery_expires > NOW()';
+        db.query(sql, [email, code], (err, results) => {
+            if (err) return reject(err);
+            
+            console.log('🔎 Verificando código:', { 
+                email, 
+                codeReceived: code, 
+                found: results.length > 0,
+                user: results.length > 0 ? { 
+                    codeInDB: results[0].recovery_code, 
+                    expires: results[0].recovery_expires 
+                } : null
+            });
+            
+            resolve(results.length > 0); // True si encontró coincidencias
+        });
+    });
+};
+
+exports.updatePassword = (email, hash) => {
+    return new Promise((resolve, reject) => {
+        // Actualiza pass y limpia el código para que no se pueda reusar
+        const sql = 'UPDATE usuarios SET password = ?, recovery_code = NULL, recovery_expires = NULL WHERE correo = ?';
+        db.query(sql, [hash, email], (err, result) => {
+            if (err) return reject(err);
+            resolve(result);
+        });
+    });
+};
+
+// RF-11: Obtener lista de motorizados (para reasignación)
+exports.getMotorizados = () => {
+    return new Promise((resolve, reject) => {
+        const sql = `
+            SELECT id, nombre, telefono, placa, disponible, estado_cuenta 
+            FROM usuarios 
+            WHERE rol = 'motorizado' 
+            ORDER BY nombre ASC
+        `;
+        db.query(sql, (err, results) => {
+            if (err) return reject(err);
+            resolve(results);
+        });
+    });
+};
+
+exports.updateEstadoCuenta = (id, estado) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'UPDATE usuarios SET estado_cuenta = ? WHERE id = ?';
+        db.query(sql, [estado, id], (err, result) => {
+            if (err) return reject(err);
+            resolve(result);
+        });
+    });
+};
+
+// Refresh token storage
+exports.saveRefreshToken = (userId, token, expires) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'INSERT INTO refresh_tokens (token, user_id, expires_at) VALUES (?, ?, ?)';
+        db.query(sql, [token, userId, expires], (err, result) => {
+            if (err) return reject(err);
+            resolve(result);
+        });
+    });
+};
+
+exports.findRefreshToken = (token) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'SELECT * FROM refresh_tokens WHERE token = ?';
+        db.query(sql, [token], (err, results) => {
+            if (err) return reject(err);
+            resolve(results[0]);
+        });
+    });
+};
+
+exports.deleteRefreshToken = (token) => {
+    return new Promise((resolve, reject) => {
+        const sql = 'DELETE FROM refresh_tokens WHERE token = ?';
+        db.query(sql, [token], (err, result) => {
+            if (err) return reject(err);
+            resolve(result);
         });
     });
 };

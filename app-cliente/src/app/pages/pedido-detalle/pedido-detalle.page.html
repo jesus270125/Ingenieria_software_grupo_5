@@ -8,24 +8,114 @@
 </ion-header>
 
 <ion-content class="ion-padding">
-  <div *ngIf="pedido; else loading">
-    <h3>Pedido #{{ pedido.id || pedido._id }}</h3>
-    <p>Fecha: {{ (pedido.createdAt || pedido.fecha) | date:'short' }}</p>
-    <p>Método: {{ pedido.metodoPago || pedido.metodo }}</p>
+  <div *ngIf="pedido; else loading" class="detail-card">
+    <div class="header">
+      <div>
+        <h2>Pedido #{{ pedido.id || pedido._id }}</h2>
+        <div class="meta">{{ (pedido.createdAt || pedido.fecha || pedido.created_at) | date:'short' }} • {{ pedido.metodoPago || pedido.metodo || 'Efectivo' }}</div>
+      </div>
+      <div class="status">{{ pedido.estado || pedido.estado || 'registrado' }}</div>
+    </div>
 
-    <ion-list>
-      <ion-item *ngFor="let it of pedido.items || pedido.detalle || []">
-        <ion-label>
-          <h4>{{ it.producto?.nombre || it.nombre || it.product?.name }}</h4>
-          <p>{{ it.cantidad || it.quantity }} x S/ {{ (it.precio || it.producto?.precio || it.product?.price) | number:'1.2-2' }}</p>
-        </ion-label>
-      </ion-item>
-    </ion-list>
+    <div class="address">
+      <strong>Dirección de entrega</strong>
+      <div class="addr">{{ pedido.direccion || pedido.address || 'No especificada' }}</div>
+    </div>
 
-    <ion-item>
-      <ion-label>Total</ion-label>
-      <ion-note slot="end">S/ {{ pedido.total || pedido.subtotal | number:'1.2-2' }}</ion-note>
-    </ion-item>
+    <div class="items">
+      <div class="item-row" *ngFor="let it of pedido.items || pedido.detalles || []">
+        <div class="left">
+          <div class="name">{{ it.producto?.nombre || it.nombre || it.product?.name }}</div>
+          <div class="meta">{{ it.cantidad || it.quantity }} x S/ {{ (it.precio_unitario || it.precio || it.producto?.precio) | number:'1.2-2' }}</div>
+        </div>
+        <div class="right">S/ {{ (it.total || ((it.cantidad||it.quantity) * (it.precio_unitario||it.precio||0))) | number:'1.2-2' }}</div>
+      </div>
+    </div>
+
+    <div class="summary">
+      <div class="row"><span>Subtotal</span><span>S/ {{ (pedido.subtotal || 0) | number:'1.2-2' }}</span></div>
+      <div class="row"><span>Envío</span><span>S/ {{ (pedido.envio || 0) | number:'1.2-2' }}</span></div>
+      <div class="row total"><span>Total</span><span>S/ {{ (pedido.total || (pedido.subtotal||0) + (pedido.envio||0)) | number:'1.2-2' }}</span></div>
+    </div>
+
+    <div class="actions">
+      <ion-button fill="solid" color="primary" [routerLink]="['/historial']">Volver</ion-button>
+    </div>
+
+    <!-- RF-22: Botón para calificar -->
+    <div *ngIf="puedeEvaluar && !mostrarFormEvaluacion" style="margin-top: 20px;">
+      <ion-button expand="block" color="warning" (click)="abrirFormularioEvaluacion()">
+        <ion-icon name="star-outline" slot="start"></ion-icon>
+        Calificar Servicio
+      </ion-button>
+    </div>
+
+    <!-- RF-23: Botón para reportar incidencia -->
+    <div *ngIf="pedido && pedido.id" style="margin-top: 12px;">
+      <ion-button 
+        expand="block" 
+        fill="outline" 
+        color="danger" 
+        [routerLink]="['/reportar-incidencia']"
+        [queryParams]="{pedidoId: pedido.id, numero: pedido.id}">
+        <ion-icon name="alert-circle-outline" slot="start"></ion-icon>
+        Reportar Problema
+      </ion-button>
+    </div>
+
+    <!-- RF-22: Formulario de evaluación -->
+    <ion-card *ngIf="mostrarFormEvaluacion" style="margin-top: 20px;">
+      <ion-card-header>
+        <ion-card-title>Califica tu experiencia</ion-card-title>
+        <ion-card-subtitle>¿Cómo fue el servicio de entrega?</ion-card-subtitle>
+      </ion-card-header>
+
+      <ion-card-content>
+        <!-- Estrellas de calificación -->
+        <div style="display: flex; justify-content: center; gap: 8px; padding: 20px 0;">
+          <ion-icon 
+            *ngFor="let i of [1,2,3,4,5]" 
+            [name]="i <= calificacion ? 'star' : 'star-outline'"
+            [style.color]="i <= calificacion ? '#F59E0B' : '#D1D5DB'"
+            [style.font-size]="'40px'"
+            [style.cursor]="'pointer'"
+            (click)="seleccionarCalificacion(i)">
+          </ion-icon>
+        </div>
+
+        <!-- Comentario -->
+        <ion-item>
+          <ion-label position="floating">Comentario (opcional)</ion-label>
+          <ion-textarea 
+            [(ngModel)]="comentario" 
+            rows="3"
+            placeholder="Cuéntanos sobre tu experiencia...">
+          </ion-textarea>
+        </ion-item>
+
+        <!-- Botones -->
+        <div style="display: flex; flex-direction: column; gap: 10px; margin-top: 16px;">
+          <ion-button 
+            expand="block" 
+            color="success" 
+            (click)="enviarEvaluacion()"
+            [disabled]="enviandoEvaluacion || calificacion === 0">
+            <ion-icon name="checkmark" slot="start"></ion-icon>
+            {{ enviandoEvaluacion ? 'Enviando...' : 'Enviar Evaluación' }}
+          </ion-button>
+          
+          <ion-button 
+            expand="block" 
+            fill="outline" 
+            color="medium" 
+            (click)="cancelarEvaluacion()"
+            [disabled]="enviandoEvaluacion">
+            Cancelar
+          </ion-button>
+        </div>
+      </ion-card-content>
+    </ion-card>
+
   </div>
 
   <ng-template #loading>

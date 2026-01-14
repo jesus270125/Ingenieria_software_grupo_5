@@ -1,1 +1,254 @@
-/* optional styles */
+ion-toolbar.custom-toolbar {
+  --background: linear-gradient(135deg, #6f2dbd 0%, #8e44ad 100%);
+  --color: #ffffff;
+  --padding-top: 8px;
+  --padding-bottom: 8px;
+}
+
+.panel-title {
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: -0.5px;
+}
+
+ion-content {
+  --background: #f8f9fd;
+}
+
+.content-wrapper {
+  padding: 20px;
+  max-width: 600px;
+  margin: 0 auto;
+}
+
+// Card de disponibilidad
+.availability-card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  margin-bottom: 24px;
+  box-shadow: 0 8px 24px rgba(0,0,0,0.08);
+  
+  .availability-content {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+  }
+  
+  .availability-info {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    flex: 1;
+    
+    .availability-icon {
+      font-size: 2.5rem;
+      color: #6f2dbd;
+      flex-shrink: 0;
+    }
+    
+    h3 {
+      margin: 0 0 4px 0;
+      font-size: 1rem;
+      font-weight: 800;
+      color: #1a1a1a;
+      letter-spacing: -0.3px;
+    }
+    
+    p {
+      margin: 0;
+      font-size: 0.85rem;
+      color: #666;
+      font-weight: 500;
+    }
+  }
+  
+  .custom-toggle {
+    --background: #e0e0e0;
+    --background-checked: #6f2dbd;
+    --handle-background: white;
+    --handle-background-checked: white;
+  }
+}
+
+// Sección header
+.section-header {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin-bottom: 16px;
+  
+  h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 800;
+    color: #1a1a1a;
+    letter-spacing: -0.5px;
+  }
+  
+  .badge-count {
+    background: linear-gradient(135deg, #6f2dbd 0%, #8e44ad 100%);
+    color: white;
+    font-size: 0.75rem;
+    font-weight: 700;
+    padding: 4px 10px;
+    border-radius: 12px;
+    min-width: 24px;
+    text-align: center;
+  }
+}
+
+// Grid de pedidos
+.pedidos-grid {
+  display: flex;
+  flex-direction: column;
+  gap: 16px;
+}
+
+.pedido-card {
+  background: white;
+  border-radius: 20px;
+  padding: 20px;
+  box-shadow: 0 4px 16px rgba(0,0,0,0.06);
+  cursor: pointer;
+  transition: all 0.3s ease;
+  border: 2px solid transparent;
+  
+  &:active {
+    transform: scale(0.98);
+  }
+  
+  .pedido-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 16px;
+    
+    .pedido-numero {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      
+      ion-icon {
+        font-size: 1.5rem;
+        color: #6f2dbd;
+      }
+      
+      span {
+        font-size: 1.1rem;
+        font-weight: 800;
+        color: #1a1a1a;
+        letter-spacing: -0.3px;
+      }
+    }
+    
+    .estado-badge {
+      padding: 6px 12px;
+      border-radius: 12px;
+      font-size: 0.75rem;
+      font-weight: 700;
+      text-transform: uppercase;
+      letter-spacing: 0.5px;
+      
+      &.preparando {
+        background: #fff3e0;
+        color: #f57c00;
+      }
+      
+      &.en-camino {
+        background: #e3f2fd;
+        color: #1976d2;
+      }
+      
+      &.entregado {
+        background: #e8f5e9;
+        color: #388e3c;
+      }
+      
+      &.asignado {
+        background: #f3e5f5;
+        color: #6f2dbd;
+      }
+      
+      &.default {
+        background: #f5f5f5;
+        color: #666;
+      }
+    }
+  }
+  
+  .pedido-route {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 12px;
+    padding: 12px;
+    background: #f8f9fd;
+    border-radius: 12px;
+    
+    .route-item {
+      display: flex;
+      align-items: center;
+      gap: 6px;
+      flex: 1;
+      
+      .route-icon {
+        font-size: 1.1rem;
+        color: #6f2dbd;
+      }
+      
+      span {
+        font-size: 0.9rem;
+        font-weight: 600;
+        color: #333;
+        white-space: nowrap;
+        overflow: hidden;
+        text-overflow: ellipsis;
+      }
+    }
+    
+    .route-arrow {
+      font-size: 1rem;
+      color: #999;
+      flex-shrink: 0;
+    }
+  }
+  
+  .pedido-footer {
+    display: flex;
+    justify-content: flex-end;
+    
+    ion-icon {
+      font-size: 1.2rem;
+      color: #6f2dbd;
+    }
+  }
+}
+
+// Estado vacío
+.empty-state {
+  text-align: center;
+  padding: 60px 20px;
+  
+  .empty-icon {
+    font-size: 4rem;
+    color: #e0e0e0;
+    margin-bottom: 16px;
+  }
+  
+  h3 {
+    margin: 0 0 8px 0;
+    font-size: 1.2rem;
+    font-weight: 800;
+    color: #333;
+    letter-spacing: -0.3px;
+  }
+  
+  p {
+    margin: 0;
+    font-size: 0.9rem;
+    color: #999;
+    font-weight: 500;
+  }
+}

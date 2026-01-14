@@ -16,47 +16,57 @@ ion-content {
 }
 
 ion-toolbar {
-  --background: var(--ion-color-primary);
+  --background: linear-gradient(135deg, #6f2dbd 0%, #8e44ad 100%);
   --color: #ffffff;
+}
+
+ion-title {
+  font-weight: 800;
+  font-size: 1.3rem;
+  letter-spacing: -0.5px;
 }
 
 // --- Decoración Superior ---
 .header-background {
-  background: var(--ion-color-primary);
-  height: 25px;
-  border-bottom-left-radius: 25px;
-  border-bottom-right-radius: 25px;
+  background: linear-gradient(135deg, #6f2dbd 0%, #8e44ad 100%);
+  height: 35px;
+  border-bottom-left-radius: 30px;
+  border-bottom-right-radius: 30px;
   position: absolute;
   top: 0;
   left: 0;
   right: 0;
   z-index: 0;
+  box-shadow: 0 4px 16px rgba(111, 45, 189, 0.15);
 }
 
 // --- Buscador ---
 .search-container {
   position: relative;
   z-index: 1;
-  padding: 0 10px;
-  margin-top: -5px;
+  padding: 0 16px;
+  margin-top: -10px;
+  margin-bottom: 10px;
 
   ion-searchbar {
     --background: #ffffff;
-    --color: #333333; // Texto oscuro
-    --icon-color: var(--ion-color-primary);
-    --placeholder-color: #666;
-    --box-shadow: 0 4px 10px rgba(0,0,0,0.08);
-    border-radius: 10px;
+    --color: #333333;
+    --icon-color: #6f2dbd;
+    --placeholder-color: #999;
+    --placeholder-font-weight: 500;
+    --box-shadow: 0 8px 20px rgba(0,0,0,0.12);
+    border-radius: 16px;
     padding-bottom: 0;
+    font-weight: 600;
   }
 }
 
 // --- Categorías (Chips) ---
 .categorias-container {
-  padding: 15px;
+  padding: 18px 16px 24px 16px;
   display: flex;
   overflow-x: auto;
-  gap: 10px;
+  gap: 12px;
   scroll-behavior: smooth;
   
   -ms-overflow-style: none;
@@ -67,19 +77,33 @@ ion-toolbar {
   }
 
   ion-chip {
-    font-weight: 500;
+    font-weight: 600;
+    font-size: 0.95rem;
     white-space: nowrap;
-    border: 1px solid transparent;
+    border: 2px solid #e0e0e0;
     background: #ffffff;
-    color: #666666; // Texto gris oscuro
-    transition: all 0.3s ease;
+    color: #555555;
+    transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 2px 6px rgba(0,0,0,0.04);
+    height: 44px !important;
+    
+    ion-label {
+      margin: 0 !important;
+      padding: 0 18px !important;
+      font-size: 0.95rem !important;
+      line-height: 44px !important;
+    }
 
     &.chip-activo {
-      background: var(--ion-color-primary) !important;
+      background: linear-gradient(135deg, #6f2dbd 0%, #8e44ad 100%) !important;
       color: white !important;
-      border-color: var(--ion-color-primary) !important;
+      border-color: #6f2dbd !important;
       transform: scale(1.05);
-      box-shadow: 0 2px 6px rgba(126, 87, 194, 0.4);
+      box-shadow: 0 4px 12px rgba(111, 45, 189, 0.35);
+      
+      ion-label {
+        color: white !important;
+      }
     }
   }
 }
@@ -92,26 +116,50 @@ ion-list {
 }
 
 .restaurante-item {
-  --background: #ffffff; // Fondo blanco forzado
-  --color: #333333;      // Texto oscuro forzado
-  --padding-start: 16px;
-  --inner-padding-end: 16px;
+  --background: #ffffff;
+  --color: #333333;
+  --padding-start: 18px;
+  --inner-padding-end: 18px;
   
-  margin-bottom: 12px; 
-  margin-left: 12px;
-  margin-right: 12px;
+  margin-bottom: 14px; 
+  margin-left: 16px;
+  margin-right: 16px;
   
-  border-radius: 16px;
-  box-shadow: 0 4px 15px rgba(126, 87, 194, 0.08);
+  border-radius: 20px;
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.08);
   overflow: hidden;
+  transition: all 0.3s cubic-bezier(0.4, 0, 0.2, 1);
+  position: relative;
+
+  &::before {
+    content: '';
+    position: absolute;
+    left: 0;
+    top: 0;
+    bottom: 0;
+    width: 4px;
+    background: linear-gradient(135deg, #6f2dbd 0%, #8e44ad 100%);
+    opacity: 0;
+    transition: opacity 0.3s ease;
+  }
+
+  &:active {
+    transform: scale(0.98);
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.12);
+    
+    &::before {
+      opacity: 1;
+    }
+  }
 
   ion-thumbnail {
-    width: 75px;
-    height: 75px;
-    border-radius: 12px;
+    width: 80px;
+    height: 80px;
+    border-radius: 16px;
     overflow: hidden;
-    margin-right: 15px;
-    background-color: #f0f0f0;
+    margin-right: 16px;
+    background: linear-gradient(135deg, #f5f5f5 0%, #e0e0e0 100%);
+    box-shadow: 0 2px 8px rgba(0,0,0,0.06);
     
     img {
       object-fit: cover;
@@ -121,64 +169,101 @@ ion-list {
   }
 
   ion-label {
-    margin-top: 12px;
-    margin-bottom: 12px;
+    margin-top: 14px;
+    margin-bottom: 14px;
 
     .restaurante-nombre {
       font-weight: 800;
-      font-size: 1.1rem;
-      margin-bottom: 4px;
-      color: #333333; // Aseguramos negro
+      font-size: 1.12rem;
+      margin-bottom: 6px;
+      color: #1a1a1a;
+      letter-spacing: -0.3px;
+      line-height: 1.3;
     }
 
     .restaurante-categoria {
-      font-size: 0.75rem;
-      font-weight: 600;
-      letter-spacing: 0.8px;
+      font-size: 0.72rem;
+      font-weight: 700;
+      letter-spacing: 1px;
       text-transform: uppercase;
-      color: var(--ion-color-primary);
-      margin-bottom: 8px;
+      color: #6f2dbd;
+      margin-bottom: 10px;
+      opacity: 0.9;
     }
+  }
+
+  ion-icon[slot="end"] {
+    font-size: 1.3rem;
+    opacity: 0.6;
+    transition: all 0.3s ease;
+  }
+
+  &:active ion-icon[slot="end"] {
+    opacity: 1;
+    transform: translateX(4px);
   }
 }
 
 // --- Indicador de Estado ---
 .estado-container {
-  display: flex; 
+  display: inline-flex; 
   align-items: center; 
-  font-size: 0.8rem;
-  background: #f8f9fa;
-  color: #333; // Texto base oscuro
-  padding: 4px 10px;
-  border-radius: 20px;
+  font-size: 0.78rem;
+  background: #f5f5f5;
+  color: #333;
+  padding: 5px 12px;
+  border-radius: 24px;
   width: fit-content;
+  border: 1.5px solid transparent;
+  transition: all 0.3s ease;
+
+  ion-icon {
+    margin-right: 6px !important;
+  }
 
   .texto-abierto { 
-    color: var(--ion-color-success); 
-    font-weight: 700; 
+    color: #2e7d32;
+    font-weight: 700;
+    font-size: 0.78rem;
   }
   
   .texto-cerrado { 
-    color: var(--ion-color-danger); 
-    font-weight: 700; 
+    color: #d32f2f;
+    font-weight: 700;
+    font-size: 0.78rem;
   }
+}
+
+// Estilos específicos para estado abierto/cerrado
+.restaurante-item:has(.texto-abierto) .estado-container {
+  background: #e8f5e9;
+  border-color: #a5d6a7;
+}
+
+.restaurante-item:has(.texto-cerrado) .estado-container {
+  background: #ffebee;
+  border-color: #ef9a9a;
 }
 
 // --- Estados Vacíos ---
 .sin-resultados {
   text-align: center;
-  margin-top: 60px;
-  color: #666666; // Gris oscuro
+  margin-top: 80px;
+  padding: 0 30px;
+  color: #777;
   
   ion-icon {
-    font-size: 64px;
-    margin-bottom: 15px;
-    opacity: 0.5;
+    font-size: 72px;
+    margin-bottom: 20px;
+    opacity: 0.3;
+    color: #6f2dbd;
   }
   
   p {
-    font-size: 1.1rem;
-    font-weight: 500;
+    font-size: 1.05rem;
+    font-weight: 600;
+    color: #555;
+    line-height: 1.5;
   }
 }
 

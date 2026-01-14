@@ -33,8 +33,9 @@ export class CartFabComponent implements OnDestroy {
     this.sub = this.router.events.subscribe(e => {
       if (e instanceof NavigationEnd) {
         const url = e.urlAfterRedirects || e.url;
-        // ocultar en login y register
-        this.visible = !(url.startsWith('/login') || url.startsWith('/register'));
+        // ocultar en rutas donde el FAB no tenga sentido
+        const hiddenPaths = ['/login', '/register', '/carrito', '/metodo-pago', '/confirmacion'];
+        this.visible = !hiddenPaths.some(p => url.startsWith(p));
       }
     });
   }

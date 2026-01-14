@@ -1,26 +1,68 @@
-<ion-header>
-  <ion-toolbar color="primary">
-    <ion-title>Rayo Motorizado</ion-title>
-  </ion-toolbar>
-</ion-header>
+<ion-content class="ion-padding login-content">
+  <div class="login-page">
+    <div class="login-container">
+      
+      <!-- CABECERA -->
+      <div class="ion-text-center">
+        <div class="header-icon">
+          <ion-icon name="bicycle-outline" style="font-size: 50px; color: white;"></ion-icon>
+        </div>
+        <h2 class="header-title">¡Bienvenido Motorizado!</h2>
+        <p class="subtext">Inicia sesión para gestionar tus entregas</p>
+      </div>
 
-<ion-content class="ion-padding">
-  <div class="login-container">
-    <ion-img src="assets/icon/icon.png" style="width: 100px; margin: 0 auto;"></ion-img>
-    <h2>Iniciar Sesión</h2>
+      <!-- FORMULARIO -->
+      <div style="margin-top: 40px;">
+        
+        <!-- CORREO -->
+        <ion-item lines="none" class="custom-input">
+          <ion-icon name="mail-outline" slot="start" class="input-icon"></ion-icon>
+          <ion-label position="stacked">Correo Electrónico</ion-label>
+          <ion-input
+            type="email"
+            placeholder="ejemplo@correo.com"
+            [(ngModel)]="credentials.correo">
+          </ion-input>
+        </ion-item>
 
-    <ion-item>
-      <ion-label position="floating">Correo</ion-label>
-      <ion-input type="email" [(ngModel)]="credentials.correo"></ion-input>
-    </ion-item>
+        <!-- CONTRASEÑA -->
+        <ion-item lines="none" class="custom-input">
+          <ion-icon name="lock-closed-outline" slot="start" class="input-icon"></ion-icon>
+          <ion-label position="stacked">Contraseña</ion-label>
+          <ion-input
+            type="password"
+            placeholder="********"
+            [(ngModel)]="credentials.password">
+          </ion-input>
+        </ion-item>
 
-    <ion-item>
-      <ion-label position="floating">Contraseña</ion-label>
-      <ion-input type="password" [(ngModel)]="credentials.password"></ion-input>
-    </ion-item>
+        <!-- Enlace olvidaste contraseña -->
+        <div class="ion-text-end" style="margin-top: 10px;">
+          <a [routerLink]="['/forgot-password']" class="forgot-link">¿Olvidaste tu contraseña?</a>
+        </div>
 
-    <ion-button expand="block" class="ion-margin-top" (click)="login()">
-      Ingresar
-    </ion-button>
+        <!-- BOTONES -->
+        <ion-button expand="block" class="btn-purple" (click)="login()">
+          INGRESAR
+        </ion-button>
+
+        <ion-button 
+          expand="block" 
+          fill="outline" 
+          class="btn-outline-purple" 
+          [routerLink]="['/register']">
+          CREAR CUENTA
+        </ion-button>
+
+      </div>
+      
+      <!-- Pie de página -->
+      <div class="ion-text-center ion-margin-top">
+        <ion-text color="medium">
+          <p style="font-size: 0.8rem; opacity: 0.7;">Rayo Delivery Motorizado v1.0.0</p>
+        </ion-text>
+      </div>
+
+    </div>
   </div>
 </ion-content>

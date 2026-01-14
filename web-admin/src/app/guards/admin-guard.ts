@@ -1,9 +1,9 @@
 import { CanActivateFn, Router } from '@angular/router';
+import { inject } from '@angular/core';
 
 export const AdminGuard: CanActivateFn = () => {
-
   const rol = localStorage.getItem('rol');
-  const router = new Router();
+  const router = inject(Router);
 
   if (rol === 'administrador') return true;
 

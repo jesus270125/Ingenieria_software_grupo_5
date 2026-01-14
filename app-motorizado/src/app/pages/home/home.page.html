@@ -1,8 +1,11 @@
-<ion-header>
-    <ion-toolbar color="primary">
-        <ion-title>Mis Pedidos</ion-title>
+<ion-header class="ion-no-border">
+    <ion-toolbar class="custom-toolbar">
+        <ion-title class="panel-title">Mis Pedidos</ion-title>
         <ion-buttons slot="end">
-            <ion-button (click)="logout()">
+            <ion-button (click)="irAPerfil()" color="light">
+                <ion-icon name="person-outline"></ion-icon>
+            </ion-button>
+            <ion-button (click)="logout()" color="light">
                 <ion-icon name="log-out-outline"></ion-icon>
             </ion-button>
         </ion-buttons>
@@ -14,26 +17,63 @@
         <ion-refresher-content></ion-refresher-content>
     </ion-refresher>
 
-    <ion-item>
-        <ion-label>Disponible para entregas</ion-label>
-        <ion-toggle [checked]="isAvailable" (ionChange)="toggleAvailability($event)"></ion-toggle>
-    </ion-item>
+    <div class="content-wrapper">
+        <!-- Toggle de disponibilidad -->
+        <div class="availability-card">
+            <div class="availability-content">
+                <div class="availability-info">
+                    <ion-icon name="bicycle-outline" class="availability-icon"></ion-icon>
+                    <div>
+                        <h3>Estado de Disponibilidad</h3>
+                        <p>{{ isAvailable ? 'Activo y disponible para entregas' : 'Inactivo - No recibirás pedidos' }}</p>
+                    </div>
+                </div>
+                <ion-toggle [checked]="isAvailable" (ionChange)="toggleAvailability($event)" class="custom-toggle"></ion-toggle>
+            </div>
+        </div>
 
-    <ion-list>
-        <ion-list-header>
-            <ion-label>Pedidos Asignados</ion-label>
-        </ion-list-header>
+        <!-- Sección de pedidos -->
+        <div class="section-header">
+            <h2>Pedidos Asignados</h2>
+            <span class="badge-count" *ngIf="pedidos.length > 0">{{ pedidos.length }}</span>
+        </div>
 
-        <ion-item *ngFor="let p of pedidos" button (click)="verPedido(p.id)">
-            <ion-label>
-                <h2>Pedido #{{ p.id }}</h2>
-                <p>{{ p.restaurante }} ➔ {{ p.cliente }}</p>
-                <p>Status: <ion-text color="secondary">{{ p.estado }}</ion-text></p>
-            </ion-label>
-        </ion-item>
+        <!-- Lista de pedidos -->
+        <div class="pedidos-grid">
+            <div *ngFor="let p of pedidos" (click)="verPedido(p.id)" class="pedido-card">
+                <div class="pedido-header">
+                    <div class="pedido-numero">
+                        <ion-icon name="receipt-outline"></ion-icon>
+                        <span>Pedido #{{ p.id }}</span>
+                    </div>
+                    <div class="estado-badge" [ngClass]="getEstadoClass(p)">
+                        {{ getEstado(p) }}
+                    </div>
+                </div>
+                
+                <div class="pedido-route">
+                    <div class="route-item">
+                        <ion-icon name="restaurant-outline" class="route-icon"></ion-icon>
+                        <span>{{ p.restaurante || 'Restaurante' }}</span>
+                    </div>
+                    <ion-icon name="arrow-forward-outline" class="route-arrow"></ion-icon>
+                    <div class="route-item">
+                        <ion-icon name="home-outline" class="route-icon"></ion-icon>
+                        <span>{{ p.cliente || 'Cliente' }}</span>
+                    </div>
+                </div>
 
-        <ion-item *ngIf="pedidos.length === 0">
-            <ion-label class="ion-text-center">No tienes pedidos asignados</ion-label>
-        </ion-item>
-    </ion-list>
+                <div class="pedido-footer">
+                    <ion-icon name="chevron-forward-outline"></ion-icon>
+                </div>
+            </div>
+        </div>
+
+        <!-- Estado vacío -->
+        <div class="empty-state" *ngIf="pedidos.length === 0">
+            <ion-icon name="bicycle-outline" class="empty-icon"></ion-icon>
+            <h3>No tienes pedidos asignados</h3>
+            <p>{{ isAvailable ? 'Espera a que te asignen un nuevo pedido' : 'Activa tu disponibilidad para recibir pedidos' }}</p>
+        </div>
+    </div>
 </ion-content>
